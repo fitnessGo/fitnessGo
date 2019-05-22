@@ -1,8 +1,6 @@
-//import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-// create a component
 class DiscoverItem extends Component {
   render() {
     return (
@@ -19,7 +17,6 @@ class DiscoverItem extends Component {
   }
 }
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     borderColor: "black",
@@ -41,5 +38,4 @@ const styles = StyleSheet.create({
   }
 });
 
-//make this component available to the app
 export default DiscoverItem;
