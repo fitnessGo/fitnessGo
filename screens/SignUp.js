@@ -9,20 +9,8 @@ class SignUpScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ paddingVertical: 20 }}>
-        <Card title="SIGN UP">
-          <FormLabel>Email</FormLabel>
-          <FormInput placeholder="Email address..." />
-          <FormLabel>Password</FormLabel>
-          <FormInput secureTextEntry placeholder="Password..." />
-
-          <Button
-            buttonStyle={{ marginTop: 20 }}
-            backgroundColor="#03A9F4"
-            title="Create account"
-          // onPress={() => onSignIn()}
-          />
-        </Card>
+      <View >
+        <Text>Sign Up Screen</Text>
       </View>
     );
   }

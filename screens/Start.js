@@ -7,12 +7,7 @@ class StartScreen extends React.Component {
         return new Promise((resolve, reject) => {
             //Example: Backend logic can be here
             //FIXME: this setTimeout is for demonstration only. should be replaced with real approach
-            setTimeout(() => {
-                const rand = Math.floor(Math.random() * 2);
-                var signedIn = (rand == 1) ? true : false;
-                resolve(signedIn);
-              }, 1000);
-            //reject(err);
+            resolve(false);
           });
       }
     componentDidMount() {
