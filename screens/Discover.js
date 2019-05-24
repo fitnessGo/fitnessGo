@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
+import WorkoutCard from "../components/WorkoutCard";
 import { ScrollView, Text, StyleSheet } from "react-native";
 
 class Discover extends Component {
@@ -10,87 +11,105 @@ class Discover extends Component {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator="false"
       >
-        <DiscoverItem
-          workout={{
-            name: "Workout 1",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 2",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 3",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 4",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 5",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 6",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 7",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 8",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
-        <DiscoverItem
-          workout={{
-            name: "Workout 9",
-            category: "Cardio",
-            count: 2,
-            exercises: "Running, Cycling",
-            time: "30:00"
-          }}
-        />
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 1",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 2",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 3",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 4",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 5",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 6",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 7",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 8",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
+        <WorkoutCard>
+          <DiscoverItem
+            workout={{
+              name: "Workout 9",
+              category: "Cardio",
+              count: 2,
+              exercises: "Running, Cycling",
+              time: "30:00"
+            }}
+          />
+        </WorkoutCard>
       </ScrollView>
     );
   }
