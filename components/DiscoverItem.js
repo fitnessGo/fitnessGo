@@ -1,10 +1,11 @@
 import React, { Component } from "react";
+import WorkoutCard from "../components/WorkoutCard";
 import { View, Text, StyleSheet } from "react-native";
 
 class DiscoverItem extends Component {
   render() {
     return (
-      <>
+      <WorkoutCard>
         <Text style={styles.header}>{this.props.workout.name}</Text>
         <View style={styles.info}>
           <Text>Category: {this.props.workout.category}</Text>
@@ -12,7 +13,7 @@ class DiscoverItem extends Component {
           <Text>Exercises: {this.props.workout.exercises}</Text>
           <Text>Time: {this.props.workout.time}</Text>
         </View>
-      </>
+      </WorkoutCard>
     );
   }
 }
