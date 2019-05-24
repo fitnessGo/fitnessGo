@@ -3,6 +3,19 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Card, Button, Input } from 'react-native-elements'
 
 class CreateAccount extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.focusNextField = this.focusNextField.bind(this);
+        this.inputs = {};
+    }
+    //to jump to the next field when the user 
+    focusNextField(id) {
+        this.inputs[id].focus();
+    }
+    onSignInClick() {
+        this.props.navigation.navigate('App');
+      }
     render() {
         return (
             <View style={styles.container}>
@@ -10,19 +23,36 @@ class CreateAccount extends Component {
             <Input
             placeholder="Email address"
             keyboardType='email-address'
+            returnKeyType={"next"}
+            onSubmitEditing={() => {
+                this.focusNextField('password1');
+            }}
+            ref={ input => {
+                this.inputs['email'] = input;
+            }}
             />
-            <Input
+            <Input 
             placeholder="Password"
             secureTextEntry={true}
             returnKeyType="next"
             style={styles.textStyle}
+            blurOnSubmit={ false }
+            onSubmitEditing={() => {
+                this.focusNextField('password2');
+            }}
+            ref={ input => {
+                this.inputs['password1'] = input;
+            }}
             />
             
             <Input
             placeholder="Repeat password"
             secureTextEntry={true}
-            returnKeyType="go"
-            placeholderTextColor='#aaaaaa'
+            returnKeyType="done"
+            placeholderTextColor='#cccccc'
+            ref={ input => {
+                this.inputs['password2'] = input;
+            }}
             />
             
             <Button
