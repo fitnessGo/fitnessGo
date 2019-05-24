@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 
 class StartScreen extends React.Component {
     _isSignedIn() {
         return new Promise((resolve, reject) => {
-            //Example: Backend logic can be here
-            //FIXME: this setTimeout is for demonstration only. should be replaced with real approach
+            //TODO: Backend logic can be here
             resolve(false);
-          });
-      }
+        });
+    }
     componentDidMount() {
         //Here we perform a check if the user is signed in.
         //If yes, we redirect to the home screen
@@ -19,26 +18,32 @@ class StartScreen extends React.Component {
             this.props.navigation.navigate(res ? 'App' : 'Auth');
         })
         .catch(err => alert("An error occurred"));
-      }
-       
-
+    }
+    
+    
     render() {
         return (
             <View style={styles.container}>
-                <Text>Start Screen</Text>
-                <Text>Checking if user is signed in...</Text>
+
+               
+                <View>
+                    <Text style={{flexDirection:'row', flexWrap:'wrap'}}>
+                        Checking if signed in...
+                    </Text>
+                </View>
+            
             </View>
-        );
+            );
+        }
     }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#9efff9'
-    },
-});
-
-export default StartScreen;
+    
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#9efff9'
+        },
+    });
+    
+    export default StartScreen;
