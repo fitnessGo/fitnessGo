@@ -21,7 +21,7 @@ class StartScreen extends React.Component {
         //If no, we redirect to login page.
         this._isSignedIn()
         .then(res => { 
-            this.props.navigation.navigate(res ? 'App' : 'Log');
+            this.props.navigation.navigate(res ? 'App' : 'Auth');
         })
         .catch(err => alert("An error occurred"));
       }

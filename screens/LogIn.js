@@ -9,16 +9,18 @@ class LogInScreen extends React.Component {
     };
     //FIXME: this should redirect the user to login with Facebook page
     onLogInWithFaceBookClick() {
-        this.props.navigation.navigate('Auth');
+        this.props.navigation.navigate('SignIn');
     }
 
     //FIXME: this should redirect the user to login with Google page
+    //I have kept it SignIn for now
     onLogInWithGoogleClick() {
-        this.props.navigation.navigate('Auth');
+        this.props.navigation.navigate('SignIn');
     }
 
+    //I have kept it SignIn for now
     onLogInWithEmailClick() {
-        this.props.navigation.navigate('Auth');
+        this.props.navigation.navigate('SignIn');
     }
 
     onSignUpClick() {

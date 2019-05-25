@@ -11,17 +11,14 @@ import LogInScreen from "../screens/LogIn";
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
 //createStackNavigator is a function that takes a route configuration object and an options object and returns a React component.
 const AppStack = createStackNavigator({ Home: HomeScreen });
-const AuthStack = createStackNavigator({ SignIn: SignInScreen, SignUp: SignUpScreen, Register: CreateAccount });
-const LogInStack = createStackNavigator({ LogIn: LogInScreen, SignIn: SignInScreen,  Register: CreateAccount });
-
+const AuthStack = createStackNavigator({ LogIn: LogInScreen, SignIn: SignInScreen, SignUp: SignUpScreen, Register: CreateAccount });
 
 export default createAppContainer(
   createSwitchNavigator(
   {
     Start: StartScreen,
     App: AppStack,
-    Auth: AuthStack,
-    Log: LogInStack
+    Auth: AuthStack
   },
   {
     initialRouteName: 'Start',
