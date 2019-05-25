@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import WorkoutCard from "../components/WorkoutCard";
-import PopUp from "./PopUp";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import {
   Menu,
@@ -10,13 +9,6 @@ import {
 } from "react-native-popup-menu";
 
 class DiscoverItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { selected: false };
-    this._onPress = this._onPress.bind(this);
-    this._onLongPress = this._onLongPress.bind(this);
-  }
-
   render() {
     return (
       <WorkoutCard>
