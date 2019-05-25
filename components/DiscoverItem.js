@@ -2,6 +2,12 @@ import React, { Component } from "react";
 import WorkoutCard from "../components/WorkoutCard";
 import PopUp from "./PopUp";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 
 class DiscoverItem extends Component {
   constructor(props) {
@@ -11,27 +17,31 @@ class DiscoverItem extends Component {
     this._onLongPress = this._onLongPress.bind(this);
   }
 
-  _onLongPress() {
-    this.setState({ selected: true });
-  }
-
-  _onPress(){
-    this.setState({ selected: false });
-  }
-
   render() {
     return (
       <WorkoutCard>
-        {this.state.selected && <PopUp />}
-        <TouchableOpacity onLongPress={this._onLongPress} onPress={this._onPress}>
-          <Text style={styles.header}>{this.props.workout.name}</Text>
-          <View style={styles.info}>
-            <Text>Category: {this.props.workout.category}</Text>
-            <Text>Exercise Count: {this.props.workout.count}</Text>
-            <Text>Exercises: {this.props.workout.exercises}</Text>
-            <Text>Time: {this.props.workout.time}</Text>
-          </View>
-        </TouchableOpacity>
+        <Menu>
+          <MenuTrigger
+            triggerOnLongPress={true}
+            customStyles={triggerMenuTouchable}
+          >
+            <Text style={styles.header}>{this.props.workout.name}</Text>
+            <View style={styles.info}>
+              <Text>Category: {this.props.workout.category}</Text>
+              <Text>Exercise Count: {this.props.workout.count}</Text>
+              <Text>Exercises: {this.props.workout.exercises}</Text>
+              <Text>Time: {this.props.workout.time}</Text>
+            </View>
+          </MenuTrigger>
+          <MenuOptions customStyles={popUpStyles}>
+            <MenuOption text="Add" />
+            <MenuOption>
+              <Text style={{ color: "red" }}>Delete</Text>
+            </MenuOption>
+            <MenuOption text="Edit" />
+            <MenuOption text="Share" />
+          </MenuOptions>
+        </Menu>
       </WorkoutCard>
     );
   }
@@ -49,5 +59,14 @@ const styles = StyleSheet.create({
     marginTop: 5
   }
 });
+
+const popUpStyles = {
+  optionsContainer: {
+    borderRadius: 12,
+    width: 100
+  }
+};
+
+const triggerMenuTouchable = { TriggerTouchableComponent: TouchableOpacity };
 
 export default DiscoverItem;
