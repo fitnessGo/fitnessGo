@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Card, Text, Button, Image } from 'react-native-elements'
 
 
@@ -37,7 +37,7 @@ class LogInScreen extends React.Component
                         source={{ uri: 'https://media.defense.gov/2010/Sep/03/2000329023/-1/-1/0/100419-F-8716G-102.JPG' }}
                     />
                 </View>
-                <View style={styles.viewContainer}>
+                <View style={styles.container}>
                     <Button
                         buttonStyle={styles.button}
                         title="Log in with FaceBook"
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         marginLeft: 20, 
         marginRight: 20 
     },
-    viewContainer: { 
+    container: { 
         paddingVertical: 20 
     }
   });
