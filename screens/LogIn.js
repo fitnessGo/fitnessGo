@@ -33,31 +33,31 @@ class LogInScreen extends React.Component
             <View>
                 <View>
                     <Image
-                        style={styles.image_}
+                        style={styles.image}
                         source={{ uri: 'https://media.defense.gov/2010/Sep/03/2000329023/-1/-1/0/100419-F-8716G-102.JPG' }}
                     />
                 </View>
                 <View style={styles.viewContainer}>
                     <Button
-                        buttonStyle={styles.button_}
+                        buttonStyle={styles.button}
                         title="Log in with FaceBook"
                         onPress={() => this.onLogInWithFaceBookClick()}
                     />
 
                     <Button
-                        buttonStyle={styles.button_}
+                        buttonStyle={styles.button}
                         title="Log in with Google"
                         onPress={() => this.onLogInWithGoogleClick()}
                     />
 
                     <Button
-                        buttonStyle={styles.button_}
+                        buttonStyle={styles.button}
                         title="Log in with email"
                         onPress={() => this.onLogInWithEmailClick()}
                     />
 
                     <Button
-                        buttonStyle={styles.button_}
+                        buttonStyle={styles.button}
                         title="Sign up"
                         onPress={() => this.onSignUpClick()}
                     />
@@ -72,14 +72,14 @@ class LogInScreen extends React.Component
 }
 
 const styles = StyleSheet.create({
-    image_: { 
+    image: { 
         width: 200, 
         height: 200, 
         marginTop: 50, 
         marginLeft: 80, 
         marginRight: 60 
     },
-    button_: { 
+    button: { 
         marginTop: 20, 
         marginLeft: 20, 
         marginRight: 20 
