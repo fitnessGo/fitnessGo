@@ -3,19 +3,31 @@ import {
     StyleSheet,
     Button,
     View,
-    Modal, 
-    Text,
-    TouchableHighlight,
     Alert
 } from 'react-native';
 
+//FIXME: The route of this screen will be set after settings screen is made
 export default class DeleteAccountScreen extends Component {
+    static navigationOptions = {
+        title: 'Delete Account',
+      };
+
     state = {
         modalVisible: false,
       };
     
-      setModalVisible(visible) {
-        this.setState({modalVisible: visible});
+      //On clicking the Delete Account Button a confirmation box will apear which will ask the user
+      //to cconfirm if they want to delete their account from the system
+      onDeleteAccountButtonClick() {
+        Alert.alert(
+            'Confirmation',
+            'Are you sure you want to delete your account?',
+            [
+                //FIXME: On pressing delete the delete account functionality should be implemented
+              {text: 'Delete', onPress: () => console.warn('Delete Pressed')},
+              {text: 'No', onPress: () => console.warn('No Pressed'), style: 'cancel'},
+            ]
+          );
       }
     
     render() {
@@ -25,25 +37,9 @@ export default class DeleteAccountScreen extends Component {
                     buttonStyle={styles.button}
                     title="Delete Account"
                     onPress={() => {
-                        this.setModalVisible(true);
+                        this.onDeleteAccountButtonClick();
                     }}
                 ></Button>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}>
-          <View style={{marginTop: 22}}>
-            <View>
-
-              <Button
-              title="delete"
-                onPress={() => {
-                    this.setModalVisible(true);
-                }}>
-              </Button>
-            </View>
-          </View>
-        </Modal>
             </View>
         );
     }
@@ -57,14 +53,5 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20 
-    },
-    modal: {
-        alignItems: 'center',
-        backgroundColor: '#f7021a',
-        padding: 100
-    },
-    text: {
-        color: '#3f2949',
-        marginTop: 10
     }
 });
