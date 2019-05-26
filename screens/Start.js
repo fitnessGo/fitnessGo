@@ -24,16 +24,13 @@ class StartScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-
-               
                 <View>
                     <Text style={{flexDirection:'row', flexWrap:'wrap'}}>
                         Checking if signed in...
                     </Text>
                 </View>
-            
             </View>
-            );
+        );
         }
     }
     
