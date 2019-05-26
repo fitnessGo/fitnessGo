@@ -9,7 +9,7 @@ import {
 //FIXME: The route of this screen will be set after settings screen is made
 export default class DeleteAccountScreen extends Component {
     static navigationOptions = {
-        title: 'Delete Account',
+        title: 'Settings',
       };
 
     state = {
