@@ -29,9 +29,8 @@ class StartScreen extends React.Component {
                     <Text style={{flexDirection:'row', flexWrap:'wrap'}}>
                     </Text>
                 </View>
-            
             </View>
-            );
+        );
         }
     }
     
