@@ -1,32 +1,32 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-
+import firebase from 'react-native-firebase';
 
 class StartScreen extends React.Component {
-    _isSignedIn() {
-        return new Promise((resolve, reject) => {
-            //TODO: Backend logic can be here
-            resolve(false);
+    constructor() {
+        super();
+        this.unsubscriber = null;
+        this.state = {
+          user: null,
+        };
+      }
+    componentDidMount() {
+        this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
+            this.setState({ user });
+            this.props.navigation.navigate(user ? 'App' : 'Auth');
         });
     }
-    componentDidMount() {
-        //Here we perform a check if the user is signed in.
-        //If yes, we redirect to the home screen
-        //If no, we redirect to login page.
-        this._isSignedIn()
-        .then(res => { 
-            this.props.navigation.navigate(res ? 'App' : 'Auth');
-        })
-        .catch(err => alert("An error occurred"));
-    }
-    
+    componentWillUnmount() {
+        if (this.unsubscriber) {
+          this.unsubscriber();
+        }
+      }
     
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container}>               
                 <View>
                     <Text style={{flexDirection:'row', flexWrap:'wrap'}}>
-                        Checking if signed in...
                     </Text>
                 </View>
             </View>

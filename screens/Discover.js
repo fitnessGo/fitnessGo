@@ -10,7 +10,7 @@ class Discover extends Component {
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator="false"
+          showsVerticalScrollIndicator={false}
         >
           <DiscoverItem
             workout={{
