@@ -1,23 +1,152 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { ScrollView,View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
+import WorkoutView from "../components/WorkoutInfoView";
+import getStyleSheet from "../styles/styles";
+import { FontStyles, ScreenStyles } from '../styles/global';
+
 
 class HomeScreen extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            darkTheme: true,
+            workouts: [
+                {
+                    id: 2, 
+                    name: "My morning workout", 
+                    category: 1, 
+                    createdBy: "name1@example.com", 
+                    timeCreated: 23042019,
+                    exercises: [
+                        { id: 3, 
+                          description: "Exercise 1 description", 
+                          exerciseSets: [{ 
+                              id: 123, 
+                              duration: 91, 
+                              repetitions: 20, 
+                              weight: 0, 
+                              notes: "",
+                              break: 20
+                            }, { 
+                              id: 3232, 
+                              duration: 63, 
+                              repetitions: 22, 
+                              weight: 5, 
+                              notes: "" 
+                            }] 
+                        }
+                    ]
+                },
+                {
+                    id: 1123, 
+                    name: "My morning workout with a super super long name", 
+                    category: 2, 
+                    createdBy: "name2@example.com", 
+                    timeCreated: 24042019,
+                    exercises: [
+                        { id: 3, 
+                          description: "Exercise 1 description", 
+                          exerciseSets: [{ 
+                              id: 123, 
+                              duration: 931, 
+                              repetitions: 20, 
+                              weight: 0, 
+                              notes: "" 
+                            }, { 
+                              id: 3232, 
+                              duration: 63, 
+                              repetitions: 22, 
+                              weight: 5, 
+                              notes: "" 
+                            }] 
+                        },
+                        { id: 3, 
+                            description: "Exercise 1 description", 
+                            exerciseSets: [{ 
+                                id: 123, 
+                                duration: 91, 
+                                repetitions: 20, 
+                                weight: 0, 
+                                notes: "" 
+                              }, { 
+                                id: 3232, 
+                                duration: 63, 
+                                repetitions: 22, 
+                                weight: 5, 
+                                notes: "" 
+                              }] 
+                          }
+                    ]
+                }
+            ]
+        }
+    }
+    _onPressButton(prop) {
+        alert("Redirect to workout details");
+    }
     render() {
+        const theme = getStyleSheet(this.state.darkTheme); 
+        const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark: styles.workoutViewLight
+        if(this.state.workouts !== 3) {
+            return ( 
+            <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
+                <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer, ]}>
+                    <View style={{flex:1, alignItems: "center"}}>
+                    <Text style={theme.text}>No workouts found, create new one</Text>
+                    <Button
+                    type="clear"
+                    icon={<Icon name="add" size={44} color={theme.text.color}/>}
+                    style={{  alignSelf: 'flex-end'}}
+                    onPress={this._onPlayButtonClick}
+                    />
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+            )
+        }
         return (
-            <View style={styles.container}>
-                <Text>Home Screen</Text>
-            </View>
+            // var workoutViews = new Array();
+            <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
+                <ScrollView style={ScreenStyles.screenContainer}>
+                    <View style={styles.workoutViewContainer}>
+                    {
+                    this.state.workouts.map( (w) => {
+                        return (
+                            <TouchableOpacity onPress={this._onPressButton}>
+                                <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
+                            </TouchableOpacity>
+                            );
+                        })
+                    }
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#eaffbb',
+    workoutViewContainer: {
+        width: '90%',
+        left: "5%",
     },
+    workoutViewLight: {
+        backgroundColor: '#1960d3',
+        borderRadius: 6,
+        padding: 10,
+        marginBottom: 10,
+        color: '#ffffff',
+    },
+    workoutViewDark: {
+        backgroundColor: '#ffdd00',
+        color: '#222222',
+        fontSize: 24,
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 10
+    }
 });
+
 
 export default HomeScreen;
