@@ -12,10 +12,6 @@ export default class DeleteAccountScreen extends Component {
         title: 'Settings',
       };
 
-    state = {
-        modalVisible: false,
-      };
-    
       //On clicking the Delete Account Button a confirmation box will apear which will ask the user
       //to cconfirm if they want to delete their account from the system
       onDeleteAccountButtonClick() {
