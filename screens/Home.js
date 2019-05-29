@@ -5,7 +5,6 @@ import WorkoutView from "../components/WorkoutInfoView";
 import getStyleSheet from "../styles/styles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 
-
 class HomeScreen extends React.Component {
     constructor(props) {
         super(props)
@@ -82,23 +81,23 @@ class HomeScreen extends React.Component {
             ]
         }
     }
-    _onPressButton(prop) {
-        alert("Redirect to workout details");
+    _onCreateNewButtonClick(prop) {
+        alert("Create new workout");
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme); 
         const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark: styles.workoutViewLight
-        if(this.state.workouts !== 3) {
-            return ( 
+        if(this.state.workouts !== undefined) {
+            return (
             <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
-                <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer, ]}>
+                <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
                     <View style={{flex:1, alignItems: "center"}}>
-                    <Text style={theme.text}>No workouts found, create new one</Text>
+                    <Text style={theme.text}>No workouts found, create a new one</Text>
                     <Button
-                    type="clear"
-                    icon={<Icon name="add" size={44} color={theme.text.color}/>}
-                    style={{  alignSelf: 'flex-end'}}
-                    onPress={this._onPlayButtonClick}
+                        type="clear"
+                        icon={<Icon name="add" size={44} color={theme.text.color}/>}
+                        style={{  alignSelf: 'flex-end'}}
+                        onPress={this._onCreateNewButtonClick}
                     />
                     </View>
                 </ScrollView>
@@ -147,6 +146,5 @@ const styles = StyleSheet.create({
         marginBottom: 10
     }
 });
-
 
 export default HomeScreen;
