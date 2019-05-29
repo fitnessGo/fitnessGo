@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ScrollView,View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import WorkoutView from "../components/WorkoutInfoView";
-import getStyleSheet from "../styles/styles";
+import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 
 class HomeScreen extends React.Component {
