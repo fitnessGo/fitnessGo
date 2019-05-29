@@ -87,7 +87,7 @@ class HomeScreen extends React.Component {
     render() {
         const theme = getStyleSheet(this.state.darkTheme); 
         const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark: styles.workoutViewLight
-        if(this.state.workouts !== undefined) {
+        if(this.state.workouts === undefined) {
             return (
             <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
@@ -120,6 +120,12 @@ class HomeScreen extends React.Component {
                     }
                     </View>
                 </ScrollView>
+                <Button
+                        type="clear"
+                        icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
+                        style={{ alignSelf: 'flex-end'}}
+                        onPress={this._onCreateNewButtonClick}
+                    />
             </SafeAreaView>
         );
     }
