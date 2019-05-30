@@ -9,77 +9,78 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            darkTheme: true,
-            workouts: [
-                {
-                    id: 2, 
-                    name: "My morning workout", 
-                    category: 1, 
-                    createdBy: "name1@example.com", 
-                    timeCreated: 23042019,
-                    exercises: [
-                        { id: 3, 
-                          description: "Exercise 1 description", 
-                          exerciseSets: [{ 
-                              id: 123, 
-                              duration: 91, 
-                              repetitions: 20, 
-                              weight: 0, 
-                              notes: "",
-                              break: 20
-                            }, { 
-                              id: 3232, 
-                              duration: 63, 
-                              repetitions: 22, 
-                              weight: 5, 
-                              notes: "" 
-                            }] 
-                        }
-                    ]
-                },
-                {
-                    id: 1123, 
-                    name: "My morning workout with a super super long name", 
-                    category: 2, 
-                    createdBy: "name2@example.com", 
-                    timeCreated: 24042019,
-                    exercises: [
-                        { id: 3, 
-                          description: "Exercise 1 description", 
-                          exerciseSets: [{ 
-                              id: 123, 
-                              duration: 931, 
-                              repetitions: 20, 
-                              weight: 0, 
-                              notes: "" 
-                            }, { 
-                              id: 3232, 
-                              duration: 63, 
-                              repetitions: 22, 
-                              weight: 5, 
-                              notes: "" 
-                            }] 
-                        },
-                        { id: 3, 
-                            description: "Exercise 1 description", 
-                            exerciseSets: [{ 
-                                id: 123, 
-                                duration: 91, 
-                                repetitions: 20, 
-                                weight: 0, 
-                                notes: "" 
-                              }, { 
-                                id: 3232, 
-                                duration: 63, 
-                                repetitions: 22, 
-                                weight: 5, 
-                                notes: "" 
-                              }] 
-                          }
-                    ]
-                }
-            ]
+            darkTheme: false,
+            dataReady: true
         }
+        this.workouts = [
+            {
+                id: 2, 
+                name: "My morning workout", 
+                category: 1, 
+                createdBy: "name1@example.com", 
+                timeCreated: 23042019,
+                exercises: [
+                    { id: 3, 
+                      description: "Exercise 1 description", 
+                      exerciseSets: [{ 
+                          id: 123, 
+                          duration: 91, 
+                          repetitions: 20, 
+                          weight: 0, 
+                          notes: "",
+                          break: 20
+                        }, { 
+                          id: 3232, 
+                          duration: 63, 
+                          repetitions: 22, 
+                          weight: 5, 
+                          notes: "" 
+                        }] 
+                    }
+                ]
+            },
+            {
+                id: 1123, 
+                name: "My morning workout with a super super long name", 
+                category: 2, 
+                createdBy: "name2@example.com", 
+                timeCreated: 24042019,
+                exercises: [
+                    { id: 3, 
+                      description: "Exercise 1 description", 
+                      exerciseSets: [{ 
+                          id: 123, 
+                          duration: 931, 
+                          repetitions: 20, 
+                          weight: 0, 
+                          notes: "" 
+                        }, { 
+                          id: 3232, 
+                          duration: 63, 
+                          repetitions: 22, 
+                          weight: 5, 
+                          notes: "" 
+                        }] 
+                    },
+                    { id: 3, 
+                        description: "Exercise 1 description", 
+                        exerciseSets: [{ 
+                            id: 123, 
+                            duration: 91, 
+                            repetitions: 20, 
+                            weight: 0, 
+                            notes: "" 
+                          }, { 
+                            id: 3232, 
+                            duration: 63, 
+                            repetitions: 22, 
+                            weight: 5, 
+                            notes: "" 
+                          }] 
+                      }
+                ]
+            }
+        ]
     }
     _onCreateNewButtonClick(prop) {
         alert("Create new workout");
@@ -87,7 +88,7 @@ class HomeScreen extends React.Component {
     render() {
         const theme = getStyleSheet(this.state.darkTheme); 
         const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark: styles.workoutViewLight
-        if(this.state.workouts === undefined) {
+        if(this.workouts === undefined) {
             return (
             <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
@@ -110,7 +111,7 @@ class HomeScreen extends React.Component {
                 <ScrollView style={ScreenStyles.screenContainer}>
                     <View style={styles.workoutViewContainer}>
                     {
-                    this.state.workouts.map( (w) => {
+                    this.workouts.map( (w) => {
                         return (
                             <TouchableOpacity onPress={this._onPressButton}>
                                 <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
