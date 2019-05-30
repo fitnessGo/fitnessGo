@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 class WorkoutCard extends Component {
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.props.style]}>
         {this.props.children}
       </View>
     );
@@ -13,12 +13,13 @@ class WorkoutCard extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 10,
     height: 130,
     marginTop: 20,
-    width: "45%"
+    width: "45%",
+    shadowColor: 'black',
+    shadowRadius: 6,
+    shadowOpacity: 0.2
   }
 });
 
