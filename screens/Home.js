@@ -139,18 +139,23 @@ const styles = StyleSheet.create({
     },
     workoutViewLight: {
         backgroundColor: '#1960d3',
+        color: '#ffffff',
         borderRadius: 6,
         padding: 10,
         marginBottom: 10,
-        color: '#ffffff',
+        marginTop: null,
+        height: null,
+        width: '100%'
     },
     workoutViewDark: {
         backgroundColor: '#ffdd00',
         color: '#222222',
         fontSize: 24,
-        borderRadius: 10,
         padding: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: null,
+        height: null,
+        width: '100%'
     }
 });
 
