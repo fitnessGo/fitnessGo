@@ -14,9 +14,6 @@ class WorkoutCard extends Component {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
-    height: 130,
-    marginTop: 20,
-    width: "45%",
     shadowColor: 'black',
     shadowRadius: 6,
     shadowOpacity: 0.2
