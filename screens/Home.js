@@ -142,16 +142,14 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 24,
         padding: 10,
-        marginBottom: 10,
-        marginTop: null,
+        marginBottom: 10
     },
     workoutViewDark: {
         backgroundColor: '#ffdd00',
         color: '#222222',
         fontSize: 24,
         padding: 10,
-        marginBottom: 10,
-        marginTop: null,
+        marginBottom: 10
     }
 });
 
