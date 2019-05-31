@@ -135,17 +135,15 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
     workoutViewContainer: {
         width: '90%',
-        left: "5%",
+        left: "5%"
     },
     workoutViewLight: {
         backgroundColor: '#1960d3',
         color: '#ffffff',
-        borderRadius: 6,
+        fontSize: 24,
         padding: 10,
         marginBottom: 10,
         marginTop: null,
-        height: null,
-        width: '100%'
     },
     workoutViewDark: {
         backgroundColor: '#ffdd00',
@@ -154,8 +152,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         marginTop: null,
-        height: null,
-        width: '100%'
     }
 });
 
