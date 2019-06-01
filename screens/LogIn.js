@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Card, Text, Button, Image } from 'react-native-elements'
-
+import { handleFbLogin } from '../lib/auth';
 
 class LogInScreen extends React.Component 
 {
@@ -41,7 +41,7 @@ class LogInScreen extends React.Component
                     <Button
                         buttonStyle={styles.button}
                         title="Log in with FaceBook"
-                        onPress={() => this.onLogInWithFaceBookClick()}
+                        onPress={handleFbLogin}
                     />
 
                     <Button
