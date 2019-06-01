@@ -4,14 +4,20 @@ import { createSwitchNavigator, createStackNavigator, createAppContainer } from 
 import SignInScreen from "../screens/SignIn";
 import CreateAccount from "../screens/CreateAccount";
 import StartScreen from "../screens/Start";
-import HomeScreen from "../screens/Home";
-import LogInScreen from "../screens/LogIn";
+import HomeScreen from "../screens/Home"
 
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
 //createStackNavigator is a function that takes a route configuration object and an options object and returns a React component.
-const AppStack = createStackNavigator({ Home: HomeScreen });
-const AuthStack = createStackNavigator({ Login: LogInScreen, SignIn: SignInScreen, Register: CreateAccount });
-
+const AppStack = createStackNavigator(
+  { 
+    UserLibrary: {
+      screen: HomeScreen,
+      navigationOptions: {
+        title: "Home"
+      }
+    }
+  });
+const AuthStack = createStackNavigator({ SignIn: SignInScreen, Register: CreateAccount });
 
 export default createAppContainer(
   createSwitchNavigator(
