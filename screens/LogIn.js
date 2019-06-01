@@ -10,7 +10,9 @@ class LogInScreen extends React.Component
     };
     //FIXME: this should redirect the user to login with Facebook page
     onLogInWithFaceBookClick() {
-        this.props.navigation.navigate('SignIn');
+        handleFbLogin().then(()=> {
+            this.props.navigation.navigate('App');
+        });
     }
 
     //FIXME: this should redirect the user to login with Google page
@@ -41,7 +43,7 @@ class LogInScreen extends React.Component
                     <Button
                         buttonStyle={styles.button}
                         title="Log in with FaceBook"
-                        onPress={handleFbLogin}
+                        onPress={() => this.onLogInWithFaceBookClick()}
                     />
 
                     <Button
