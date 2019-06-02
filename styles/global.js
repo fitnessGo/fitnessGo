@@ -8,6 +8,15 @@ export const ScreenStyles = StyleSheet.create({
 });
 
 export const FontStyles = StyleSheet.create({
+  h1:{
+    fontSize: 20
+  },
+  h2:{
+    fontSize: 18
+  },
+  h3:{
+    fontSize: 16
+  },
   bold: {
     fontWeight: 'bold'
   }
