@@ -8,6 +8,9 @@ export const ScreenStyles = StyleSheet.create({
 });
 
 export const FontStyles = StyleSheet.create({
+  default: {
+    fontSize: 14
+  },
   h1:{
     fontSize: 20
   },
