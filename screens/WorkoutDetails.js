@@ -104,13 +104,12 @@ const exerciseViewStyles = StyleSheet.create({
 class WorkoutDetailsScreen extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            darkTheme: false,
-            editable: false
-        }
-        this.workout = {
+
+        const { params } = this.props.navigation.state;
+        this.workout = params ? params.workout : {
             id: 2,
-            name: "My morning workout",
+            name: "WORKOUT",
+            description: '',
             category: 'Stretching',
             createdBy: "name1@example.com",
             timeCreated: 23042019,
@@ -137,6 +136,7 @@ class WorkoutDetailsScreen extends React.Component {
                 },
                 {
                     id: 3,
+                    name: "Bicycle crunch",
                     description: "Exercise 2 description",
                     exerciseSets: [{
                         id: 123,
@@ -155,42 +155,62 @@ class WorkoutDetailsScreen extends React.Component {
                     }]
                 }
             ]
-        };
+        }
+        this.workoutCategories = [
+            'Stretching', 'Cardio'
+        ]
+        this.state = {
+            darkTheme: false,
+            editable: true,
+            workoutcategory: this.workout.category
+        }
     }
 
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
+        if(this.workout.exercises === undefined ) {
+            return null
+        }
         return (
             <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={ScreenStyles.screenContainer}>
                     <View style={styles.container}>
-                        <TextInput
-                            underlineColorAndroid='transparent'
-                            editable={this.state.editable}
-                            style={theme.text}
-                        >{this.workout.name}</TextInput>
-                        <Text style={theme.text}>Category: <Text style={FontStyles.bold}>{this.workout.category}</Text></Text>
-                        <Picker
-                            selectedValue="1"
-                            style={{ height: 22, width: 100, backgroundColor: '#aa99e1' }}
-                            onValueChange={(itemValue, itemIndex) =>
-                                this.setState({ darkTheme: true })
-                            }>
-                            <Picker.Item label="Java" value="java" />
-                            <Picker.Item label="JavaScript" value="js" />
-                        </Picker>
-                        <View>
+                        <View style={styles.workoutInfo}>
+                            <TextInput
+                                underlineColorAndroid='transparent'
+                                editable={this.state.editable}
+                                style={[theme.text, FontStyles.h1, FontStyles.bold]}
+                            >{this.workout.name}</TextInput>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'flex-start' }}>
+                                <Text style={theme.text}>Category:</Text>
+                                <Picker
+                                    enabled={this.state.editable}
+                                    selectedValue={this.state.workoutcategory}
+                                    style={{ height: 30, minWidth: '30%', alignSelf: 'flex-start' }} itemStyle={{ height: 34, ...FontStyles.default, ...theme.text,}}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({ workoutcategory: itemValue })
+                                    }>
+                                    {
+                                        this.workoutCategories.map(category => {
+                                            return (
+                                                <Picker.Item label={category} value={category} />
+                                            )
+                                        })
+                                    }
+                                </Picker>
+                            </View>
+                        </View>
+                        <View style={styles.exercises}>
                             {
                                 this.workout.exercises.map((exercise, ei) => {
                                     return (
-                                        <ExerciseDetailsView darkTheme={this.state.darkTheme} exercise={exercise} style={styles.exersiceDetails}/>
+                                        <ExerciseDetailsView darkTheme={this.state.darkTheme} exercise={exercise} style={styles.exersiceDetails} />
                                     );
                                 })
                             }
                         </View>
                     </View>
                 </ScrollView>
-
             </SafeAreaView>
         );
     }
@@ -200,10 +220,12 @@ const styles = StyleSheet.create({
     container: {
         width: '90%',
         left: "5%",
-        fontSize: 19
+    },
+    exercises: {
+        marginTop: 10
     },
     exersiceDetails: {
-        marginBottom: 10
+        marginBottom: 10,
     },
 });
 export default WorkoutDetailsScreen;
