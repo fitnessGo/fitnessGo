@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
-import { ScrollView,View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { ScrollView,View, StyleSheet, Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import WorkoutView from "../components/WorkoutInfoView";
 import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 
 class HomeScreen extends React.Component {
+    static navigationOptions = ({ navigation }) =>{
+        return {
+            headerLeft: (
+                <TouchableHighlight onPress={ () => navigation.navigate('DeleteAccount') }>
+                    <Image
+                        source={{ uri: 'https://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.png' }}
+                        style={{ 
+                            width: 30, 
+                            height: 30, 
+                            marginLeft: 15
+                        }}
+                    />
+                </TouchableHighlight>
+            ),
+        }
+};
     constructor(props) {
         super(props)
         this.state = {
