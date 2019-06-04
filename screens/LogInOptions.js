@@ -50,7 +50,7 @@ class LogInScreen extends React.Component
                         onPress={() => this.onLogInWithGoogleClick()}
                     />
 
-                    <Button
+                    {/* <Button
                         buttonStyle={styles.button}
                         title="Log in with email"
                         onPress={() => this.onLogInWithEmailClick()}
@@ -60,11 +60,11 @@ class LogInScreen extends React.Component
                         buttonStyle={styles.button}
                         title="Sign up"
                         onPress={() => this.onSignUpClick()}
-                    />
+                    /> */}
                 </View>
-                <View>
+                {/* <View>
                     <Button type="clear" title="Forgot Password" />
-                </View>
+                </View> */}
             </View>
         );
     }
