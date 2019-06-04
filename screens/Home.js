@@ -11,7 +11,7 @@ class HomeScreen extends React.Component {
             headerLeft: (
                 <TouchableHighlight onPress={ () => navigation.navigate('DeleteAccount') }>
                     <Image
-                        source={{ uri: 'https://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.pnghttps://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.png' }}
+                        source={{ uri: 'https://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.png' }}
                         style={{ 
                             width: 30, 
                             height: 30, 
