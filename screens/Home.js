@@ -16,14 +16,15 @@ class HomeScreen extends React.Component {
             {
                 id: 2,
                 name: "My morning workout",
-                category: 1,
+                description: '',
+                category: 'Stretching',
                 createdBy: "name1@example.com",
                 timeCreated: 23042019,
                 exercises: [
                     {
                         id: 3,
-                        name: "Push-up",
-                        description: "Exercise 1 description",
+                        name: "Push-ups",
+                        description: "A physical exercise performed by lying with your face down and using only your arms to raise and lower your body.",
                         exerciseSets: [{
                             id: 123,
                             duration: 91,
@@ -31,7 +32,28 @@ class HomeScreen extends React.Component {
                             weight: 0,
                             notes: "",
                             break: 20
-                        }, {
+                        },
+                        {
+                            id: 3232,
+                            duration: 63,
+                            repetitions: 22,
+                            weight: 5,
+                            notes: ""
+                        }]
+                    },
+                    {
+                        id: 3,
+                        name: "Bicycle crunch",
+                        description: "Exercise 2 description",
+                        exerciseSets: [{
+                            id: 123,
+                            duration: 91,
+                            repetitions: 20,
+                            weight: 0,
+                            notes: "",
+                            break: 20
+                        },
+                        {
                             id: 3232,
                             duration: 63,
                             repetitions: 22,
@@ -42,10 +64,11 @@ class HomeScreen extends React.Component {
                 ]
             },
             {
-                id: 1123,
-                name: "My morning workout with a super super long name",
-                category: 2,
-                createdBy: "name2@example.com",
+                id: 1123, 
+                name: "My morning workout with a super super long name", 
+                category: 2, 
+                description: '',
+                createdBy: "name2@example.com", 
                 timeCreated: 24042019,
                 exercises: [
                     {
@@ -85,13 +108,13 @@ class HomeScreen extends React.Component {
                 ]
             }
         ]
+        this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
     }
     _onCreateNewButtonClick(prop) {
         alert("Create new workout will be added soon");
     }
     _onWorkoutUpdate() {
         this.selectedWorkout.forceUpdate();
-        alert(this.workouts[0].name)
     }
     _onWorkoutSelect(w, view) {
         this.selectedWorkout = view;
