@@ -26,28 +26,52 @@ class HomeScreen extends React.Component {
         }
         this.workouts = [
             {
-                id: 2, 
-                name: "My morning workout", 
-                category: 1, 
-                createdBy: "name1@example.com", 
+                id: 2,
+                name: "My morning workout",
+                description: '',
+                category: 'Stretching',
+                createdBy: "name1@example.com",
                 timeCreated: 23042019,
                 exercises: [
-                    { id: 3, 
-                      description: "Exercise 1 description", 
-                      exerciseSets: [{ 
-                          id: 123, 
-                          duration: 91, 
-                          repetitions: 20, 
-                          weight: 0, 
-                          notes: "",
-                          break: 20
-                        }, { 
-                          id: 3232, 
-                          duration: 63, 
-                          repetitions: 22, 
-                          weight: 5, 
-                          notes: "" 
-                        }] 
+                    {
+                        id: 3,
+                        name: "Push-ups",
+                        description: "A physical exercise performed by lying with your face down and using only your arms to raise and lower your body.",
+                        exerciseSets: [{
+                            id: 123,
+                            duration: 91,
+                            repetitions: 20,
+                            weight: 0,
+                            notes: "",
+                            break: 20
+                        },
+                        {
+                            id: 3232,
+                            duration: 63,
+                            repetitions: 22,
+                            weight: 5,
+                            notes: ""
+                        }]
+                    },
+                    {
+                        id: 3,
+                        name: "Bicycle crunch",
+                        description: "Exercise 2 description",
+                        exerciseSets: [{
+                            id: 123,
+                            duration: 91,
+                            repetitions: 20,
+                            weight: 0,
+                            notes: "",
+                            break: 20
+                        },
+                        {
+                            id: 3232,
+                            duration: 63,
+                            repetitions: 22,
+                            weight: 5,
+                            notes: ""
+                        }]
                     }
                 ]
             },
@@ -55,6 +79,7 @@ class HomeScreen extends React.Component {
                 id: 1123, 
                 name: "My morning workout with a super super long name", 
                 category: 2, 
+                description: '',
                 createdBy: "name2@example.com", 
                 timeCreated: 24042019,
                 exercises: [
@@ -93,9 +118,13 @@ class HomeScreen extends React.Component {
                 ]
             }
         ]
+        this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
     }
     _onCreateNewButtonClick(prop) {
-        alert("Create new workout");
+        alert("Create new workout will be added soon");
+    }
+    _onWorkoutSelect(w) {
+        this.props.navigation.push('WorkoutDetails', {workout: w});
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme); 
@@ -123,9 +152,9 @@ class HomeScreen extends React.Component {
                 <ScrollView style={ScreenStyles.screenContainer}>
                     <View style={styles.workoutViewContainer}>
                     {
-                    this.workouts.map( (w) => {
+                    this.workouts.map( (w, index) => {
                         return (
-                            <TouchableOpacity onPress={this._onPressButton}>
+                            <TouchableOpacity key={index} onPress={ () => this._onWorkoutSelect(w)}>
                                 <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
                             </TouchableOpacity>
                             );
