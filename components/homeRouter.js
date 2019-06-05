@@ -5,6 +5,8 @@ import LogInOptionsScreen from "../screens/LogInOptions";
 import CreateAccount from "../screens/CreateAccount";
 import StartScreen from "../screens/Start";
 import HomeScreen from "../screens/Home"
+import LogIn from '../screens/LogIn';
+import WorkoutDetails from "../screens/WorkoutDetails"
 
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
 //createStackNavigator is a function that takes a route configuration object and an options object and returns a React component.
@@ -14,6 +16,12 @@ const AppStack = createStackNavigator(
       screen: HomeScreen,
       navigationOptions: {
         title: "Home"
+      }
+    },
+    WorkoutDetails: {
+      screen: WorkoutDetails,
+      navigationOptions: {
+        title: "Details"
       }
     }
   });

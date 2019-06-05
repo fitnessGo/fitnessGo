@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FitnessGo</string>
+    <string name="facebook_app_id">1268930729939993</string>
+    <string name="fb_login_protocol_scheme">1268930729939993</string>
 </resources>
