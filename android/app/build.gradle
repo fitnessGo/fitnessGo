@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-facebook-login')
     implementation project(':react-native-firebase')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-gesture-handler')
@@ -148,6 +149,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-base:16.1.0"
     implementation "com.google.firebase:firebase-core:16.0.9"
     implementation "com.google.firebase:firebase-auth:16.2.1"
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 }
 
 // Run this once to be able to run the application with BUCK

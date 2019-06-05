@@ -5,6 +5,7 @@ import SignInScreen from "../screens/LogInOptions";
 import CreateAccount from "../screens/CreateAccount";
 import StartScreen from "../screens/Start";
 import HomeScreen from "../screens/Home"
+import LogIn from '../screens/LogIn';
 import WorkoutDetails from "../screens/WorkoutDetails"
 
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
@@ -24,7 +25,7 @@ const AppStack = createStackNavigator(
       }
     }
   });
-const AuthStack = createStackNavigator({ SignIn: SignInScreen, Register: CreateAccount });
+const AuthStack = createStackNavigator({ SignIn: LogIn, Register: CreateAccount });
 
 export default createAppContainer(
   createSwitchNavigator(

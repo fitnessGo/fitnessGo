@@ -3,6 +3,7 @@ package com.myfitnessgoapp.fitnessgo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.magus.fblogin.FacebookLoginPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage; //
 import com.oblador.vectoricons.BuildConfig;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FacebookLoginPackage(),
             new RNFirebasePackage(),
 			new RNFirebaseAuthPackage(),
             new VectorIconsPackage(),

@@ -146,12 +146,21 @@ class HomeScreen extends React.Component {
                 <ScrollView style={ScreenStyles.screenContainer}>
                     <View style={styles.workoutViewContainer}>
                         {
-                            this.workouts.map((w) => {
+                            this.workouts.map((w, index) => {
                                 return (
-                                    <WorkoutView style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)}></WorkoutView>
+                                    <WorkoutView key={index} style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)}></WorkoutView>
                                 );
                             })
                         }
+                    {
+                    this.workouts.map( (w, index) => {
+                        return (
+                            <TouchableOpacity key={index} onPress={ () => this._onWorkoutSelect(w)}>
+                                <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
+                            </TouchableOpacity>
+                            );
+                        })
+                    }
                     </View>
                 </ScrollView>
                 <Button
