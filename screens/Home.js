@@ -91,7 +91,6 @@ class HomeScreen extends React.Component {
     }
     _onWorkoutUpdate() {
         this.selectedWorkout.forceUpdate();
-        alert(this.workouts[0].name)
     }
     _onWorkoutSelect(w, view) {
         this.selectedWorkout = view;
