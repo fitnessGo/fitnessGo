@@ -3,7 +3,7 @@ import { ScrollView, View, StyleSheet, Text, TextInput, Picker, SafeAreaView } f
 import { Button } from 'react-native-elements';
 import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
-import { ExerciseDetailsView } from './ExerciseDetailsView';
+import ExerciseDetailsView from './ExerciseDetailsView';
 
 class WorkoutDetailsScreen extends React.Component {
     constructor(props) {

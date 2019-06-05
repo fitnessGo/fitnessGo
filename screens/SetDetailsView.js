@@ -3,18 +3,21 @@ import { View, StyleSheet, Text } from 'react-native';
 import WorkoutCard from '../components/WorkoutCard';
 import { FontStyles, ScreenStyles } from '../styles/global';
 
-export function SetDetailsView(props) {
-    const setViewStyle = this.props.darkTheme || false ? setViewStyles.exersiseSetViewDark : setViewStyles.exersiseSetViewLight
-    const setViewTextStyle = this.props.darkTheme || false ? setViewStyles.exersiseSetViewTextDark : setViewStyles.exersiseSetViewTextLight
-    return (
-        <View>
-            <WorkoutCard style={setViewStyle}>
-                <Text style={setViewTextStyle}>Repetitions <Text style={FontStyles.bold}>{this.props.set.repetitions}</Text></Text>
-                <Text style={setViewTextStyle}>Duration <Text style={FontStyles.bold}>{this.props.set.duration}</Text> sec</Text>
-                <Text style={setViewTextStyle}>Break {this.props.set.break || 0} sec</Text>
-            </WorkoutCard>
-        </View>
-    )
+
+class SetDetailsView extends React.Component {
+    render() {
+        const setViewStyle = this.props.darkTheme || false ? setViewStyles.exersiseSetViewDark : setViewStyles.exersiseSetViewLight
+        const setViewTextStyle = this.props.darkTheme || false ? setViewStyles.exersiseSetViewTextDark : setViewStyles.exersiseSetViewTextLight
+        return (
+            <View>
+                <WorkoutCard style={setViewStyle}>
+                    <Text style={setViewTextStyle}>Repetitions <Text style={FontStyles.bold}>{this.props.set.repetitions}</Text></Text>
+                    <Text style={setViewTextStyle}>Duration <Text style={FontStyles.bold}>{this.props.set.duration}</Text> sec</Text>
+                    <Text style={setViewTextStyle}>Break {this.props.set.break || 0} sec</Text>
+                </WorkoutCard>
+            </View>
+        )
+    }
 }
 const setViewStyles = StyleSheet.create({
     exersiseSetViewLight: {
@@ -41,3 +44,4 @@ const setViewStyles = StyleSheet.create({
         color: '#ffffff'
     }
 });
+export default SetDetailsView;

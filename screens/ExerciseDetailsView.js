@@ -2,30 +2,32 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import WorkoutCard from '../components/WorkoutCard';
 import { FontStyles } from '../styles/global';
-import { SetDetailsView } from './SetDetailsView';
+import SetDetailsView from './SetDetailsView';
 
-export function ExerciseDetailsView(props) {
-    const exerciseViewStyle = this.props.darkTheme || false ? exerciseViewStyles.exersiseViewDark : exerciseViewStyles.exersiseViewLight
-    const exerciseViewTextStyle = this.props.darkTheme || false ? exerciseViewStyles.exersiseViewTextDark : exerciseViewStyles.exersiseViewTextLight
-    return (
-        <View style={this.props.style}>
-            <WorkoutCard style={exerciseViewStyle}>
-                <Text style={[exerciseViewTextStyle, { ...FontStyles.h1, ...FontStyles.bold }]}>{this.props.exercise.name}</Text>
-                <Text style={exerciseViewTextStyle}>{this.props.exercise.description}</Text>
-                <View style={{ marginTop: 10 }}>
-                    {this.props.exercise.exerciseSets.map((es, index) => {
-                        return (
-                            <View>
-                                <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
-                                <SetDetailsView set={es} darkTheme={this.props.darkTheme} />
-                            </View>
-                        );
-                    })
-                    }
-                </View>
-            </WorkoutCard>
-        </View>
-    )
+class ExerciseDetailsView extends React.Component {
+    render() {
+        const exerciseViewStyle = this.props.darkTheme || false ? exerciseViewStyles.exersiseViewDark : exerciseViewStyles.exersiseViewLight
+        const exerciseViewTextStyle = this.props.darkTheme || false ? exerciseViewStyles.exersiseViewTextDark : exerciseViewStyles.exersiseViewTextLight
+        return (
+            <View style={this.props.style}>
+                <WorkoutCard style={exerciseViewStyle}>
+                    <Text style={[exerciseViewTextStyle, { ...FontStyles.h1, ...FontStyles.bold }]}>{this.props.exercise.name}</Text>
+                    <Text style={exerciseViewTextStyle}>{this.props.exercise.description}</Text>
+                    <View style={{ marginTop: 10 }}>
+                        {this.props.exercise.exerciseSets.map((es, index) => {
+                            return (
+                                <View>
+                                    <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
+                                    <SetDetailsView set={es} darkTheme={this.props.darkTheme} />
+                                </View>
+                            );
+                        })
+                        }
+                    </View>
+                </WorkoutCard>
+            </View>
+        )
+    }
 }
 
 const exerciseViewStyles = StyleSheet.create({
@@ -47,4 +49,4 @@ const exerciseViewStyles = StyleSheet.create({
     }
 });
 
-export default SetDetailsView;
+export default ExerciseDetailsView;
