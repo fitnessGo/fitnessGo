@@ -9,7 +9,7 @@ import {
 import { FontStyles, ScreenStyles } from '../styles/global';
 import getStyleSheet from "../styles/themestyles";
 
-export default class DeleteAccountScreen extends Component {
+export default class SettingsScreen extends Component {
 
     constructor(props) {
         super(props)

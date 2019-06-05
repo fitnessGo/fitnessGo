@@ -9,16 +9,12 @@ class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) =>{
         return {
             headerLeft: (
-                <TouchableHighlight onPress={ () => navigation.navigate('DeleteAccount') }>
-                    <Image
-                        source={{ uri: 'https://www.maxpixel.net/static/photo/1x/Settings-Options-Gear-1630709.png' }}
-                        style={{ 
-                            width: 30, 
-                            height: 30, 
-                            marginLeft: 15
-                        }}
-                    />
-                </TouchableHighlight>
+                <Button
+                type="clear"
+                icon={<Icon name="settings" size={22}/>}
+                style={{ flexDirection: 'row',  alignSelf: 'flex-end'}}
+                onPress={ () => navigation.navigate('Settings') }
+            />
             ),
         }
 };
