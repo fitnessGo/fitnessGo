@@ -16,7 +16,6 @@ class WorkoutInfoView extends Component {
         super(props);
         //This binding is necessary to make `this` work in the callback
         this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
-        // this.onEditSubmit = this.onEditSubmit.bind(this);
         this.state = {
             workout: props.workout
         }
@@ -24,9 +23,6 @@ class WorkoutInfoView extends Component {
     _onPlayButtonClick() {
         let description = "Play workout #" + this.props.workout.id;
         alert(description);
-    }
-    onEditSubmit(updatedWorkout) {
-
     }
     _onPress = () => {
         this.props.onPress(this.state.workout, this);
