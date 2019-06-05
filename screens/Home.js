@@ -112,7 +112,6 @@ class HomeScreen extends React.Component {
         alert("Create new workout will be added soon");
     }
     _onWorkoutSelect(w) {
-        let wName = "Navigate to workout " + w.name;
         this.props.navigation.push('WorkoutDetails', {workout: w});
     }
     render() {
