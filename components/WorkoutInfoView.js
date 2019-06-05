@@ -16,22 +16,22 @@ class WorkoutInfoView extends Component {
         super(props);
         //This binding is necessary to make `this` work in the callback
         this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
-        this.state = {
-            workout: props.workout
-        }
+        // this.state = {
+        //     workout: props.workout
+        // }
     }
     _onPlayButtonClick() {
         let description = "Play workout #" + this.props.workout.id;
         alert(description);
     }
     _onPress = () => {
-        this.props.onPress(this.state.workout, this);
+        this.props.onPress(this.props.workout, this);
     }
     reload() {
         this.setState({ reload: !reload })
     }
     render() {
-        if (this.state.workout === undefined) {
+        if (this.props.workout === undefined) {
             return null
         }
         //Dynamic style props
@@ -45,9 +45,9 @@ class WorkoutInfoView extends Component {
         //Computed variables
         let totalDurationSec = 0, totalExercises = 0;
 
-        totalExercises = this.state.workout.exercises.length;
+        totalExercises = this.props.workout.exercises.length;
         //get total duration
-        this.state.workout.exercises.map(exercise => {
+        this.props.workout.exercises.map(exercise => {
             exercise.exerciseSets.map(set => {
                 totalDurationSec += set.duration
                 totalDurationSec += isNaN(set.break) ? 0 : set.break
