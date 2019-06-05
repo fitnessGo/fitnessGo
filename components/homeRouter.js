@@ -17,8 +17,7 @@ const AppStack = createStackNavigator(
       }
     }
   });
-const AuthStack = createStackNavigator({ SignIn: SignInScreen, Register: CreateAccount });
-const DeleteStack = createStackNavigator({ Home: HomeScreen, DeleteAccount: DeleteAccountScreen });
+const AuthStack = createStackNavigator({ SignIn: SignInScreen, Register: CreateAccount, Home: HomeScreen, DeleteAccount: DeleteAccountScreen });
 
 export default createAppContainer(
   createSwitchNavigator(
@@ -26,7 +25,6 @@ export default createAppContainer(
     Start: StartScreen,
     App: AppStack,
     Auth: AuthStack,
-    Delete: DeleteStack
   },
   {
     initialRouteName: 'Start',
