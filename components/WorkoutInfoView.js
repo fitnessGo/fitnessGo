@@ -1,8 +1,8 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
-import { FontStyles, ScreenStyles } from '../styles/global';
+import { FontStyles } from '../styles/global';
 import WorkoutCard from '../components/WorkoutCard';
 
 /*
@@ -16,9 +16,6 @@ class WorkoutInfoView extends Component {
         super(props);
         //This binding is necessary to make `this` work in the callback
         this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
-        // this.state = {
-        //     workout: props.workout
-        // }
     }
     _onPlayButtonClick() {
         let description = "Play workout #" + this.props.workout.id;
