@@ -9,7 +9,6 @@ import {
 import { FontStyles, ScreenStyles } from '../styles/global';
 import getStyleSheet from "../styles/themestyles";
 
-//FIXME: The route of this screen will be set after settings screen is made
 export default class DeleteAccountScreen extends Component {
 
     constructor(props) {
