@@ -83,7 +83,16 @@ class HomeScreen extends React.Component {
         ]
     }
     _onCreateNewButtonClick(prop) {
-        alert("Create new workout");
+
+        alert("Create new workout will be added soon");
+    }
+    _onWorkoutUpdate(workout){
+        alert("Workout has been updated: " + workout.name);
+        this.selectedWorkout.forceUpdate();
+    }
+    _onWorkoutSelect(w,view) {
+        this.selectedWorkout = view;
+        this.props.navigation.push('WorkoutDetails', {workout: w, finishedEditing: this._onWorkoutUpdate.bind(this)});
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme); 
@@ -113,9 +122,7 @@ class HomeScreen extends React.Component {
                     {
                     this.workouts.map( (w) => {
                         return (
-                            <TouchableOpacity onPress={this._onPressButton}>
-                                <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
-                            </TouchableOpacity>
+                            <WorkoutView style={workoutViewStyle} workout={w} onPress={ (updatedW, view) => this._onWorkoutSelect(updatedW, view)}></WorkoutView>
                             );
                         })
                     }
