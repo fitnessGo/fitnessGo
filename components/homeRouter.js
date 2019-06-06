@@ -5,6 +5,7 @@ import SignInScreen from "../screens/SignIn";
 import CreateAccount from "../screens/CreateAccount";
 import StartScreen from "../screens/Start";
 import HomeScreen from "../screens/Home"
+import SettingsScreen from "../screens/Settings";
 import LogIn from '../screens/LogIn';
 import WorkoutDetails from "../screens/WorkoutDetails"
 
@@ -18,6 +19,7 @@ const AppStack = createStackNavigator(
         title: "Home"
       }
     },
+    Settings: SettingsScreen,
     WorkoutDetails: {
       screen: WorkoutDetails,
       navigationOptions: {

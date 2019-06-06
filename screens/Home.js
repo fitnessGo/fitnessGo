@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
-import { ScrollView,View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { ScrollView,View, StyleSheet, Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import WorkoutView from "../components/WorkoutInfoView";
 import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 
 class HomeScreen extends React.Component {
+    static navigationOptions = ({ navigation }) =>{
+        return {
+            headerLeft: (
+                <Button
+                type="clear"
+                icon={<Icon name="settings" size={22}/>}
+                style={{ flexDirection: 'row',  alignSelf: 'flex-end'}}
+                onPress={ () => navigation.navigate('Settings') }
+            />
+            ),
+        }
+};
     constructor(props) {
         super(props)
         this.state = {
