@@ -3,7 +3,7 @@ import { ScrollView,View, StyleSheet, Text, Image, TouchableOpacity, TouchableHi
 import { Button, Icon } from 'react-native-elements';
 import WorkoutView from "../components/WorkoutInfoView";
 import getStyleSheet from "../styles/themestyles";
-import { FontStyles, ScreenStyles } from '../styles/global';
+import { ScreenStyles } from '../styles/global';
 
 class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) =>{
@@ -83,38 +83,40 @@ class HomeScreen extends React.Component {
                 createdBy: "name2@example.com", 
                 timeCreated: 24042019,
                 exercises: [
-                    { id: 3, 
-                      description: "Exercise 1 description", 
-                      exerciseSets: [{ 
-                          id: 123, 
-                          duration: 931, 
-                          repetitions: 20, 
-                          weight: 0, 
-                          notes: "" 
-                        }, { 
-                          id: 3232, 
-                          duration: 63, 
-                          repetitions: 22, 
-                          weight: 5, 
-                          notes: "" 
-                        }] 
+                    {
+                        id: 3,
+                        description: "Exercise 1 description",
+                        exerciseSets: [{
+                            id: 123,
+                            duration: 931,
+                            repetitions: 20,
+                            weight: 0,
+                            notes: ""
+                        }, {
+                            id: 3232,
+                            duration: 63,
+                            repetitions: 22,
+                            weight: 5,
+                            notes: ""
+                        }]
                     },
-                    { id: 3, 
-                        description: "Exercise 1 description", 
-                        exerciseSets: [{ 
-                            id: 123, 
-                            duration: 91, 
-                            repetitions: 20, 
-                            weight: 0, 
-                            notes: "" 
-                          }, { 
-                            id: 3232, 
-                            duration: 63, 
-                            repetitions: 22, 
-                            weight: 5, 
-                            notes: "" 
-                          }] 
-                      }
+                    {
+                        id: 3,
+                        description: "Exercise 1 description",
+                        exerciseSets: [{
+                            id: 123,
+                            duration: 91,
+                            repetitions: 20,
+                            weight: 0,
+                            notes: ""
+                        }, {
+                            id: 3232,
+                            duration: 63,
+                            repetitions: 22,
+                            weight: 5,
+                            notes: ""
+                        }]
+                    }
                 ]
             }
         ]
@@ -123,34 +125,45 @@ class HomeScreen extends React.Component {
     _onCreateNewButtonClick(prop) {
         alert("Create new workout will be added soon");
     }
-    _onWorkoutSelect(w) {
-        this.props.navigation.push('WorkoutDetails', {workout: w});
+    _onWorkoutUpdate() {
+        this.selectedWorkout.forceUpdate();
+    }
+    _onWorkoutSelect(w, view) {
+        this.selectedWorkout = view;
+        this.props.navigation.push('WorkoutDetails', { workout: w, finishedEditing: this._onWorkoutUpdate.bind(this) });
     }
     render() {
-        const theme = getStyleSheet(this.state.darkTheme); 
-        const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark: styles.workoutViewLight
-        if(this.workouts === undefined) {
+        const theme = getStyleSheet(this.state.darkTheme);
+        const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
+        if (this.workouts === undefined) {
             return (
-            <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
-                <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
-                    <View style={{flex:1, alignItems: "center"}}>
-                    <Text style={theme.text}>No workouts found, create a new one</Text>
-                    <Button
-                        type="clear"
-                        icon={<Icon name="add" size={44} color={theme.text.color}/>}
-                        style={{  alignSelf: 'flex-end'}}
-                        onPress={this._onCreateNewButtonClick}
-                    />
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
+                <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
+                    <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                            <Text style={theme.text}>No workouts found, create a new one</Text>
+                            <Button
+                                type="clear"
+                                icon={<Icon name="add" size={44} color={theme.text.color} />}
+                                style={{ alignSelf: 'flex-end' }}
+                                onPress={this._onCreateNewButtonClick}
+                            />
+                        </View>
+                    </ScrollView>
+                </SafeAreaView>
             )
         }
         return (
             // var workoutViews = new Array();
-            <SafeAreaView  style={[ScreenStyles.screenContainer, theme.background]}>
+            <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={ScreenStyles.screenContainer}>
                     <View style={styles.workoutViewContainer}>
+                        {
+                            this.workouts.map((w, index) => {
+                                return (
+                                    <WorkoutView key={index} style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)}></WorkoutView>
+                                );
+                            })
+                        }
                     {
                     this.workouts.map( (w, index) => {
                         return (
@@ -163,11 +176,11 @@ class HomeScreen extends React.Component {
                     </View>
                 </ScrollView>
                 <Button
-                        type="clear"
-                        icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
-                        style={{ alignSelf: 'flex-end'}}
-                        onPress={this._onCreateNewButtonClick}
-                    />
+                    type="clear"
+                    icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
+                    style={{ alignSelf: 'flex-end' }}
+                    onPress={this._onCreateNewButtonClick}
+                />
             </SafeAreaView>
         );
     }
