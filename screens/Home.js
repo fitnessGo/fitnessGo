@@ -164,15 +164,6 @@ class HomeScreen extends React.Component {
                                 );
                             })
                         }
-                    {
-                    this.workouts.map( (w, index) => {
-                        return (
-                            <TouchableOpacity key={index} onPress={ () => this._onWorkoutSelect(w)}>
-                                <WorkoutView style={workoutViewStyle} workout={w}></WorkoutView>
-                            </TouchableOpacity>
-                            );
-                        })
-                    }
                     </View>
                 </ScrollView>
                 <Button
