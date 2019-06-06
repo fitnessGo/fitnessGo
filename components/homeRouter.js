@@ -1,10 +1,11 @@
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 
 //Import screens
-import SignInScreen from "../screens/LogInOptions";
+import LogInOptionsScreen from "../screens/LogInOptions";
 import CreateAccount from "../screens/CreateAccount";
 import StartScreen from "../screens/Start";
 import HomeScreen from "../screens/Home"
+import SettingsScreen from "../screens/Settings";
 import LogIn from '../screens/LogIn';
 import WorkoutDetails from "../screens/WorkoutDetails"
 
@@ -18,6 +19,7 @@ const AppStack = createStackNavigator(
         title: "Home"
       }
     },
+    Settings: SettingsScreen,
     WorkoutDetails: {
       screen: WorkoutDetails,
       navigationOptions: {
@@ -25,7 +27,7 @@ const AppStack = createStackNavigator(
       }
     }
   });
-const AuthStack = createStackNavigator({ SignIn: LogIn, Register: CreateAccount });
+const AuthStack = createStackNavigator({ SignIn: LogInOptionsScreen, Register: CreateAccount });
 
 export default createAppContainer(
   createSwitchNavigator(
