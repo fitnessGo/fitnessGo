@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView,View, StyleSheet, Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import WorkoutView from "../components/WorkoutInfoView";
 import getStyleSheet from "../styles/themestyles";
@@ -166,12 +166,13 @@ class HomeScreen extends React.Component {
                         }
                     </View>
                 </ScrollView>
+                <View style={{ alignItems: 'flex-end' }}>
                 <Button
                     type="clear"
                     icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
-                    style={{ alignSelf: 'flex-end' }}
                     onPress={this._onCreateNewButtonClick}
                 />
+                </View>
             </SafeAreaView>
         );
     }
