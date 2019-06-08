@@ -22,20 +22,29 @@ class SetDetailsView extends React.Component {
 const setViewStyles = StyleSheet.create({
     exersiseSetViewLight: {
         width: "95%",
-        backgroundColor: '#fefefe',
+        backgroundColor: '#fafafa',
         alignSelf: 'center',
         padding: 6,
-        color: '#ffffff',
+        shadowOpacity: null,
+        shadowRadius: null,
+        borderWidth: 0.2,
+        borderColor: '#cccccc',
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        elevation: 0
     },
     exersiseSetViewDark: {
         width: "95%",
-        backgroundColor: '#5f5f5f',
+        backgroundColor: '#8f8f8f',
         alignSelf: 'center',
         padding: 6,
+        shadowOpacity: null,
+        shadowRadius: null,
+        borderWidth: 0.2,
+        borderColor: '#cccccc',
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        elevation: 0
     },
     exersiseSetViewTextLight: {
         color: '#000000'
