@@ -18,8 +18,7 @@ class WorkoutInfoView extends Component {
         this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
     }
     _onPlayButtonClick() {
-        let description = "Play workout #" + this.props.workout.id;
-        alert(description);
+        this.props.onPlayButtonClick(this.props.workout);
     }
     _onPress = () => {
         this.props.onPress(this.props.workout, this);
