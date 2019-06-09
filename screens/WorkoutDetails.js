@@ -10,56 +10,7 @@ class WorkoutDetailsScreen extends React.Component {
         super(props)
 
         const { params } = this.props.navigation.state;
-        this.workout = params ? params.workout : {
-            id: 2,
-            name: "WORKOUT",
-            description: '',
-            category: 'Stretching',
-            createdBy: "name1@example.com",
-            timeCreated: 23042019,
-            exercises: [
-                {
-                    id: 3,
-                    name: "Push-ups",
-                    description: "A physical exercise performed by lying with your face down and using only your arms to raise and lower your body.",
-                    exerciseSets: [{
-                        id: 123,
-                        duration: 91,
-                        repetitions: 20,
-                        weight: 0,
-                        notes: "",
-                        break: 20
-                    },
-                    {
-                        id: 3232,
-                        duration: 63,
-                        repetitions: 22,
-                        weight: 5,
-                        notes: ""
-                    }]
-                },
-                {
-                    id: 3,
-                    name: "Bicycle crunch",
-                    description: "Exercise 2 description",
-                    exerciseSets: [{
-                        id: 123,
-                        duration: 91,
-                        repetitions: 20,
-                        weight: 0,
-                        notes: "",
-                        break: 20
-                    },
-                    {
-                        id: 3232,
-                        duration: 63,
-                        repetitions: 22,
-                        weight: 5,
-                        notes: ""
-                    }]
-                }
-            ]
-        }
+        this.workout = params.workout 
         //TODO: this should show all the categories available in the database
         this.workoutCategories = [
             'Stretching', 'Cardio'
