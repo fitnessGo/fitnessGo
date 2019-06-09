@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Button, View, Alert, SafeAreaView } from "react-native";
 import { FontStyles, ScreenStyles } from "../styles/global";
 import getStyleSheet from "../styles/themestyles";
-import { handleFbLogin, handleFbLogout } from "../lib/auth";
+import { handleFbLogin, handleLogout } from "../lib/auth";
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ export default class SettingsScreen extends Component {
   }
 
   logout() {
-    handleFbLogout().then(() => {
+    handleLogout().then(() => {
       this.props.navigation.navigate("Auth");
     })
     .catch(err => {
