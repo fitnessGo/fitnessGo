@@ -1,14 +1,14 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Card, Text, Button, Image } from "react-native-elements";
-import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+import { Card, Text, Button, Image, Icon } from "react-native-elements";
+import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
     title: "Log in"
   };
-  
+
   onLogInWithFaceBookClick() {
     handleFbLogin()
       .then(err => {
@@ -22,14 +22,15 @@ class LogInScreen extends React.Component {
   }
 
   onLogInWithGoogleClick() {
-    handleGoogleLogin().then((err) => {
-      if(!err){
-        this.props.navigation.navigate("App");
-      }
-    })
-    .catch(err => {
-      alert("Couldn't authenticate your Google account 🙁");
-    })
+    handleGoogleLogin()
+      .then(err => {
+        if (!err) {
+          this.props.navigation.navigate("App");
+        }
+      })
+      .catch(err => {
+        alert("Couldn't authenticate your Google account 🙁");
+      });
   }
 
   //I have kept it SignIn for now
@@ -55,18 +56,20 @@ class LogInScreen extends React.Component {
         </View>
         <View style={styles.container}>
           <Button
-            buttonStyle={styles.button}
+            buttonStyle={[styles.button, { backgroundColor: "#3C5A99" }]}
+            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20}} />}
+            
             title="Log in with Facebook"
             onPress={() => this.onLogInWithFaceBookClick()}
           />
 
-          <GoogleSigninButton 
+          <GoogleSigninButton
             style={styles.button}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Light}
             onPress={() => this.onLogInWithGoogleClick()}
           />
-          
+
           {/* <Button
               buttonStyle={styles.button}
               title="Log in with email"
@@ -78,13 +81,13 @@ class LogInScreen extends React.Component {
               title="Sign up"
               onPress={() => this.onSignUpClick()}
           /> */}
-          </View>
-          {/* <View>
+        </View>
+        {/* <View>
               <Button type="clear" title="Forgot Password" />
           </View> */}
-        </View>
-        );
-    }
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
