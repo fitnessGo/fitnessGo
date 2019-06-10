@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
         width: '90%',
         left: '5%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 4
     },
     playMenuContainer: {
         flexDirection: 'row',

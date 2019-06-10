@@ -31,10 +31,10 @@ export class TimerView extends Component {
             return (
                 <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
                     <View style={styles.leftSide}>
-                        <Text style={FontStyles.default}>Break</Text>
+                        <Text style={[FontStyles.default, styles.textLight]}>Break</Text>
                     </View>
                     <View style={styles.rightSide}>
-                        <Text style={FontStyles.default}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{timer.time}</Text>sec</Text>
+                        <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }, styles.textLight]}>{timer.time}</Text>sec</Text>
                     </View>
                 </WorkoutCard>
             )
@@ -43,11 +43,11 @@ export class TimerView extends Component {
         return (
             <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
                 <View style={styles.leftSide}>
-                    <Text style={FontStyles.default}>Exercise:  <Text style={{ ...FontStyles.bold }}>{timer.exerciseName}</Text></Text>
-                    <Text style={FontStyles.default}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
+                    <Text style={{...styles.textLight, ...FontStyles.default}}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
+                    <Text style={{...styles.textLight, ...FontStyles.default}}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
                 </View>
                 <View style={styles.rightSide}>
-                    <Text style={FontStyles.default}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
+                    <Text style={{...styles.textLight, ...FontStyles.default}}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
                 </View>
             </WorkoutCard>
         )
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
         minHeight: 60,
         padding: 5,
         flexDirection: 'row',
+        color:'#000000',
         alignItems: 'center' //vertical
     },
     leftSide: {
@@ -67,5 +68,8 @@ const styles = StyleSheet.create({
     rightSide: {
         width: '25%',
         alignItems: 'flex-end' //horizontal
+    },
+    textLight: {
+        color: '#000000'
     }
 });
