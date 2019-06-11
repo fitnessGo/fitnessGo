@@ -8,6 +8,7 @@ import StartScreen from "../screens/Start";
 import HomeScreen from "../screens/Home"
 import SettingsScreen from "../screens/Settings";
 import WorkoutDetails from "../screens/WorkoutDetails"
+import RunWorkoutScreen from "../screens/RunWorkout/RunWorkoutScreen"
 import Discover from "../screens/Discover";
 
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
@@ -25,6 +26,12 @@ const WorkoutStack = createStackNavigator(
       screen: WorkoutDetails,
       navigationOptions: {
         title: "Details"
+      }
+    },
+    RunWorkout: {
+      screen: RunWorkoutScreen,
+      navigationOptions: {
+        title: "Play workout"
       }
     }
   }, {

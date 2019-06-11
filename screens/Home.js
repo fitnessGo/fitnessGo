@@ -132,6 +132,9 @@ class HomeScreen extends React.Component {
         this.selectedWorkout = view;
         this.props.navigation.push('WorkoutDetails', { workout: w, finishedEditing: this._onWorkoutUpdate.bind(this) });
     }
+    _onPlayButtonClick(w) {
+        this.props.navigation.push('RunWorkout', { workout: w });
+    }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
         const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
@@ -160,7 +163,7 @@ class HomeScreen extends React.Component {
                         {
                             this.workouts.map((w, index) => {
                                 return (
-                                    <WorkoutView key={index} style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)}></WorkoutView>
+                                    <WorkoutView key={index} style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)} onPlayButtonClick={(workout) => this._onPlayButtonClick(workout)}></WorkoutView>
                                 );
                             })
                         }
