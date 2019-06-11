@@ -1,13 +1,14 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Card, Text, Button, Image } from "react-native-elements";
-import { handleFbLogin } from "../lib/auth";
+import { Card, Text, Button, Image, Icon } from "react-native-elements";
+import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
+import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
     title: "Log in"
   };
-  //FIXME: this should redirect the user to login with Facebook page
+
   onLogInWithFaceBookClick() {
     handleFbLogin()
       .then(err => {
@@ -20,10 +21,16 @@ class LogInScreen extends React.Component {
       });
   }
 
-  //FIXME: this should redirect the user to login with Google page
-  //I have kept it SignIn for now
   onLogInWithGoogleClick() {
-    this.props.navigation.navigate("SignIn");
+    handleGoogleLogin()
+      .then(err => {
+        if (!err) {
+          this.props.navigation.navigate("App");
+        }
+      })
+      .catch(err => {
+        alert("Couldn't authenticate your Google account 🙁");
+      });
   }
 
   //I have kept it SignIn for now
@@ -49,14 +56,17 @@ class LogInScreen extends React.Component {
         </View>
         <View style={styles.container}>
           <Button
-            buttonStyle={styles.button}
-            title="Log in with FaceBook"
+            buttonStyle={[styles.button, { backgroundColor: "#3C5A99" }]}
+            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20}} />}
+            
+            title="Log in with Facebook"
             onPress={() => this.onLogInWithFaceBookClick()}
           />
 
-          <Button
-            buttonStyle={styles.button}
-            title="Log in with Google"
+          <GoogleSigninButton
+            style={styles.button}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Light}
             onPress={() => this.onLogInWithGoogleClick()}
           />
 
@@ -71,13 +81,13 @@ class LogInScreen extends React.Component {
               title="Sign up"
               onPress={() => this.onSignUpClick()}
           /> */}
-          </View>
-          {/* <View>
+        </View>
+        {/* <View>
               <Button type="clear" title="Forgot Password" />
           </View> */}
-        </View>
-        );
-    }
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -89,6 +99,7 @@ const styles = StyleSheet.create({
     marginRight: 60
   },
   button: {
+    height: 55,
     marginTop: 20,
     marginLeft: 20,
     marginRight: 20

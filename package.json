@@ -13,6 +13,7 @@
     "react-native-facebook-login": "^1.6.1",
     "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.2.1",
+    "react-native-google-signin": "^2.0.0",
     "react-native-navigation": "^2.19.0",
     "react-native-popup-menu": "^0.15.6",
     "react-native-vector-icons": "^6.4.2",

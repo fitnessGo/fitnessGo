@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { FontStyles } from '../styles/global';
 import WorkoutCard from '../components/WorkoutCard';
@@ -68,12 +68,13 @@ class WorkoutInfoView extends Component {
                     {workoutName}
                     {exercisesDescription}
                     {exercisesDuration}
-                    <Button
-                        type="clear"
-                        icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
-                        style={{ flexDirection: 'row', alignSelf: 'flex-end' }}
-                        onPress={this._onPlayButtonClick}
-                    />
+                    <View style={{ alignItems: 'flex-end' }}>
+                        <Button
+                            type="clear"
+                            icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
+                            onPress={this._onPlayButtonClick}
+                        />
+                    </View>
                 </WorkoutCard>
             </TouchableOpacity>
         );
