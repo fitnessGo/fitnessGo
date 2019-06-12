@@ -3,6 +3,7 @@ import { StyleSheet, Button, View, Alert, SafeAreaView } from "react-native";
 import { FontStyles, ScreenStyles } from "../styles/global";
 import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
+import firebase from 'react-native-firebase';
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -19,18 +20,24 @@ export default class SettingsScreen extends Component {
     title: "Settings"
   };
 
-  //On clicking the Delete Account Button a confirmation box will apear which will ask the user
-  //to cconfirm if they want to delete their account from the system
   deleteAccount() {
     Alert.alert(
       "Confirmation",
       "Are you sure you want to delete your account?",
       [
-        //FIXME: On pressing delete the delete account functionality should be implemented
-        { text: "Delete", onPress: () => console.warn("Delete Pressed") },
+        { text: "Delete", onPress: () => {
+          firebase.auth().currentUser.delete().then(() => {
+            handleLogout();
+          }).then(() => {
+            alert("Your account was deleted 😔");
+            this.props.navigation.navigate("Auth");
+          }).catch((err) => {
+            console.warn(err);
+            alert("Couldn't delete the account. Check your internet connection.")
+          });
+        }, style: "destructive" },
         {
           text: "Cancel",
-          onPress: () => console.warn("Cancel Pressed"),
           style: "cancel"
         }
       ]
@@ -39,6 +46,7 @@ export default class SettingsScreen extends Component {
 
   logout() {
     handleLogout().then(() => {
+      firebase.auth().signOut();
       this.props.navigation.navigate("Auth");
     })
     .catch(err => {
