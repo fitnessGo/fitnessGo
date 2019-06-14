@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import { BreakTimer, SetTimer } from './Timer'
 import { ScreenStyles } from '../../styles/global';
@@ -11,8 +11,8 @@ class RunWorkoutScreen extends Component {
         super(props);
         const { params } = this.props.navigation.state;
         this.state = {
-            darkTheme: false,
-            timerRunning: false
+            darkTheme: true,
+            countdownToStart: -1
         }
         this.workout = params.workout
         this.constructTimers()
@@ -21,6 +21,7 @@ class RunWorkoutScreen extends Component {
         this.activeTimerIndex = null
         this.timerRunning = false
     }
+
     constructTimers() {
         //parallel arrays of data and views to handle pausing and switching active timers
         this.timers = [];
@@ -34,7 +35,7 @@ class RunWorkoutScreen extends Component {
                 let timer = new SetTimer(exercise.name, s.duration, s.repetitions);
                 this.timers.push(timer)
                 this.timerViews.push(<TimerView timer={timer} style={{ marginBottom: 10 }}
-                     onRef={ (child) => { this.timerViewsRefs.push(child) }} />)
+                    onRef={(child) => { this.timerViewsRefs.push(child); }} />)
                 if (s.break > 0) {
                     let timer = new BreakTimer(s.break)
                     this.timers.push(timer)
@@ -54,49 +55,94 @@ class RunWorkoutScreen extends Component {
     _onPreviousButtonClick() {
         alert("This functionality will be added soon")
     }
-    
     _onPlayButtonClick() {
-        if (this.timerRunning)
-        {
+        if (this.timerRunning) {
             this.pause();
         } else {
             this.timerRunning = true;
             this.play();
         }
-        
+
     }
     play() {
-        this.setState(previousState => (
-            { timerRunning: !previousState.timerRunning }
-        ))
-        //timer has not been started yet
-        if (this.activeTimerIndex === null) {
-            this.activeTimerIndex = 0
-        }
-        const activeTimer = this.timers[this.activeTimerIndex];
-        const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
-        activeTimerViewRef.changeActiveState();
-        activeTimer.start( callback = () => {
-            //TODO: better way than changing a state? 
-            activeTimerViewRef.setState({time: activeTimer.time})
+        this.timerRunning = true;
+        this.startCountdownToStart( () => {
+            console.warn("Return from countdown func back to play")
+            //timer has not been started yet
+            if (this.activeTimerIndex === null) {
+                this.activeTimerIndex = 0;
+                this.switchTimer(0);
+            } else {
+                this.switchTimer(this.activeTimerIndex);
+            }
         })
     }
     pause() {
         this.timerRunning = false;
+        if(this.countdownIntervalTimer){
+            clearInterval(this.countdownIntervalTimer);
+        }
         this.setState(previousState => (
-            { timerRunning: !previousState.timerRunning })
+            { countdownToStart: -1 })
         )
-        const activeTimer = this.timers[this.activeTimerIndex];
-        const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
-        activeTimerViewRef.changeActiveState();
-        activeTimer.stop( callback = () => {
-            //TODO: better way than changing a state? 
-            activeTimerViewRef.setState({time: activeTimer.time})
-        })
+        if (this.activeTimerIndex != null) {
+            const activeTimer = this.timers[this.activeTimerIndex];
+            const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
+            activeTimerViewRef.changeActiveStateTo(this.timerRunning);
+            activeTimer.stop(callback = () => {
+                //TODO: better way than changing a state? 
+                activeTimerViewRef.setState({ time: activeTimer.time })
+            })
+        }
+        
+    }
+    switchTimer(index) {
+        this.activeTimerIndex = index
+        if (this.activeTimerIndex === null) {
+            this.activeTimerIndex = 0
+        } else if (this.activeTimerIndex >= this.timers.length) {
+
+        } else {
+            const activeTimer = this.timers[this.activeTimerIndex];
+            const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
+            activeTimerViewRef.changeActiveStateTo(this.timerRunning);
+            activeTimer.start(callback = () => {
+                activeTimerViewRef.setState({ time: activeTimer.time })
+                if (activeTimer.time === 0) {
+                    activeTimerViewRef.changeActiveState();
+                    this.switchTimer(this.activeTimerIndex + 1);
+                }
+            })
+        }
+    }
+    startCountdownToStart(callback) {
+        var time = 3
+        this.setState(previousState => ({ countdownToStart: time }))
+        this.countdownIntervalTimer = setInterval(() => {
+            time--;
+            this.setState(previousState => ({ countdownToStart: time }))
+            if (time < 0) { 
+                clearInterval(this.countdownIntervalTimer);
+                this.setState(({ countdownToStart: time }))
+                callback();
+            }
+        }, 1000);
+    }
+    //Workout completed
+    lastTimerFinished() {
+
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
-        let playIconName = this.state.timerRunning ? "pause-circle-outline" : "play-circle-outline"
+        // const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
+        let playIconName = this.timerRunning ? "pause-circle-outline" : "play-circle-outline"
+        let countdown;
+        if (this.state.countdownToStart >= 0 ) {
+            countdown =
+                <View style={styles.countdownOverlay}>
+                    <Text style={{fontSize:styles.countdownOverlay.fontSize}}>{this.state.countdownToStart}</Text>
+                </View>
+        }
         return (
             <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]} >
                 <ScrollView style={ScreenStyles.screenContainer}>
@@ -104,6 +150,7 @@ class RunWorkoutScreen extends Component {
                         {this.timerViews}
                     </View>
                 </ScrollView>
+                {countdown}
                 <View style={styles.playMenuContainer}>
                     <Button
                         type="clear"
@@ -153,6 +200,23 @@ const styles = StyleSheet.create({
     playMenuContainer: {
         flexDirection: 'row',
         justifyContent: 'center'
+    },
+    countdownOverlay: {
+        backgroundColor: 'white',
+        width: '50%',
+        aspectRatio: 1,
+        position: 'absolute',
+        fontSize: 60,
+        left: '25%',
+        top: '25%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 1000,
+        shadowColor: 'black',
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.1,
+        elevation: 4
     }
 });
 

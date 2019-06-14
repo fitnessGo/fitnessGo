@@ -10,18 +10,18 @@ class Timer {
     }
     start(callback) {
         this.intervalTimer = setInterval(() => {
-            if(this.time > 1) {
+            if (this.time > 0) {
                 this.time--;
-                callback();
-            } else {
-                this.stop(callback)
             }
+            if (this.time <= 0) {
+                this.stop();
+            }                
+            callback();
+
         }, 1000);
     }
-    stop(callback) {
+    stop() {
         clearInterval(this.intervalTimer);
-        callback();
-        //calback to parent about the timer stop
     }
     reset() {
         this.time = this.duration;

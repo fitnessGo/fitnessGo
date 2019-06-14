@@ -10,6 +10,7 @@ export class TimerView extends Component {
         this.state = {
             active: false,
             time: this.props.timer.time
+            // timer: this.props.timer
         }
     }
     componentDidMount() {
@@ -22,6 +23,9 @@ export class TimerView extends Component {
         this.setState(previousState => (
             { active: !previousState.active }
         ))
+    }
+    changeActiveStateTo(newState) {
+        this.setState({ active: newState })
     }
     render() {
         let timer = this.props.timer
