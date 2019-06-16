@@ -67,9 +67,9 @@ class WorkoutDetailsScreen extends React.Component {
                         </View>
                         <View style={styles.exercises}>
                             {
-                                this.workout.exercises.map((exercise, ei) => {
+                                this.workout.exercises.map((exercise, id) => {
                                     return (
-                                        <ExerciseDetailsView darkTheme={this.state.darkTheme} exercise={exercise} style={styles.exersiceDetails} />
+                                        <ExerciseDetailsView key={id} darkTheme={this.state.darkTheme} exercise={exercise} style={styles.exersiceDetails} />
                                     );
                                 })
                             }
