@@ -26,6 +26,9 @@ class CreateWorkoutScreen extends React.Component {
       exercises: []
     };
 
+    const { params } = this.props.navigation.state;
+    this.workouts = params.workouts;
+
     this.addExercise = this.addExercise.bind(this);
     this.changeExerciseName = this.changeExerciseName.bind(this);
     this.changeExerciseDesc = this.changeExerciseDesc.bind(this);
@@ -40,7 +43,7 @@ class CreateWorkoutScreen extends React.Component {
       exerciseSets: [
         {
           id: 0,
-          duration: 0,
+          duration: 180,
           repetitions: 0,
           weight: 0,
           notes: "",
@@ -92,8 +95,18 @@ class CreateWorkoutScreen extends React.Component {
   saveWorkout() {
     let message = this.validateWorkout();
     if (message === "") {
-      alert("It's going to be saved to Firebase.");
-      this.props.navigation.push("UserLibrary");
+      let newWorkout = {
+        id: 9999,
+        name: this.state.name,
+        category: this.state.category,
+        description: "",
+        createdBy: "name2@example.com",
+        timeCreated: 24042019,
+        exercises: this.state.exercises
+      };
+
+      this.workouts.push(newWorkout);
+      this.props.navigation.state.params.update(this.workouts);
     } else {
       Alert.alert("Error!", message);
     }
@@ -147,7 +160,9 @@ class CreateWorkoutScreen extends React.Component {
                   }
                 >
                   {this.workoutCategories.map((category, i) => {
-                    return <Picker.Item key={i} label={category} value={category} />;
+                    return (
+                      <Picker.Item key={i} label={category} value={category} />
+                    );
                   })}
                 </Picker>
               </View>
@@ -169,7 +184,11 @@ class CreateWorkoutScreen extends React.Component {
               <Button
                 type="clear"
                 title="Add exercise"
-                style={{ flexDirection: "row", alignSelf: "flex-end", marginBottom: 15 }}
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  marginBottom: 15
+                }}
                 onPress={this.addExercise}
               />
             </View>

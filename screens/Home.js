@@ -22,109 +22,110 @@ class HomeScreen extends React.Component {
         super(props)
         this.state = {
             darkTheme: false,
-            dataReady: true
+            dataReady: true,
+            workouts: [
+                {
+                    id: 2,
+                    name: "My morning workout",
+                    description: '',
+                    category: 'Stretching',
+                    createdBy: "name1@example.com",
+                    timeCreated: 23042019,
+                    exercises: [
+                        {
+                            id: 3,
+                            name: "Push-ups",
+                            description: "A physical exercise performed by lying with your face down and using only your arms to raise and lower your body.",
+                            exerciseSets: [{
+                                id: 123,
+                                duration: 91,
+                                repetitions: 20,
+                                weight: 0,
+                                notes: "",
+                                break: 20
+                            },
+                            {
+                                id: 3232,
+                                duration: 63,
+                                repetitions: 22,
+                                weight: 5,
+                                notes: ""
+                            }]
+                        },
+                        {
+                            id: 3,
+                            name: "Bicycle crunch",
+                            description: "Exercise 2 description",
+                            exerciseSets: [{
+                                id: 123,
+                                duration: 91,
+                                repetitions: 20,
+                                weight: 0,
+                                notes: "",
+                                break: 20
+                            },
+                            {
+                                id: 3232,
+                                duration: 63,
+                                repetitions: 22,
+                                weight: 5,
+                                notes: ""
+                            }]
+                        }
+                    ]
+                },
+                {
+                    id: 1123, 
+                    name: "My morning workout with a super super long name", 
+                    category: 2, 
+                    description: '',
+                    createdBy: "name2@example.com", 
+                    timeCreated: 24042019,
+                    exercises: [
+                        {
+                            id: 3,
+                            description: "Exercise 1 description",
+                            exerciseSets: [{
+                                id: 123,
+                                duration: 931,
+                                repetitions: 20,
+                                weight: 0,
+                                notes: ""
+                            }, {
+                                id: 3232,
+                                duration: 63,
+                                repetitions: 22,
+                                weight: 5,
+                                notes: ""
+                            }]
+                        },
+                        {
+                            id: 3,
+                            description: "Exercise 1 description",
+                            exerciseSets: [{
+                                id: 123,
+                                duration: 91,
+                                repetitions: 20,
+                                weight: 0,
+                                notes: ""
+                            }, {
+                                id: 3232,
+                                duration: 63,
+                                repetitions: 22,
+                                weight: 5,
+                                notes: ""
+                            }]
+                        }
+                    ]
+                }
+            ]
         }
-        this.workouts = [
-            {
-                id: 2,
-                name: "My morning workout",
-                description: '',
-                category: 'Stretching',
-                createdBy: "name1@example.com",
-                timeCreated: 23042019,
-                exercises: [
-                    {
-                        id: 3,
-                        name: "Push-ups",
-                        description: "A physical exercise performed by lying with your face down and using only your arms to raise and lower your body.",
-                        exerciseSets: [{
-                            id: 123,
-                            duration: 91,
-                            repetitions: 20,
-                            weight: 0,
-                            notes: "",
-                            break: 20
-                        },
-                        {
-                            id: 3232,
-                            duration: 63,
-                            repetitions: 22,
-                            weight: 5,
-                            notes: ""
-                        }]
-                    },
-                    {
-                        id: 3,
-                        name: "Bicycle crunch",
-                        description: "Exercise 2 description",
-                        exerciseSets: [{
-                            id: 123,
-                            duration: 91,
-                            repetitions: 20,
-                            weight: 0,
-                            notes: "",
-                            break: 20
-                        },
-                        {
-                            id: 3232,
-                            duration: 63,
-                            repetitions: 22,
-                            weight: 5,
-                            notes: ""
-                        }]
-                    }
-                ]
-            },
-            {
-                id: 1123, 
-                name: "My morning workout with a super super long name", 
-                category: 2, 
-                description: '',
-                createdBy: "name2@example.com", 
-                timeCreated: 24042019,
-                exercises: [
-                    {
-                        id: 3,
-                        description: "Exercise 1 description",
-                        exerciseSets: [{
-                            id: 123,
-                            duration: 931,
-                            repetitions: 20,
-                            weight: 0,
-                            notes: ""
-                        }, {
-                            id: 3232,
-                            duration: 63,
-                            repetitions: 22,
-                            weight: 5,
-                            notes: ""
-                        }]
-                    },
-                    {
-                        id: 3,
-                        description: "Exercise 1 description",
-                        exerciseSets: [{
-                            id: 123,
-                            duration: 91,
-                            repetitions: 20,
-                            weight: 0,
-                            notes: ""
-                        }, {
-                            id: 3232,
-                            duration: 63,
-                            repetitions: 22,
-                            weight: 5,
-                            notes: ""
-                        }]
-                    }
-                ]
-            }
-        ]
         this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
         this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
+        this.updateWorkouts = this.updateWorkouts.bind(this);
     }
-    _onCreateNewButtonClick(prop) {
-        this.props.navigation.push('CreateWorkout');
+    _onCreateNewButtonClick(w) {
+        this.props.navigation.push('CreateWorkout', { workouts: this.state.workouts, update: this.updateWorkouts });
     }
     _onWorkoutUpdate() {
         this.selectedWorkout.forceUpdate();
@@ -136,10 +137,13 @@ class HomeScreen extends React.Component {
     _onPlayButtonClick(w) {
         this.props.navigation.push('RunWorkout', { workout: w });
     }
+    updateWorkouts(workouts) {
+        this.setState({ workouts });
+    }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
         const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
-        if (this.workouts === undefined) {
+        if (this.state.workouts === undefined) {
             return (
                 <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
                     <ScrollView style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}>
@@ -160,9 +164,9 @@ class HomeScreen extends React.Component {
             // var workoutViews = new Array();
             <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={ScreenStyles.screenContainer}>
-                    <View style={styles.workoutViewContainer}>
+                    <View ref="workoutsView" style={styles.workoutViewContainer}>
                         {
-                            this.workouts.map((w, index) => {
+                            this.state.workouts.map((w, index) => {
                                 return (
                                     <WorkoutView key={index} style={workoutViewStyle} workout={w} onPress={(workout, view) => this._onWorkoutSelect(workout, view)} onPlayButtonClick={(workout) => this._onPlayButtonClick(workout)}></WorkoutView>
                                 );
@@ -174,7 +178,7 @@ class HomeScreen extends React.Component {
                 <Button
                     type="clear"
                     icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
-                    onPress={this._onCreateNewButtonClick}
+                    onPress={(workout) => this._onCreateNewButtonClick(this.state.workouts)}
                 />
                 </View>
             </SafeAreaView>
