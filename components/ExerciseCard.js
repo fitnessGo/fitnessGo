@@ -84,7 +84,7 @@ class ExerciseCard extends React.Component {
           <View style={{ marginTop: 10 }}>
             {this.state.exerciseSets.map((es, index) => {
               return (
-                <View>
+                <View key={index}>
                   <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
                   <SetDetailsView set={es} darkTheme={this.props.darkTheme} />
                 </View>

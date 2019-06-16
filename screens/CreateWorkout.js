@@ -146,8 +146,8 @@ class CreateWorkoutScreen extends React.Component {
                     this.setState({ category })
                   }
                 >
-                  {this.workoutCategories.map(category => {
-                    return <Picker.Item label={category} value={category} />;
+                  {this.workoutCategories.map((category, i) => {
+                    return <Picker.Item key={i} label={category} value={category} />;
                   })}
                 </Picker>
               </View>
