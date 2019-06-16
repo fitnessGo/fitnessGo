@@ -130,10 +130,10 @@ class HomeScreen extends React.Component {
     }
     _onWorkoutSelect(w, view) {
         this.selectedWorkout = view;
-        this.props.navigation.push('WorkoutDetails', { workout: w, finishedEditing: this._onWorkoutUpdate.bind(this) });
+        this.props.navigation.navigate('WorkoutDetails', { workout: w, finishedEditing: this._onWorkoutUpdate.bind(this) });
     }
     _onPlayButtonClick(w) {
-        this.props.navigation.push('RunWorkout', { workout: w });
+        this.props.navigation.navigate('RunWorkout', { workout: w });
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
