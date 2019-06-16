@@ -4,7 +4,6 @@ import { Button, Icon } from "react-native-elements";
 import WorkoutCard from "../components/WorkoutCard";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
-import { isTSExpressionWithTypeArguments } from "@babel/types";
 
 class ExerciseCard extends React.Component {
   constructor(props) {
