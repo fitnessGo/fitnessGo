@@ -121,9 +121,10 @@ class HomeScreen extends React.Component {
             }
         ]
         this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
+        this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
     }
     _onCreateNewButtonClick(prop) {
-        alert("Create new workout will be added soon");
+        this.props.navigation.push('CreateWorkout');
     }
     _onWorkoutUpdate() {
         this.selectedWorkout.forceUpdate();
