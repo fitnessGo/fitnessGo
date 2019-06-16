@@ -9,6 +9,7 @@ export class TimerView extends Component {
         super(props)
         this.state = {
             active: false,
+            selected: false,
             time: this.props.timer.time
             // timer: this.props.timer
         }
@@ -27,9 +28,15 @@ export class TimerView extends Component {
     changeActiveStateTo(newState) {
         this.setState({ active: newState })
     }
+    changeSelectedStateTo(newState) {
+        this.setState({ selected: newState })
+    }
+    changeActiveAndSelectedStateTo(newState) {
+        this.setState({ active: newState, selected: newState })
+    }
     render() {
         let timer = this.props.timer
-        let timerStyle = { width: this.state.active ? "100%" : "95%" };
+        let timerStyle = { width: this.state.active ? "100%" : "95%", opacity: this.state.selected ? 1 : 0.5 };
         if (timer instanceof BreakTimer) {
             timerStyle.backgroundColor = '#cfcfcf';
             return (
