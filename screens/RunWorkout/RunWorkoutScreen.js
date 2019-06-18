@@ -39,25 +39,33 @@ class RunWorkoutScreen extends Component {
         //make sure nothing was left running
         this.timers[this.activeTimerIndex].stop();
     }
+    onTimerSelect(index) {
+        if(this.activeTimerIndex !== index)
+            this.switchTimer(index);
+    }
     constructTimers() {
         //parallel arrays of data and views to handle pausing and switching active timers
         this.timers = [];
         this.timerViews = [];
         //to access child method from parent. needed to update Text in child
         this.timerViewsRefs = [];
+        let index=0;
         for (var i = 0; i < this.workout.exercises.length; i++) {
             const exercise = this.workout.exercises[i];
             for (var j = 0; j < exercise.exerciseSets.length; j++) {
+                
                 const s = exercise.exerciseSets[j]
                 let timer = new SetTimer(exercise.name, s.duration, s.repetitions);
                 this.timers.push(timer)
-                this.timerViews.push(<TimerView timer={timer} style={{ marginBottom: 10 }}
+                this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index)=>{this.onTimerSelect(index)}} style={{ marginBottom: 10 }}
                     onRef={(child) => { this.timerViewsRefs.push(child); }} />)
+                index++;
                 if (s.break > 0) {
                     let timer = new BreakTimer(s.break)
                     this.timers.push(timer)
-                    this.timerViews.push(<TimerView timer={timer} style={{ marginBottom: 10 }}
+                    this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index)=>{this.onTimerSelect(index)}} style={{ marginBottom: 10 }}
                         onRef={child => { this.timerViewsRefs.push(child) }} />)
+                    index++;
                 }
             }
         }

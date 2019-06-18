@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontStyles } from '../../styles/global';
 import { BreakTimer } from './Timer'
 import WorkoutCard from '../../components/WorkoutCard';
@@ -34,33 +34,40 @@ export class TimerView extends Component {
     changeActiveAndSelectedStateTo(newState) {
         this.setState({ active: newState, selected: newState })
     }
+    _onPress = () => {
+        this.props.onPress(this.props.index);
+    }
     render() {
         let timer = this.props.timer
         let timerStyle = { width: this.state.active ? "100%" : "95%", opacity: this.state.selected ? 1 : 0.5 };
         if (timer instanceof BreakTimer) {
             timerStyle.backgroundColor = '#cfcfcf';
             return (
-                <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
-                    <View style={styles.leftSide}>
-                        <Text style={[FontStyles.default, styles.textLight]}>Break</Text>
-                    </View>
-                    <View style={styles.rightSide}>
-                        <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }, styles.textLight]}>{timer.time}</Text>sec</Text>
-                    </View>
-                </WorkoutCard>
+                <TouchableOpacity onPress={this._onPress}>
+                    <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
+                        <View style={styles.leftSide}>
+                            <Text style={[FontStyles.default, styles.textLight]}>Break</Text>
+                        </View>
+                        <View style={styles.rightSide}>
+                            <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }, styles.textLight]}>{timer.time}</Text>sec</Text>
+                        </View>
+                    </WorkoutCard>
+                </TouchableOpacity>
             )
         }
         timerStyle.backgroundColor = '#fafafa';
         return (
-            <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
-                <View style={styles.leftSide}>
-                    <Text style={{...styles.textLight, ...FontStyles.default}}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
-                    <Text style={{...styles.textLight, ...FontStyles.default}}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
-                </View>
-                <View style={styles.rightSide}>
-                    <Text style={{...styles.textLight, ...FontStyles.default}}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
-                </View>
-            </WorkoutCard>
+            <TouchableOpacity onPress={this._onPress}>
+                <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
+                    <View style={styles.leftSide}>
+                        <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
+                        <Text style={{ ...styles.textLight, ...FontStyles.default }}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
+                    </View>
+                    <View style={styles.rightSide}>
+                        <Text style={{ ...styles.textLight, ...FontStyles.default }}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
+                    </View>
+                </WorkoutCard>
+            </TouchableOpacity>
         )
     }
 }
@@ -69,7 +76,7 @@ const styles = StyleSheet.create({
         minHeight: 60,
         padding: 5,
         flexDirection: 'row',
-        color:'#000000',
+        color: '#000000',
         alignItems: 'center' //vertical
     },
     leftSide: {
