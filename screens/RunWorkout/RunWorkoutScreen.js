@@ -14,7 +14,7 @@ class RunWorkoutScreen extends Component {
         this.state = {
             darkTheme: false,
             countdownToStart: -1,
-            playBottonPressed: false
+            playButtonPressed: false
         }
         this.countdownOpacity = new Animated.Value(0)
         this.workout = params.workout
@@ -78,7 +78,7 @@ class RunWorkoutScreen extends Component {
         this.switchTimer(this.activeTimerIndex - 1)
     }
     _onPlayButtonClick() {
-        this.setState({ playBottonPressed: !this.state.playBottonPressed });
+        this.setState({ playButtonPressed: !this.state.playButtonPressed });
         if (this.timerRunning || this.countdownRunning) {
             this.pause();
         } else {
@@ -179,7 +179,7 @@ class RunWorkoutScreen extends Component {
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
         // const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
-        let playIconName = this.state.playBottonPressed ? "pause-circle-outline" : "play-circle-outline"
+        let playIconName = this.state.playButtonPressed ? "pause-circle-outline" : "play-circle-outline"
         let countdown;
         if (this.state.countdownToStart >= 0) {
             countdown =
