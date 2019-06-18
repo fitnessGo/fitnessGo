@@ -5,6 +5,7 @@ import { BreakTimer, SetTimer } from './Timer'
 import { ScreenStyles } from '../../styles/global';
 import getStyleSheet from "../../styles/themestyles";
 import { TimerView } from './TimerView'
+import Sound from 'react-native-sound';
 
 class RunWorkoutScreen extends Component {
     constructor(props) {
@@ -31,6 +32,15 @@ class RunWorkoutScreen extends Component {
             this.timerViewsRefs[0].changeSelectedStateTo(true);
             this.activeTimerIndex = 0
         }
+
+        this.whoosh = new Sound('../../ios/beep01.flac', Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+              console.warn('failed to load the sound', error);
+              return;
+            }
+            // loaded successfully
+            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+        })
     }
     componentWillUnmount() {
         if (this.countdownIntervalTimer) {
@@ -163,6 +173,13 @@ class RunWorkoutScreen extends Component {
         this.countdownIntervalTimer = setInterval(() => {
             time--;
             if (time >= 0)
+            this.whoosh.play((success) => {
+                if (success) {
+                  console.log('successfully finished playing');
+                } else {
+                  console.log('playback failed due to audio decoding errors');
+                }
+              });
                 this.setState(previousState => ({ countdownToStart: time }))
             if (time < 0) {
                 clearInterval(this.countdownIntervalTimer);
