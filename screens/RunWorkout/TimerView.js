@@ -39,9 +39,9 @@ export class TimerView extends Component {
     }
     render() {
         let timer = this.props.timer
-        let timerStyle = { width: this.state.active ? "100%" : "95%", opacity: this.state.selected ? 1 : 0.5 };
+        let timerStyle = { width: this.state.selected ? "100%" : "95%" };
         if (timer instanceof BreakTimer) {
-            timerStyle.backgroundColor = '#cfcfcf';
+            timerStyle.backgroundColor = '#e2e2e2';
             return (
                 <TouchableOpacity onPress={this._onPress}>
                     <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
@@ -49,7 +49,7 @@ export class TimerView extends Component {
                             <Text style={[FontStyles.default, styles.textLight]}>Break</Text>
                         </View>
                         <View style={styles.rightSide}>
-                            <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }, styles.textLight]}>{timer.time}</Text>sec</Text>
+                            <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }]}>{timer.time}</Text>sec</Text>
                         </View>
                     </WorkoutCard>
                 </TouchableOpacity>
@@ -57,7 +57,7 @@ export class TimerView extends Component {
         }
         timerStyle.backgroundColor = '#fafafa';
         return (
-            <TouchableOpacity onPress={this._onPress}>
+            <TouchableOpacity  onPress={this._onPress}>
                 <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
                     <View style={styles.leftSide}>
                         <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
