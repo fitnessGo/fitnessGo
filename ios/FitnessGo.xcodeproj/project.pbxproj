@@ -71,6 +71,7 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		C82A3FB422B9216F008B7421 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C82A3FB122B92147008B7421 /* libRNSound.a */; };
 		C860EB5B22B9389800BADCDC /* beep01.flac in Resources */ = {isa = PBXBuildFile; fileRef = C860EB5A22B9388400BADCDC /* beep01.flac */; };
+		C860EBB022B9C7EB00BADCDC /* whistle01.wav in Resources */ = {isa = PBXBuildFile; fileRef = C860EB8122B9C7EB00BADCDC /* whistle01.wav */; };
 		C8BDDAC3229B8690000F7120 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C8BDDAC2229B8690000F7120 /* GoogleService-Info.plist */; };
 		D44586605C634CD590586468 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC74C2902034F67833E0F39 /* libRNGestureHandler.a */; };
 		D79FCF4193AC4626A6CDBC1E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC6C6016126E48FB85BBFC3B /* EvilIcons.ttf */; };
@@ -493,6 +494,7 @@
 		C289ADD6CB4D4F62B4E8B6C1 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		C82A3F8122B92146008B7421 /* RNSound.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
 		C860EB5A22B9388400BADCDC /* beep01.flac */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep01.flac; sourceTree = "<group>"; };
+		C860EB8122B9C7EB00BADCDC /* whistle01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = whistle01.wav; sourceTree = "<group>"; };
 		C8BDDAC2229B8690000F7120 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C8CFE16FAAC14DB982A90460 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		C96EEE643ABA4A6E97329664 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -888,6 +890,7 @@
 		C860EB2B22B9387300BADCDC /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				C860EB8122B9C7EB00BADCDC /* whistle01.wav */,
 				C860EB5A22B9388400BADCDC /* beep01.flac */,
 			);
 			name = Sounds;
@@ -1483,6 +1486,7 @@
 				C860EB5B22B9389800BADCDC /* beep01.flac in Resources */,
 				D79FCF4193AC4626A6CDBC1E /* EvilIcons.ttf in Resources */,
 				6AED6BDFF4AF4D1FA2B54ABA /* Feather.ttf in Resources */,
+				C860EBB022B9C7EB00BADCDC /* whistle01.wav in Resources */,
 				8519630AFB8E4353B96A26DA /* FontAwesome.ttf in Resources */,
 				EC899EDD8B88432ABE69B3FB /* FontAwesome5_Brands.ttf in Resources */,
 				090C1E79E104440E9B1874B0 /* FontAwesome5_Regular.ttf in Resources */,
