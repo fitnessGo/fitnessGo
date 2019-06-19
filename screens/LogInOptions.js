@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Card, Text, Button, Image, Icon } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
+import Logo from '../logo.png';
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
@@ -44,14 +45,12 @@ class LogInScreen extends React.Component {
 
   render() {
     return (
-      <View>
-        <View>
+      <View style={{backgroundColor: "#3c1a5b", height: "100%"}}>
+        <View style={{alignItems: "center"}}>
           <Image
             style={styles.image}
-            source={{
-              uri:
-                "https://media.defense.gov/2010/Sep/03/2000329023/-1/-1/0/100419-F-8716G-102.JPG"
-            }}
+            source={Logo}
+            resizeMode="contain"
           />
         </View>
         <View style={styles.container}>
@@ -92,11 +91,8 @@ class LogInScreen extends React.Component {
 
 const styles = StyleSheet.create({
   image: {
-    width: 200,
-    height: 200,
+    width: 300,
     marginTop: 50,
-    marginLeft: 80,
-    marginRight: 60
   },
   button: {
     height: 55,
