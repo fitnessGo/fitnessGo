@@ -33,14 +33,8 @@ class RunWorkoutScreen extends Component {
             this.activeTimerIndex = 0
         }
 
-        this.whoosh = new Sound('../../ios/beep01.flac', Sound.MAIN_BUNDLE, (error) => {
-            if (error) {
-              console.warn('failed to load the sound', error);
-              return;
-            }
-            // loaded successfully
-            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-        })
+        this.sound_countdown = new Sound('beep01.flac', Sound.MAIN_BUNDLE);
+        this.sound_whistle = new Sound('whistle01.wav', Sound.MAIN_BUNDLE);
     }
     componentWillUnmount() {
         if (this.countdownIntervalTimer) {
@@ -50,7 +44,7 @@ class RunWorkoutScreen extends Component {
         this.timers[this.activeTimerIndex].stop();
     }
     onTimerSelect(index) {
-        if(this.activeTimerIndex !== index)
+        if (this.activeTimerIndex !== index)
             this.switchTimer(index);
     }
     constructTimers() {
@@ -59,21 +53,21 @@ class RunWorkoutScreen extends Component {
         this.timerViews = [];
         //to access child method from parent. needed to update Text in child
         this.timerViewsRefs = [];
-        let index=0;
+        let index = 0;
         for (var i = 0; i < this.workout.exercises.length; i++) {
             const exercise = this.workout.exercises[i];
             for (var j = 0; j < exercise.exerciseSets.length; j++) {
-                
+
                 const s = exercise.exerciseSets[j]
                 let timer = new SetTimer(exercise.name, s.duration, s.repetitions);
                 this.timers.push(timer)
-                this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index)=>{this.onTimerSelect(index)}} style={{ marginBottom: 10 }}
+                this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index) => { this.onTimerSelect(index) }} style={{ marginBottom: 10 }}
                     onRef={(child) => { this.timerViewsRefs.push(child); }} />)
                 index++;
                 if (s.break > 0) {
                     let timer = new BreakTimer(s.break)
                     this.timers.push(timer)
-                    this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index)=>{this.onTimerSelect(index)}} style={{ marginBottom: 10 }}
+                    this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index) => { this.onTimerSelect(index) }} style={{ marginBottom: 10 }}
                         onRef={child => { this.timerViewsRefs.push(child) }} />)
                     index++;
                 }
@@ -118,7 +112,7 @@ class RunWorkoutScreen extends Component {
             //timer was running. stop interval timer, change view state
             const activeTimer = this.timers[this.activeTimerIndex];
             const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
-            activeTimerViewRef.changeActiveStateTo(this.timerRunning);
+            activeTimerViewRef.changeActiveStateTo(false);
             activeTimer.stop();
         }
         this.timerRunning = false;
@@ -143,10 +137,10 @@ class RunWorkoutScreen extends Component {
         else if (this.activeTimerIndex >= 0 && this.activeTimerIndex < this.timers.length) {
             //stop current timer
             {
-            const activeTimer = this.timers[this.activeTimerIndex];
-            activeTimer.stop();
-            const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
-            activeTimerViewRef.changeActiveAndSelectedStateTo(false);
+                const activeTimer = this.timers[this.activeTimerIndex];
+                activeTimer.stop();
+                const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
+                activeTimerViewRef.changeActiveAndSelectedStateTo(false);
             }
             //go to next timer
             this.activeTimerIndex = index;
@@ -170,18 +164,19 @@ class RunWorkoutScreen extends Component {
         var time = 3
         this.setState(previousState => ({ countdownToStart: time }))
         Animated.timing(this.countdownOpacity, { toValue: 1, duration: 500 }).start();
+        this.sound_countdown.play();
         this.countdownIntervalTimer = setInterval(() => {
             time--;
-            if (time >= 0)
-            this.whoosh.play((success) => {
-                if (success) {
-                  console.log('successfully finished playing');
-                } else {
-                  console.log('playback failed due to audio decoding errors');
-                }
-              });
+            if (time > 0) {
                 this.setState(previousState => ({ countdownToStart: time }))
-            if (time < 0) {
+                this.sound_countdown.play();
+            }
+            else if (time == 0) {
+                this.setState(previousState => ({ countdownToStart: time }))
+                this.sound_whistle.play();
+            }
+            else {
+                //time < 0
                 clearInterval(this.countdownIntervalTimer);
                 Animated.timing(this.countdownOpacity, { toValue: 0, duration: 500 }).start();
                 callback();
@@ -201,7 +196,7 @@ class RunWorkoutScreen extends Component {
         if (this.state.countdownToStart >= 0) {
             countdown =
                 <Animated.View style={[styles.countdownOverlay, { opacity: this.countdownOpacity }]}>
-                    <Text style={{ fontSize: styles.countdownOverlay.fontSize }}>{this.state.countdownToStart}</Text>
+                    <Text style={{ fontSize: styles.countdownOverlay.fontSize, color: '#ffffff' }}>{this.state.countdownToStart}</Text>
                 </Animated.View>
         }
         return (
@@ -252,8 +247,8 @@ class RunWorkoutScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '90%',
-        left: '5%',
+        width: '92%',
+        left: '4%',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 4
@@ -263,17 +258,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     countdownOverlay: {
-        backgroundColor: 'white',
-        width: '50%',
+        backgroundColor: '#ff754c',
+        width: '60%',
         aspectRatio: 1,
         position: 'absolute',
         fontSize: 60,
-        left: '25%',
-        top: '25%',
+        left: '20%',
+        top: '20%',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 1000,
-        shadowColor: 'black',
+        shadowColor: '#000000',
         shadowRadius: 6,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.1,
