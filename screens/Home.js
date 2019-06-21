@@ -17,11 +17,12 @@ class HomeScreen extends React.Component {
             />
             ),
         }
-};
+    };
+    
     constructor(props) {
         super(props)
         this.state = {
-            darkTheme: false,
+            darkTheme: window.darkTheme,
             dataReady: true,
             workouts: [
                 {
@@ -123,6 +124,20 @@ class HomeScreen extends React.Component {
         this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
         this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
         this.updateWorkouts = this.updateWorkouts.bind(this);
+
+        //when returned to this screen check if props have changed 
+        this.willFocusSubscription = this.props.navigation.addListener(
+            'willFocus',
+            () => {
+              if (this.state.darkTheme != window.darkTheme)
+              {
+                  this.setState({darkTheme: window.darkTheme});
+              }
+            }
+        );
+    }
+    componentWillUnmount() {
+        this.willFocusSubscription.remove();
     }
     _onCreateNewButtonClick(w) {
         this.props.navigation.push('CreateWorkout', { workouts: this.state.workouts, update: this.updateWorkouts });
