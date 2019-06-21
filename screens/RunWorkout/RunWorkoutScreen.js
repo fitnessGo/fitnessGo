@@ -13,7 +13,7 @@ class RunWorkoutScreen extends Component {
         const { params } = this.props.navigation.state;
 
         this.state = {
-            darkTheme: false,
+            darkTheme: window.darkTheme,
             countdownToStart: -1,
             playButtonPressed: false
         }
