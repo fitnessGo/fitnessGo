@@ -9,6 +9,7 @@ class StartScreen extends React.Component {
         this.state = {
           user: null,
         };
+        window.darkTheme = false;
       }
     componentDidMount() {
         this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
