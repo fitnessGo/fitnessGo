@@ -23,7 +23,7 @@ class CreateWorkoutScreen extends React.Component {
     const { params = {} } = navigation.state;
     return {
       headerRight: <Button onPress={params.save} title="Save" />,
-      headerLeft: <Button onPress={params.goHome} title="< Home" />,
+      headerLeft: <Button onPress={params.goHome} title="< Home" />
     };
   };
 
@@ -61,21 +61,24 @@ class CreateWorkoutScreen extends React.Component {
     this.props.navigation.setParams({ goHome: this.goHome });
   }
 
-  goHome(){
-    if(this.state.saved){
-      this.props.navigation.navigate('UserLibrary');
+  goHome() {
+    if (this.state.saved) {
+      this.props.navigation.navigate("UserLibrary");
     } else {
       Alert.alert(
         "Workout not saved",
-        'Are you sure you want go back to home screen?',
+        "Are you sure you want go back to home screen?",
         [
-          {text: 'Yes', onPress: () => this.props.navigation.navigate('UserLibrary')},
           {
-            text: 'Cancel',
-            style: 'cancel',
+            text: "Yes",
+            onPress: () => this.props.navigation.navigate("UserLibrary")
           },
+          {
+            text: "Cancel",
+            style: "cancel"
+          }
         ],
-        {cancelable: false},
+        { cancelable: false }
       );
     }
   }
@@ -99,32 +102,28 @@ class CreateWorkoutScreen extends React.Component {
 
     let exercises = this.state.exercises;
     exercises.push(exercise);
-    this.setState({ exercises });
-    this.setState({ saved: false });
+    this.setState({ exercises, saved: false });
   }
 
   changeExerciseName(name, i) {
     let exercises = this.state.exercises;
     let exercise = exercises[i];
     exercise.name = name;
-    this.setState({ exercises });
-    this.setState({ saved: false });
+    this.setState({ exercises, saved: false });
   }
 
   changeExerciseDesc(desc, i) {
     let exercises = this.state.exercises;
     let exercise = exercises[i];
     exercise.description = desc;
-    this.setState({ exercises });
-    this.setState({ saved: false });
+    this.setState({ exercises, saved: false });
   }
 
   changeExerciseSets(sets, i) {
     let exercises = this.state.exercises;
     let exercise = exercises[i];
     exercise.exerciseSets = sets;
-    this.setState({ exercises });
-    this.setState({ saved: false });
+    this.setState({ exercises, saved: false });
   }
 
   validateWorkout() {
