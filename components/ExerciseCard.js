@@ -4,6 +4,7 @@ import { Button, Icon } from "react-native-elements";
 import WorkoutCard from "../components/WorkoutCard";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
+import SetCard from "../components/SetCard";
 
 class ExerciseCard extends React.Component {
   constructor(props) {
@@ -19,11 +20,14 @@ class ExerciseCard extends React.Component {
     this.addSet = this.addSet.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeDesc = this.changeDesc.bind(this);
+    this.updateSet = this.updateSet.bind(this);
   }
 
   addSet() {
+    let sets = this.state.exerciseSets;
+
       let set ={
-        id: 0,
+        id: sets.length,
         duration: 0,
         repetitions: 0,
         weight: 0,
@@ -31,7 +35,6 @@ class ExerciseCard extends React.Component {
         break: 0
       };
 
-      let sets = this.state.exerciseSets;
       sets.push(set);
 
       this.setState({
@@ -47,6 +50,16 @@ class ExerciseCard extends React.Component {
   changeDesc(newDesc) {
     let id = this.props.id;
     this.props.onDescChange(newDesc, id);
+  }
+
+  updateSet(id, newSet){
+    let sets = this.state.exerciseSets;
+    sets[id] = newSet;
+    this.setState({
+      exerciseSets: sets
+    }, () => {
+      this.props.onSetsChange(this.state.exerciseSets, this.props.id)
+    });
   }
 
   render() {
@@ -86,7 +99,7 @@ class ExerciseCard extends React.Component {
               return (
                 <View key={index}>
                   <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
-                  <SetDetailsView set={es} darkTheme={this.props.darkTheme} />
+                  <SetCard set={es} id={index} onChange={this.updateSet} darkTheme={this.props.darkTheme} />
                 </View>
               );
             })}
