@@ -16,7 +16,7 @@ class WorkoutDetailsScreen extends React.Component {
             'Stretching', 'Cardio'
         ]
         this.state = {
-            darkTheme: false,
+            darkTheme: window.darkTheme,
             editable: true,
             workoutcategory: this.workout.category
         }
