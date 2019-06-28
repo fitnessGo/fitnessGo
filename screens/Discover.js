@@ -1,115 +1,83 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
 import { MenuProvider } from "react-native-popup-menu";
-import { ScrollView, Text, StyleSheet } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet } from "react-native";
+import getStyleSheet from "../styles/themestyles";
+import { ScreenStyles } from '../styles/global';
+
+import firebase from 'react-native-firebase';
 
 class Discover extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      darkTheme: window.darkTheme
+    }
+    this.workouts = []
+    firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
+      var wrks = []
+      snapshot.forEach(function (workout) {
+        wrks.push(workout.val())
+      });
+      this.workouts = wrks
+      this.setState({ dataReceived: true })
+    });
+  }
   render() {
+    var discoverWorkoutViews;
+    if (this.workouts.length > 0) {
+      let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
+      discoverWorkoutViews = []
+      this.workouts.forEach(function (workout, index) {
+        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(index) => { this.onTimerSelect(index) }} style={style} />)
+      });
+    } else {
+      discoverWorkoutViews = <Text>Add spinner</Text>
+    }
+    const theme = getStyleSheet(this.state.darkTheme);
     return (
-      <MenuProvider>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
-        >
-          <DiscoverItem
-            workout={{
-              name: "Workout 1",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 2",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 3",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 4",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 5",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 6",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 7",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 8",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
-          <DiscoverItem
-            workout={{
-              name: "Workout 9",
-              category: "Cardio",
-              count: 2,
-              exercises: "Running, Cycling",
-              time: "30:00"
-            }}
-          />
+      <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
+        <View style={styles.menuLight}>
+          <Text>Filter</Text>
+        </View>
+        <ScrollView style={[ScreenStyles.screenContainer, styles.container]}
+          showsVerticalScrollIndicator={false}>
+          <MenuProvider>
+            {discoverWorkoutViews}
+          </MenuProvider>
         </ScrollView>
-      </MenuProvider>
+      </SafeAreaView>
+
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginLeft: "5%",
-    marginRight: "5%"
+    width: '90%',
+    left: "5%"
   },
   content: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center"
+  },
+  workoutViewLight: {
+    backgroundColor: '#2172ff',
+    color: '#ffffff',
+    marginBottom: 10
+  },
+  workoutViewDark: {
+    backgroundColor: '#ffe417',
+    color: '#000000',
+    marginBottom: 10
+  },
+  menuLight: {
+    padding: 5,
+    width: '90%',
+    left: '5%',
+    alignItems: 'flex-end'
   }
 });
 

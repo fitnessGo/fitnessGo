@@ -3,6 +3,7 @@
 
 pod 'Firebase/Core', '~> 5.20.1'
 pod 'Firebase/Analytics'
+pod 'Firebase/Database'
 pod 'Firebase/Auth'
 pod 'GoogleSignIn'
 
@@ -12,7 +13,7 @@ target 'FitnessGo' do
 
   # Pods for FitnessGo
 
-  pod 'RNSound', :path => '../node_modules/react-native-sound'
+ # pod 'RNSound', :path => '../node_modules/react-native-sound'
 
   target 'FitnessGoTests' do
     inherit! :search_paths
