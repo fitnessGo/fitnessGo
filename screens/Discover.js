@@ -14,6 +14,11 @@ class Discover extends Component {
       darkTheme: window.darkTheme
     }
     this.workouts = []
+  }
+  componentDidMount() {
+    this.fetchWorkoutsFromDatabase()
+  }
+  fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
       snapshot.forEach(function (workout) {
