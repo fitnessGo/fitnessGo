@@ -42,15 +42,14 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
+         <MenuProvider>
         <View style={styles.menuLight}>
           <Text>Filter</Text>
         </View>
-        <ScrollView style={[ScreenStyles.screenContainer, styles.container]}
-          showsVerticalScrollIndicator={false}>
-          <MenuProvider>
+        <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}>
             {discoverWorkoutViews}
-          </MenuProvider>
         </ScrollView>
+        </MenuProvider>
       </SafeAreaView>
 
     );
