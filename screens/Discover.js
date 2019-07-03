@@ -14,9 +14,22 @@ class Discover extends Component {
       darkTheme: window.darkTheme
     }
     this.workouts = []
+
+    //when returned to this screen check if props have changed 
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        if (this.state.darkTheme != window.darkTheme) {
+          this.setState({ darkTheme: window.darkTheme });
+        }
+      }
+    );
   }
   componentDidMount() {
     this.fetchWorkoutsFromDatabase()
+  }
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
   }
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
@@ -42,13 +55,13 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-         <MenuProvider>
-        <View style={styles.menuLight}>
-          <Text>Filter</Text>
-        </View>
-        <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}>
+        <MenuProvider>
+          <View style={styles.menuLight}>
+            <Text>Filter</Text>
+          </View>
+          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}>
             {discoverWorkoutViews}
-        </ScrollView>
+          </ScrollView>
         </MenuProvider>
       </SafeAreaView>
 
