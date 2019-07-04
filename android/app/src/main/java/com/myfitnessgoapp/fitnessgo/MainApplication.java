@@ -36,7 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGoogleSigninPackage(),
             new FacebookLoginPackage(),
             new RNFirebasePackage(),
-			      new RNFirebaseAuthPackage(),
+            new RNFirebaseAuthPackage(),
             new RNFirebaseDatabasePackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
