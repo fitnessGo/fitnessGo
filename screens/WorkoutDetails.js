@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, ScrollView, View, StyleSheet, Text, TextInput, Picker, SafeAreaView } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 import ExerciseDetailsView from './ExerciseDetailsView';
@@ -43,11 +43,10 @@ class WorkoutDetailsScreen extends React.Component {
         }
         //Show edit if the workout is in user library
         else {
-            console.warn(navigation.getParam('editing'))
             let buttonName = navigation.getParam('editing') ? "Save" : "Edit"
             return {
-            headerLeft: <Button type="clear" onPress={params.closeButtonPressed} title="Close" />,
-            headerRight: <Button type="clear" onPress={params.editButtonPressed} title={buttonName} />,
+                headerLeft: <Button type="clear" onPress={params.closeButtonPressed} title="Close" />,
+                headerRight: <Button type="clear" onPress={params.editButtonPressed} title={buttonName} />,
             }
         };
     };
@@ -79,20 +78,25 @@ class WorkoutDetailsScreen extends React.Component {
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
+        const screenCardStyle = this.discoverWorkout ? {top: '15%' , borderRadius: 24} : {}
+        var topMenu, bottomPadding;
         if(this.workout.exercises === undefined ) {
             return null
         }
-        var menu;
         if(this.discoverWorkout) {
-        } else {
-            
+            topMenu = <View>
+                <Icon type='MaterialIcons'
+                name="expand-more"
+                size={30}
+                color='#aaaaaa'/>
+            </View>
+            //to push up scroll view so it is not hidden begind the navigation tab
+            bottomPadding= <View style={{height: 130, backgroundColor: 'transparent'}}></View>
         }
-        
         return (
-            <SafeAreaView style={[ScreenStyles.screenContainer, theme.background, {top: '15%'}]}>
-               {menu}
-                <ScrollView style={ScreenStyles.screenContainer}>
-                
+            <SafeAreaView style={[ScreenStyles.screenContainer, theme.background, screenCardStyle]}>
+               {topMenu}
+                <ScrollView style={[ScreenStyles.screenContainer, {height: 20}]}>
                     <View style={styles.container}>
                         <View style={styles.workoutInfo}>
                             <TextInput
@@ -129,8 +133,10 @@ class WorkoutDetailsScreen extends React.Component {
                                 })
                             }
                         </View>
+                        {bottomPadding}
                     </View>
                 </ScrollView>
+                
             </SafeAreaView>
         );
     }
