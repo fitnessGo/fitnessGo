@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import WorkoutCard from "../components/WorkoutCard";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 import { FontStyles } from '../styles/global';
 
 class DiscoverItem extends Component {
+  onPress = () => { 
+    this.props.onPress(this.props.workout);
+  }
   render() {
     let textStyle;
     if (this.props.style != undefined) {
@@ -34,7 +37,8 @@ class DiscoverItem extends Component {
         <Menu>
           <MenuTrigger
             triggerOnLongPress={true}
-            customStyles={triggerMenuTouchable}
+            customStyles={triggerMenuTouchable} 
+            onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
           >
             <Text style={[textStyle, FontStyles.h1]}>{this.props.workout.name}</Text>
             <View style={styles.info}>
@@ -65,8 +69,8 @@ const styles = StyleSheet.create({
 
 const popUpStyles = {
   optionsContainer: {
-    borderRadius: 12,
-    width: 100
+    borderRadius: 6,
+    width: 130
   }
 };
 
