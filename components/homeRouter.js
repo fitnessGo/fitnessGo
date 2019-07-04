@@ -69,11 +69,10 @@ const DiscoverStack = createStackNavigator({
 }, 
 {
   mode: 'modal',
-  headerMode: 'none',
   cardStyle: {
-    backgroundColor:"transparent"
+    opacity: 1.0
   },
-  transparentCard: true
+  transparentCard: false
 })
 const AuthStack = createStackNavigator({ SignIn: LogInOptionsScreen, Register: CreateAccount });
 
