@@ -78,24 +78,11 @@ class WorkoutDetailsScreen extends React.Component {
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
-        const screenCardStyle = this.discoverWorkout ? {top: '15%' , borderRadius: 24} : {}
-        var topMenu, bottomPadding;
         if(this.workout.exercises === undefined ) {
             return null
         }
-        if(this.discoverWorkout) {
-            topMenu = <View>
-                <Icon type='MaterialIcons'
-                name="expand-more"
-                size={30}
-                color='#aaaaaa'/>
-            </View>
-            //to push up scroll view so it is not hidden begind the navigation tab
-            bottomPadding= <View style={{height: 130, backgroundColor: 'transparent'}}></View>
-        }
         return (
-            <SafeAreaView style={[ScreenStyles.screenContainer, theme.background, screenCardStyle]}>
-               {topMenu}
+            <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
                 <ScrollView style={[ScreenStyles.screenContainer, {height: 20}]}>
                     <View style={styles.container}>
                         <View style={styles.workoutInfo}>
@@ -133,7 +120,6 @@ class WorkoutDetailsScreen extends React.Component {
                                 })
                             }
                         </View>
-                        {bottomPadding}
                     </View>
                 </ScrollView>
                 
