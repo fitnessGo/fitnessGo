@@ -7,7 +7,8 @@ import com.zmxv.RNSound.RNSoundPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.magus.fblogin.FacebookLoginPackage;
 import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.auth.RNFirebaseAuthPackage; //
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
 import com.oblador.vectoricons.BuildConfig;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -35,7 +36,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGoogleSigninPackage(),
             new FacebookLoginPackage(),
             new RNFirebasePackage(),
-			new RNFirebaseAuthPackage(),
+			      new RNFirebaseAuthPackage(),
+            new RNFirebaseDatabasePackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
       );
