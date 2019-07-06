@@ -17,6 +17,8 @@ import { FontStyles, ScreenStyles } from "../styles/global";
 import { thisExpression } from "@babel/types";
 import ExerciseCard from "../components/ExerciseCard";
 import { KeyboardAvoidingView } from "react-native";
+import firebase from "react-native-firebase";
+import moment from 'moment';
 
 class CreateWorkoutScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -150,20 +152,32 @@ class CreateWorkoutScreen extends React.Component {
   saveWorkout() {
     let message = this.validateWorkout();
     if (message === "") {
-      let newWorkout = {
-        id: 9999,
-        name: this.state.name,
-        category: this.state.category,
-        description: "",
-        createdBy: "name2@example.com",
-        timeCreated: 24042019,
-        exercises: this.state.exercises
-      };
       this.setState({ saved: true });
-      this.workouts.push(newWorkout);
-      this.props.navigation.state.params.update(this.workouts);
-    } else {
-      Alert.alert("Error!", message);
+      const user = firebase.auth().currentUser;
+      if (user) {
+        const timestamp = Number(moment().format('x'));
+
+        const userDataRef = firebase
+          .database()
+          .ref("users/" + user.uid + "/workouts/");
+
+        userDataRef
+          .push({
+            name: this.state.name,
+            category: this.state.category,
+            createdBy: user.email,
+            timeCreated: timestamp,
+            exercises: this.state.exercises
+          })
+          .then(data => {
+            this.goHome();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        Alert.alert("Error!", message);
+      }
     }
   }
 
