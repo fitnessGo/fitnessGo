@@ -50,12 +50,11 @@ class Discover extends Component {
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
-      for(var index =0; index< this.workouts.length; index++) {
-        const workout = this.workouts[index];
+      this.workouts.map( (workout, index) => { 
         discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
-      }
+      })
     } else {
-      discoverWorkoutViews = <Text>Add spinner</Text>
+      discoverWorkoutViews = <Text>Loading...</Text>
     }
     const theme = getStyleSheet(this.state.darkTheme);
     return (
