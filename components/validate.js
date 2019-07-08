@@ -19,12 +19,7 @@ class Validator {
             }
         }
 
-        if (durationCheck && notesCheck && repetitionCheck && weightCheck) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (durationCheck && notesCheck && repetitionCheck && weightCheck);
     }
 
     validateExercise(exercise) {
@@ -43,12 +38,7 @@ class Validator {
             }
         }
 
-        if (nameCheck && descriptionCheck && setCheck) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (nameCheck && descriptionCheck && setCheck);
     }
 
     validateWorkout(workout) {
@@ -62,11 +52,6 @@ class Validator {
                 exerciseCheck == true;
             }
         }
-        if (nameCheck && exerciseCheck) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (nameCheck && exerciseCheck);
     }
 }
