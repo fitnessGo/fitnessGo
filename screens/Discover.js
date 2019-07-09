@@ -45,13 +45,16 @@ class Discover extends Component {
   _onWorkoutSelect(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
+  _onPlayButtonClick(w) {
+    this.props.navigation.navigate('RunWorkout', { workout: w });
+  }
   render() {
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
       this.workouts.map( (workout, index) => { 
-        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
+        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this._onPlayButtonClick(workout)} style={style} />)
       })
     } else {
       discoverWorkoutViews = <Text>Loading...</Text>
