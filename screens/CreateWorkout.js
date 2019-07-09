@@ -18,7 +18,7 @@ import { thisExpression } from "@babel/types";
 import ExerciseCard from "../components/ExerciseCard";
 import { KeyboardAvoidingView } from "react-native";
 import firebase from "react-native-firebase";
-import moment from 'moment';
+import moment from "moment";
 
 class CreateWorkoutScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -31,7 +31,20 @@ class CreateWorkoutScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.workoutCategories = ["Stretching", "Cardio"];
+    this.workoutCategories = [
+      "Abs",
+      "Arms",
+      "Back",
+      "Balance",
+      "Cardio",
+      "Chest",
+      "CrossFit",
+      "Flexibility",
+      "Legs",
+      "Shoulders",
+      "Strength",
+      "Swimming"
+    ];
     this.state = {
       darkTheme: false,
       name: "",
@@ -155,7 +168,7 @@ class CreateWorkoutScreen extends React.Component {
       this.setState({ saved: true });
       const user = firebase.auth().currentUser;
       if (user) {
-        const timestamp = Number(moment().format('x'));
+        const timestamp = Number(moment().format("x"));
 
         const userDataRef = firebase
           .database()
