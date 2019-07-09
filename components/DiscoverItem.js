@@ -68,7 +68,8 @@ class DiscoverItem extends Component {
                     </View>
           </MenuTrigger>
           <MenuOptions customStyles={popUpStyles}>
-            <MenuOption text="Details" onSelect={() => this.props.onPress(this.props.workout)}/>
+            <MenuOption text="Details" onSelect={() => this.onPress()}/>
+            <MenuOption text="Play" onSelect={() => this. _onPlayButtonClick()}/>
             <MenuOption text="Add to my library" onSelect={() => alert(`Add to my library will be added soon`)}/>
             <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)}/>
           </MenuOptions>
