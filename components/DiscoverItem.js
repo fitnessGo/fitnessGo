@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import WorkoutCard from "../components/WorkoutCard";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
+import { Button, Icon } from 'react-native-elements';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { FontStyles } from '../styles/global';
 
 class DiscoverItem extends Component {
+  constructor(props){
+    super(props);
+    this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
+  }
   onPress = () => { 
     this.props.onPress(this.props.workout);
+  }
+  _onPlayButtonClick() {
+    this.props.onPlayButtonClick(this.props.workout);
   }
   render() {
     let textStyle;
@@ -51,6 +59,13 @@ class DiscoverItem extends Component {
               <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
               <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
             </View>
+            <View style={{ alignItems: 'flex-end' }}>
+                        <Button
+                            type="clear"
+                            icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
+                            onPress={this._onPlayButtonClick}
+                        />
+                    </View>
           </MenuTrigger>
           <MenuOptions customStyles={popUpStyles}>
             <MenuOption text="Details" onSelect={() => this.props.onPress(this.props.workout)}/>
