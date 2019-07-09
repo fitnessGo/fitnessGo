@@ -31,24 +31,10 @@ class CreateWorkoutScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.workoutCategories = [
-      "Abs",
-      "Arms",
-      "Back",
-      "Balance",
-      "Cardio",
-      "Chest",
-      "CrossFit",
-      "Flexibility",
-      "Legs",
-      "Shoulders",
-      "Strength",
-      "Swimming"
-    ];
     this.state = {
       darkTheme: false,
       name: "",
-      category: this.workoutCategories[0],
+      category:  "",
       exercises: [
         {
           id: 0,
@@ -57,7 +43,8 @@ class CreateWorkoutScreen extends React.Component {
           exerciseSets: []
         }
       ],
-      saved: false
+      saved: false,
+      workoutCategories: []
     };
 
     const { params } = this.props.navigation.state;
@@ -74,6 +61,13 @@ class CreateWorkoutScreen extends React.Component {
   componentDidMount() {
     this.props.navigation.setParams({ save: this.saveWorkout });
     this.props.navigation.setParams({ goHome: this.goHome });
+    firebase.database().ref('/common/workoutCategories/').once('value').then((snapshot) => {
+      let workoutCategories = []
+      snapshot.forEach(function (category) {
+        workoutCategories.push(category.val())
+      });
+      this.setState({ category: workoutCategories[0], workoutCategories });
+    });
   }
 
   goHome() {
@@ -241,7 +235,7 @@ class CreateWorkoutScreen extends React.Component {
                       this.setState({ category })
                     }
                   >
-                    {this.workoutCategories.map((category, i) => {
+                    {this.state.workoutCategories.map((category, i) => {
                       return (
                         <Picker.Item
                           key={i}
