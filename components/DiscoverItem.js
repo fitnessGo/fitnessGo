@@ -15,7 +15,8 @@ class DiscoverItem extends Component {
     }
     //Calc workout total duration
     var totalDurationSec = 0;
-    this.props.workout.exercises.map(exercise => {
+    const workout = this.props.workout;
+    workout.exercises.map(exercise => {
       exercise.exerciseSets.map(set => {
           totalDurationSec += set.duration
           totalDurationSec += isNaN(set.break) ? 0 : set.break
@@ -25,10 +26,10 @@ class DiscoverItem extends Component {
     let sec = totalDurationSec % 60;
     //Show some exercises from the workout (first three)
     var exampleExercises = ""
-    for(var i = 0; i < this.props.workout.exercises.length; i++) {
+    for(var i = 0; i < workout.exercises.length; i++) {
       if(i >= 3) { break;}
-      exampleExercises += this.props.workout.exercises[i].name;
-      if(i < 2 && i < this.props.workout.exercises.length-1) {
+      exampleExercises += workout.exercises[i].name;
+      if(i < 2 && i < workout.exercises.length-1) {
         exampleExercises += ", "
       }
     }
@@ -40,17 +41,21 @@ class DiscoverItem extends Component {
             customStyles={triggerMenuTouchable} 
             onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
           >
-            <Text style={[textStyle, FontStyles.h1]}>{this.props.workout.name}</Text>
+            <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
+            </View> 
             <View style={styles.info}>
-              <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{this.props.workout.category}</Text></Text>
-              <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{this.props.workout.exercises.length}</Text></Text>
+              <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{workout.category}</Text></Text>
+              <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
               <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
               <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={popUpStyles}>
-            <MenuOption text="Add to my library" />
-            <MenuOption text="Share" />
+            <MenuOption text="Details" onSelect={() => this.props.onPress(this.props.workout)}/>
+            <MenuOption text="Add to my library" onSelect={() => alert(`Add to my library will be added soon`)}/>
+            <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)}/>
           </MenuOptions>
         </Menu>
       </WorkoutCard>
@@ -64,6 +69,18 @@ const styles = StyleSheet.create({
   },
   info: {
     paddingTop: 5
+  },
+  badge: {
+    backgroundColor: '#f80',
+    paddingHorizontal: 5,
+    paddingVertical: 0,
+    borderRadius: 10,
+    left: -3,
+    alignSelf: 'flex-start'
+  },
+  badgeText: {
+    color: '#ffffff',
+    fontSize: FontStyles.default.fontSize
   }
 });
 
