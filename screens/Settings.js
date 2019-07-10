@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, Button, View, Alert, SafeAreaView, Switch, Text } from "react-native";
+import { StyleSheet, Button, View, Alert, SafeAreaView, Switch, Text, TouchableOpacity } from "react-native";
 import { ScreenStyles } from "../styles/global";
 import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
 import firebase from 'react-native-firebase';
+import { ListItem } from 'react-native-elements';
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -63,11 +64,13 @@ export default class SettingsScreen extends Component {
 
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
-    const textStyle = this.state.darkTheme ? styles.textDark : styles.textLight; 
+    const textStyle = this.state.darkTheme ? styles.textDark : styles.textLight;
+    const iconStyle = this.state.darkTheme ? styles.iconDark.color : styles.iconLight.color;
+
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <View style={styles.container}>
-          <Button
+        <View >
+          {/* <Button
             style={styles.button}
             title="Delete Account"
             color="red"
@@ -79,7 +82,34 @@ export default class SettingsScreen extends Component {
             <Text style={textStyle}>Dark theme </Text>
             <Switch
               onValueChange={this.toggleDarkTheme}
-              value={this.state.darkTheme} /></View>
+              value={this.state.darkTheme} /></View> */}
+
+          <TouchableOpacity onPress={this.deleteAccount}>
+            <ListItem
+              title='Delete Account'
+              leftIcon={{ name: 'delete', color: iconStyle }}
+              containerStyle={theme.background}
+              titleStyle={textStyle}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.logout}>
+            <ListItem
+              title='Log Out'
+              leftIcon={{ name: 'md-log-out', type: 'ionicon', color: iconStyle }}
+              containerStyle={theme.background}
+              titleStyle={textStyle}
+            />
+          </TouchableOpacity>
+
+          <ListItem
+            leftIcon={<Switch
+              onValueChange={this.toggleDarkTheme}
+              value={this.state.darkTheme} />}
+            title='Dark theme'
+            containerStyle={theme.background}
+            titleStyle={textStyle}
+          />
         </View>
       </SafeAreaView>
     );
@@ -97,10 +127,18 @@ const styles = StyleSheet.create({
   },
   textLight: {
     color: '#000000',
-    fontSize: 18
+    fontSize: 18,
+
   },
   textDark: {
     color: '#ffffff',
-    fontSize: 18
+    fontSize: 18,
+  },
+  iconLight: {
+    color: '#000000'
+  },
+  iconDark: {
+    color: '#ffffff',
   }
+
 });
