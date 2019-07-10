@@ -6,11 +6,11 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-m
 import { FontStyles } from '../styles/global';
 
 class DiscoverItem extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
   }
-  onPress = () => { 
+  onPress = () => {
     this.props.onPress(this.props.workout);
   }
   _onPlayButtonClick() {
@@ -26,52 +26,65 @@ class DiscoverItem extends Component {
     const workout = this.props.workout;
     workout.exercises.map(exercise => {
       exercise.exerciseSets.map(set => {
-          totalDurationSec += set.duration
-          totalDurationSec += isNaN(set.break) ? 0 : set.break
+        totalDurationSec += set.duration
+        totalDurationSec += isNaN(set.break) ? 0 : set.break
       })
     })
     let min = Math.floor(totalDurationSec / 60);
     let sec = totalDurationSec % 60;
     //Show some exercises from the workout (first three)
     var exampleExercises = ""
-    for(var i = 0; i < workout.exercises.length; i++) {
-      if(i >= 3) { break;}
+    for (var i = 0; i < workout.exercises.length; i++) {
+      if (i >= 3) { break; }
       exampleExercises += workout.exercises[i].name;
-      if(i < 2 && i < workout.exercises.length-1) {
+      if (i < 2 && i < workout.exercises.length - 1) {
         exampleExercises += ", "
       }
     }
+    const WorkoutAddedBadge = () => {
+      if (workout.added) {
+        return(
+          <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', alignContent: 'flex-end' }}>
+            <Text style={{ color: '#dadada' }}>Added to my library</Text>
+            <Icon name='check-circle' type='MaterialIcons' color='#5fe800' size={22} />
+          </View>
+        )
+      }
+      return <View/>;
+    }
+
     return (
       <WorkoutCard style={[styles.viewStyle, this.props.style]}>
         <Menu>
           <MenuTrigger
             triggerOnLongPress={true}
-            customStyles={triggerMenuTouchable} 
+            customStyles={triggerMenuTouchable}
             onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
           >
             <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
-            </View> 
+            </View>
             <View style={styles.info}>
               <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{workout.category}</Text></Text>
               <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
               <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
               <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
             </View>
-            <View style={{ alignItems: 'flex-end' }}>
-                        <Button
-                            type="clear"
-                            icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
-                            onPress={this._onPlayButtonClick}
-                        />
-                    </View>
+            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between',  }}>
+              <WorkoutAddedBadge/>
+              <Button
+                type="clear"
+                icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
+                onPress={this._onPlayButtonClick}
+              />
+            </View>
           </MenuTrigger>
           <MenuOptions customStyles={popUpStyles}>
-            <MenuOption text="Details" onSelect={() => this.onPress()}/>
-            <MenuOption text="Play" onSelect={() => this. _onPlayButtonClick()}/>
-            <MenuOption text="Add to my library" onSelect={() => alert(`Add to my library will be added soon`)}/>
-            <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)}/>
+            <MenuOption text="Details" onSelect={() => this.onPress()} />
+            <MenuOption text="Play" onSelect={() => this._onPlayButtonClick()} />
+            <MenuOption text="Add to my library" onSelect={() => alert(`Add to my library will be added soon`)} />
+            <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
           </MenuOptions>
         </Menu>
       </WorkoutCard>
