@@ -27,16 +27,37 @@ class Discover extends Component {
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
   }
   componentDidMount() {
-    this.fetchWorkoutsFromDatabase()
+    this.fetchWorkoutsFromDatabase();
   }
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
+  getUserSavedDiscoverWorkouts() {
+    const user = firebase.auth().currentUser;
+      if (user) {
+        const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
+          var references = []
+          snapshot.forEach(function (workoutRef) {
+            const w = workoutRef.val();
+            if(w.refId)
+            references.push(w.refId)
+          });
+         return references;
+        });
+      } else {
+        return null;
+      }
+  }
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
-      snapshot.forEach(function (workout) {
-        wrks.push(workout.val())
+      const discoverRefs = this.getUserSavedDiscoverWorkouts();
+      snapshot.forEach(function (workoutRef) {
+        var workout = workoutRef.val();
+        //check if the discover workout was added to the user library
+        if(discoverRefs)
+          workout.added = discoverRefs.includes(workout.refId);
+        wrks.push(workout)
       });
       this.workouts = wrks
       this.setState({ dataReceived: true })
