@@ -24,6 +24,7 @@ class Discover extends Component {
         }
       }
     );
+    this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
   }
   componentDidMount() {
     this.fetchWorkoutsFromDatabase()
@@ -41,16 +42,19 @@ class Discover extends Component {
       this.setState({ dataReceived: true })
     });
   }
+  _onWorkoutSelect(workout) {
+    this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
+  }
   render() {
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
-      this.workouts.forEach(function (workout, index) {
-        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(index) => { this.onTimerSelect(index) }} style={style} />)
-      });
+      this.workouts.map( (workout, index) => { 
+        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
+      })
     } else {
-      discoverWorkoutViews = <Text>Add spinner</Text>
+      discoverWorkoutViews = <Text>Loading...</Text>
     }
     const theme = getStyleSheet(this.state.darkTheme);
     return (

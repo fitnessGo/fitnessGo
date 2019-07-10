@@ -26,13 +26,15 @@ const WorkoutStack = createStackNavigator(
     WorkoutDetails: {
       screen: WorkoutDetails,
       navigationOptions: {
-        title: "Details"
+        title: "Details",
+        headerMode: 'none',
+        mode: 'modal',
       }
     },
     RunWorkout: {
       screen: RunWorkoutScreen,
       navigationOptions: {
-        title: "Play workout"
+        title: "Play workout",
       }
     },
     CreateWorkout: {
@@ -51,7 +53,26 @@ const DiscoverStack = createStackNavigator({
     navigationOptions: {
       title: "Discover"
     }
+  },
+  WorkoutDetails: {
+    screen: WorkoutDetails,
+    navigationOptions: {
+      title: "Details"
+    }
+  },
+  RunWorkout: {
+    screen: RunWorkoutScreen,
+    navigationOptions: {
+      title: "Play workout"
+    }
   }
+}, 
+{
+  mode: 'modal',
+  cardStyle: {
+    opacity: 1.0
+  },
+  transparentCard: false
 })
 const AuthStack = createStackNavigator({ SignIn: LogInOptionsScreen, Register: CreateAccount });
 

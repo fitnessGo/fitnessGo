@@ -9,6 +9,7 @@ import com.magus.fblogin.FacebookLoginPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import com.google.firebase.database.FirebaseDatabase;
 import com.oblador.vectoricons.BuildConfig;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -57,6 +58,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
