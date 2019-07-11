@@ -24,7 +24,6 @@ class Discover extends Component {
         }
       }
     );
-    this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
   }
   componentDidMount() {
     this.fetchWorkoutsFromDatabase();
@@ -32,42 +31,42 @@ class Discover extends Component {
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
-  getUserSavedDiscoverWorkouts() {
+  getUserSavedDiscoverWorkouts(onCompletion) {
     const user = firebase.auth().currentUser;
     if (user) {
-      const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
+      firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
         var references = []
         snapshot.forEach(function (workoutRef) {
           const w = workoutRef.val();
           if (w.refId)
             references.push(w.refId)
         });
-        return references;
+        onCompletion(references)
       });
     } else {
-      return null;
+      onCompletion(null)
     }
   }
+
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
-      const discoverRefs = this.getUserSavedDiscoverWorkouts();
-      snapshot.forEach(function (workoutRef) {
-        var workout = workoutRef.val();
-        //check if the discover workout was added to the user library
-        if (discoverRefs)
-          workout.added = discoverRefs.includes(workout.id);
-        wrks.push(workout)
+      this.getUserSavedDiscoverWorkouts( (references) => {
+        snapshot.forEach(function (workoutRef) {
+          var workout = workoutRef.val();
+          //check if the discover workout was added to the user library
+          if (references) {
+            workout.added = references.includes(workout.id);
+          }
+          wrks.push(workout)
+        });
+        this.workouts = wrks
+        this.setState({ dataReceived: true })
       });
-      this.workouts = wrks
-      this.setState({ dataReceived: true })
     });
   }
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
-  }
-  _onWorkoutSelect(workout) {
-    openWorkoutDetails(workout)
   }
   playWorkout(workout) {
     this.props.navigation.navigate('RunWorkout', { workout: workout });
@@ -103,7 +102,7 @@ class Discover extends Component {
               customStyles={triggerMenuTouchable}
               onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
             >
-              <DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+              <DiscoverItem workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
