@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
-import { MenuProvider } from "react-native-popup-menu";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet } from "react-native";
+import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 
@@ -63,11 +63,17 @@ class Discover extends Component {
       this.setState({ dataReceived: true })
     });
   }
-  _onWorkoutSelect(workout) {
+  openWorkoutDetails(workout){
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
-  _onPlayButtonClick(w) {
-    this.props.navigation.navigate('RunWorkout', { workout: w });
+  _onWorkoutSelect(workout) {
+    openWorkoutDetails(workout)
+  }
+  playWorkout(workout) {
+    this.props.navigation.navigate('RunWorkout', { workout: workout });
+  }
+  _addWorkoutToUserLib() {
+    
   }
   render() {
     var discoverWorkoutViews;
@@ -75,7 +81,23 @@ class Discover extends Component {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
       this.workouts.map( (workout, index) => { 
-        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this._onPlayButtonClick(workout)} style={style} />)
+        const workoutCard = 
+        <Menu>
+          <MenuTrigger
+            triggerOnLongPress={true}
+            customStyles={triggerMenuTouchable}
+            onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
+          >
+            <DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+            </MenuTrigger>
+          <MenuOptions customStyles={popUpStyles}>
+            <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
+            <MenuOption text="Play" onSelect={() => this.playWorkout(workout) } />
+            <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
+            <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
+          </MenuOptions>
+        </Menu>
+        discoverWorkoutViews.push(workoutCard);
       })
     } else {
       discoverWorkoutViews = <Text>Loading...</Text>
@@ -125,5 +147,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   }
 });
+
+const popUpStyles = {
+  optionsContainer: {
+    borderRadius: 6,
+    width: 130
+  }
+};
+
+const triggerMenuTouchable = { TriggerTouchableComponent: TouchableOpacity };
+
 
 export default Discover;
