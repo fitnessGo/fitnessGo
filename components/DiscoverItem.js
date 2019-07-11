@@ -42,38 +42,38 @@ class DiscoverItem extends Component {
     }
     const WorkoutAddedBadge = () => {
       if (workout.added) {
-        return(
+        return (
           <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', alignContent: 'flex-end' }}>
             <Text style={{ color: '#dadada' }}>Added to my library</Text>
             <Icon name='check-circle' type='MaterialIcons' color='#5fe800' size={22} />
           </View>
         )
       }
-      return <View/>;
+      return <View />;
     }
 
     return (
       <TouchableOpacity onPress={this.onPress}>
-      <WorkoutCard style={[styles.viewStyle, this.props.style]}>
-            <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
-            </View>
-            <View style={styles.info}>
-              <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{workout.category}</Text></Text>
-              <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
-              <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
-              <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between',  }}>
-              <WorkoutAddedBadge/>
-              <Button
-                type="clear"
-                icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
-                onPress={this._onPlayButtonClick}
-              />
-            </View>
-      </WorkoutCard>
+        <WorkoutCard style={[styles.viewStyle, this.props.style]}>
+          <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
+          </View>
+          <View style={styles.info}>
+            <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{workout.category}</Text></Text>
+            <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
+            <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
+            <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
+            <WorkoutAddedBadge />
+            <Button
+              type="clear"
+              icon={<Icon name="play-arrow" size={22} color={textStyle.color} />}
+              onPress={this._onPlayButtonClick}
+            />
+          </View>
+        </WorkoutCard>
       </TouchableOpacity>
     );
   }
@@ -99,14 +99,4 @@ const styles = StyleSheet.create({
     fontSize: FontStyles.default.fontSize
   }
 });
-
-const popUpStyles = {
-  optionsContainer: {
-    borderRadius: 6,
-    width: 130
-  }
-};
-
-const triggerMenuTouchable = { TriggerTouchableComponent: TouchableOpacity };
-
 export default DiscoverItem;
