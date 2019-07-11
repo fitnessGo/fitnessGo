@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   TouchableHighlight,
-  SafeAreaView
+  SafeAreaView,
+  Alert
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import WorkoutView from "../components/WorkoutInfoView";
