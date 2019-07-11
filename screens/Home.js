@@ -3,10 +3,7 @@ import {
   ScrollView,
   View,
   StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
-  TouchableHighlight,
+  Text, Alert,
   SafeAreaView
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
@@ -65,7 +62,7 @@ class HomeScreen extends React.Component {
             this.setState({ workouts });
         });
     } else {
-      Alert.alert("Couldn't fetch your workouts 😔 Try again later.", message);
+      Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
     }
   }
 
