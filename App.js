@@ -1,12 +1,18 @@
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import AppContainer from "./components/homeRouter"; 
+import FlashMessage from "react-native-flash-message";
 
 type Props = {};
 export default class App extends Component<Props> {
   render() {
-    return <AppContainer/>;
+    return (
+    <View style={{flex: 1}}>
+      <AppContainer/>
+      <FlashMessage position="top"/> 
+    </View>
+    );
   }
 }
 
