@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import WorkoutCard from "../components/WorkoutCard";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Icon } from 'react-native-elements';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { FontStyles } from '../styles/global';
 
 class DiscoverItem extends Component {
@@ -54,8 +53,8 @@ class DiscoverItem extends Component {
     }
 
     return (
+      <TouchableOpacity onPress={this.onPress}>
       <WorkoutCard style={[styles.viewStyle, this.props.style]}>
-       
             <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
@@ -74,8 +73,8 @@ class DiscoverItem extends Component {
                 onPress={this._onPlayButtonClick}
               />
             </View>
-          
       </WorkoutCard>
+      </TouchableOpacity>
     );
   }
 }
