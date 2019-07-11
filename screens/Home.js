@@ -62,7 +62,7 @@ class HomeScreen extends React.Component {
             this.setState({ workouts });
         });
     } else {
-      Alert.alert("Couldn't fetch your workouts 😔 Try again later.", message);
+      Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
     }
   }
 
