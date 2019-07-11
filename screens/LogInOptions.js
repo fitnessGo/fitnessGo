@@ -10,6 +10,9 @@ class LogInScreen extends React.Component {
     title: "Log in"
   };
 
+  toString(err) {
+    return err + "";
+  }
   onLogInWithFaceBookClick() {
     handleFbLogin()
       .then(err => {
@@ -18,7 +21,13 @@ class LogInScreen extends React.Component {
         }
       })
       .catch(err => {
-        alert("Couldn't authenticate your Facebook account 🙁");
+        var str = JSON.stringify(err);
+        if (str.includes("CONNECTION_FAILURE")) {
+          alert("Unable to Sign you in. Please check your internet connection!");
+        }
+        else {
+          alert("There was a problem in signing you in. Please try again.");
+        }
       });
   }
 
@@ -30,7 +39,12 @@ class LogInScreen extends React.Component {
         }
       })
       .catch(err => {
-        alert("Couldn't authenticate your Google account 🙁");
+        if (this.toString(err) == "Error: NETWORK_ERROR") {
+          alert("Unable to Sign you in. Please check your internet connection!");
+        }
+        else {
+          alert("There was a problem in signing you in. Please try again.");
+        }
       });
   }
 
@@ -57,7 +71,7 @@ class LogInScreen extends React.Component {
           <Button
             buttonStyle={[styles.button, { backgroundColor: "#3C5A99" }]}
             icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20}} />}
-            
+
             title="Log in with Facebook"
             onPress={() => this.onLogInWithFaceBookClick()}
           />
