@@ -167,9 +167,13 @@ class CreateWorkoutScreen extends React.Component {
         const userDataRef = firebase
           .database()
           .ref("users/" + user.uid + "/workouts/");
-
-        userDataRef
-          .push({
+        //push() method without arguments is a pure client-side operation.
+        //generate a new ref where the object will be saved
+        var newWorkoutRef = userDataRef.push();
+        newWorkoutRef
+          .set({
+            //use refKey as a unique id
+            id: newWorkoutRef.key,
             name: this.state.name,
             category: this.state.category,
             createdBy: user.email,
