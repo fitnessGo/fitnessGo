@@ -4,7 +4,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-
 import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
-
+import moment from 'moment';
 import firebase from 'react-native-firebase';
 
 class Discover extends Component {
@@ -34,19 +34,19 @@ class Discover extends Component {
   }
   getUserSavedDiscoverWorkouts() {
     const user = firebase.auth().currentUser;
-      if (user) {
-        const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
-          var references = []
-          snapshot.forEach(function (workoutRef) {
-            const w = workoutRef.val();
-            if(w.refId)
+    if (user) {
+      const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
+        var references = []
+        snapshot.forEach(function (workoutRef) {
+          const w = workoutRef.val();
+          if (w.refId)
             references.push(w.refId)
-          });
-         return references;
         });
-      } else {
-        return null;
-      }
+        return references;
+      });
+    } else {
+      return null;
+    }
   }
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
@@ -55,15 +55,15 @@ class Discover extends Component {
       snapshot.forEach(function (workoutRef) {
         var workout = workoutRef.val();
         //check if the discover workout was added to the user library
-        if(discoverRefs)
-          workout.added = discoverRefs.includes(workout.refId);
+        if (discoverRefs)
+          workout.added = discoverRefs.includes(workout.id);
         wrks.push(workout)
       });
       this.workouts = wrks
       this.setState({ dataReceived: true })
     });
   }
-  openWorkoutDetails(workout){
+  openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
   _onWorkoutSelect(workout) {
@@ -72,31 +72,46 @@ class Discover extends Component {
   playWorkout(workout) {
     this.props.navigation.navigate('RunWorkout', { workout: workout });
   }
-  _addWorkoutToUserLib() {
-    
+  _addWorkoutToUserLib(workout) {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const timestamp = Number(moment().format('x'));
+      const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
+      var newWorkoutRef = userDataRef.push();
+      //update props
+      workout.timeCreated = timestamp;
+      delete workout.added; //only needed it on this screen
+      workout.refId = workout.id; //reference to Discover workout
+      workout.id = newWorkoutRef.key; //update id (new Id in the user lib)
+      newWorkoutRef.set(workout).then(data => {
+        alert(workout.name + " was added to your library");
+      }).catch(error => {
+        console.warn("Error adding to the library: " + error);
+      });
+    }
   }
   render() {
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
-      this.workouts.map( (workout, index) => { 
-        const workoutCard = 
-        <Menu>
-          <MenuTrigger
-            triggerOnLongPress={true}
-            customStyles={triggerMenuTouchable}
-            onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
-          >
-            <DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+      this.workouts.map((workout, index) => {
+        const workoutCard =
+          <Menu>
+            <MenuTrigger
+              triggerOnLongPress={true}
+              customStyles={triggerMenuTouchable}
+              onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
+            >
+              <DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>
-          <MenuOptions customStyles={popUpStyles}>
-            <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
-            <MenuOption text="Play" onSelect={() => this.playWorkout(workout) } />
-            <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
-            <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
-          </MenuOptions>
-        </Menu>
+            <MenuOptions customStyles={popUpStyles}>
+              <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
+              <MenuOption text="Play" onSelect={() => this.playWorkout(workout)} />
+              <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
+              <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
+            </MenuOptions>
+          </Menu>
         discoverWorkoutViews.push(workoutCard);
       })
     } else {
