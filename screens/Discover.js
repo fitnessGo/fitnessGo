@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
 import { MenuProvider } from "react-native-popup-menu";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, ActivityIndicator } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 
@@ -54,7 +54,7 @@ class Discover extends Component {
         discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
       })
     } else {
-      discoverWorkoutViews = <Text>Loading...</Text>
+      discoverWorkoutViews = <ActivityIndicator size="small" color="#2172ff" />
     }
     const theme = getStyleSheet(this.state.darkTheme);
     return (
