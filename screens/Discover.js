@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
-import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -90,6 +90,7 @@ class Discover extends Component {
     }
   }
   render() {
+
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
@@ -100,7 +101,7 @@ class Discover extends Component {
             <MenuTrigger
               triggerOnLongPress={true}
               customStyles={triggerMenuTouchable}
-              onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
+              onAlternativeAction={() => this.openWorkoutDetails(workout)} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
             >
               <DiscoverItem workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>
