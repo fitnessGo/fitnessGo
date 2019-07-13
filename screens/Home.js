@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   Text, Alert,
-  SafeAreaView
+  SafeAreaView, RefreshControl
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import WorkoutView from "../components/WorkoutInfoView";
@@ -31,6 +31,7 @@ class HomeScreen extends React.Component {
     this.state = {
       darkTheme: window.darkTheme,
       dataReady: true,
+      refreshing: false,
       workouts: []
     };
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
@@ -46,26 +47,30 @@ class HomeScreen extends React.Component {
         }
       }
     );
-    this.localData=null; // or this
+    this.localData = null; // or this
   }
 
   componentDidMount() {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      const userDataRef = firebase
-        .database()
-        .ref("users/" + user.uid + "/workouts").on('value', (snapshot) => {
-            let workouts = [];
-            snapshot.forEach(snap => {
-                workouts.push(snap.val());
-            });
-            this.setState({ workouts });
-        });
-    } else {
-      Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
-    }
+    this.fetchUserWorkouts((workouts) => {
+      this.setState({ workouts: workouts });
+    })
   }
 
+  fetchUserWorkouts(onCompletion) {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.database().ref("users/" + user.uid + "/workouts").on('value', (snapshot) => {
+        let workouts = [];
+        snapshot.forEach(snap => {
+          workouts.push(snap.val());
+        });
+        onCompletion(workouts)
+      });
+    } else {
+      Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
+      onCompletion(null)
+    }
+  }
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
@@ -91,6 +96,12 @@ class HomeScreen extends React.Component {
   updateWorkouts(workouts) {
     this.setState({ workouts });
   }
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.fetchUserWorkouts((workouts) => {
+      this.setState({ refreshing: false, workouts: workouts });
+    });
+  }
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
     const workoutViewStyle = this.state.darkTheme
@@ -100,7 +111,8 @@ class HomeScreen extends React.Component {
       return (
         <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
           <ScrollView
-            style={[ScreenStyles.screenContainer, styles.workoutViewContainer]}
+            style={[ScreenStyles.screenContainer, styles.workoutViewContainer]} showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
           >
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={theme.text}>
@@ -120,7 +132,8 @@ class HomeScreen extends React.Component {
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <ScrollView style={ScreenStyles.screenContainer}>
+        <ScrollView style={ScreenStyles.screenContainer} showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}>
           <View ref="workoutsView" style={styles.workoutViewContainer}>
             {this.state.workouts.map((w, index) => {
               return (
