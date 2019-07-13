@@ -114,7 +114,7 @@ class ExerciseCard extends React.Component {
               {this.props.exercise.name}
             </TextInput>
             <Icon
-              name="minus-circle"
+              name="close"
               type="material-community"
               size={22}
               color={iconColor}

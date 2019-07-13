@@ -73,7 +73,7 @@ class SetCard extends React.Component {
             Set {this.props.id + 1}
           </Text>
           <Icon
-            name="minus-circle"
+            name="close"
             type="material-community"
             size={16}
             color={iconColor}
