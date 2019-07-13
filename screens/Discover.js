@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -26,7 +26,9 @@ class Discover extends Component {
     );
   }
   componentDidMount() {
-    this.fetchWorkoutsFromDatabase();
+    this.fetchWorkoutsFromDatabase(() => {
+      this.setState({ dataReceived: true })
+    });
   }
   componentWillUnmount() {
     this.willFocusSubscription.remove();
@@ -48,7 +50,7 @@ class Discover extends Component {
     }
   }
 
-  fetchWorkoutsFromDatabase() {
+  fetchWorkoutsFromDatabase(onCompletion) {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
       this.getUserSavedDiscoverWorkouts((references) => {
@@ -61,7 +63,7 @@ class Discover extends Component {
           wrks.push(workout)
         });
         this.workouts = wrks
-        this.setState({ dataReceived: true })
+        onCompletion();
       });
     });
   }
@@ -88,6 +90,12 @@ class Discover extends Component {
         console.warn("Error adding to the library: " + error);
       });
     }
+  }
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.fetchWorkoutsFromDatabase(() => {
+      this.setState({ refreshing: false });
+    });
   }
   render() {
     var discoverWorkoutViews;
@@ -122,7 +130,9 @@ class Discover extends Component {
           <View style={styles.menuLight}>
             <Text>Filter</Text>
           </View>
-          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}>
+          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+          >
             {discoverWorkoutViews}
           </ScrollView>
         </MenuProvider>
