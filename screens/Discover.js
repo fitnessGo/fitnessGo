@@ -51,7 +51,7 @@ class Discover extends Component {
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
-      this.getUserSavedDiscoverWorkouts( (references) => {
+      this.getUserSavedDiscoverWorkouts((references) => {
         snapshot.forEach(function (workoutRef) {
           var workout = workoutRef.val();
           //check if the discover workout was added to the user library
@@ -100,7 +100,7 @@ class Discover extends Component {
             <MenuTrigger
               triggerOnLongPress={true}
               customStyles={triggerMenuTouchable}
-              onAlternativeAction={this.onPress} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
+              onAlternativeAction={() => this.openWorkoutDetails(workout)} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
             >
               <DiscoverItem workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>

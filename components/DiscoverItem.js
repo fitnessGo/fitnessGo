@@ -53,7 +53,6 @@ class DiscoverItem extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={this.onPress}>
         <WorkoutCard style={[styles.viewStyle, this.props.style]}>
           <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
           <View style={styles.badge}>
@@ -74,7 +73,6 @@ class DiscoverItem extends Component {
             />
           </View>
         </WorkoutCard>
-      </TouchableOpacity>
     );
   }
 }
