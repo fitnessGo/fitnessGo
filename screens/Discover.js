@@ -113,7 +113,7 @@ class Discover extends Component {
         discoverWorkoutViews.push(workoutCard);
       })
     } else {
-      discoverWorkoutViews = <Text>Loading...</Text>
+      discoverWorkoutViews = <ActivityIndicator size="small" color="#2172ff" />
     }
     const theme = getStyleSheet(this.state.darkTheme);
     return (
