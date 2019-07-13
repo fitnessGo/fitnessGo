@@ -11,7 +11,8 @@ class Discover extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      darkTheme: window.darkTheme
+      darkTheme: window.darkTheme,
+      refreshing: false
     }
     this.workouts = []
 
