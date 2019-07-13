@@ -106,7 +106,6 @@ class Discover extends Component {
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
-              <MenuOption text="Play" onSelect={() => this.playWorkout(workout)} />
               <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
               <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
             </MenuOptions>
