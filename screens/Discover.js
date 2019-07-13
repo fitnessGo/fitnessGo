@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -51,7 +51,7 @@ class Discover extends Component {
   fetchWorkoutsFromDatabase() {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
-      this.getUserSavedDiscoverWorkouts( (references) => {
+      this.getUserSavedDiscoverWorkouts((references) => {
         snapshot.forEach(function (workoutRef) {
           var workout = workoutRef.val();
           //check if the discover workout was added to the user library
@@ -90,7 +90,6 @@ class Discover extends Component {
     }
   }
   render() {
-
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
