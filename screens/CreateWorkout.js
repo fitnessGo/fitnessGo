@@ -105,7 +105,7 @@ class CreateWorkoutScreen extends React.Component {
       exerciseSets: [
         {
           id: 0,
-          duration: 180,
+          duration: 0,
           repetitions: 0,
           weight: 0,
           notes: "",
