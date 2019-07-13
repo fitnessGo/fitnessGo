@@ -27,11 +27,10 @@ class ExerciseCard extends React.Component {
 
     let set = {
       id: sets.length,
-      duration: 0,
       repetitions: 0,
-      weight: 0,
-      notes: "",
-      break: 0
+      duration: 0,
+      break: 0,
+      weight: 0
     };
 
     sets.push(set);
@@ -51,6 +50,16 @@ class ExerciseCard extends React.Component {
     this.props.onDescChange(newDesc, id);
   }
 
+  deleteSet(id) {
+    console.warn(id);
+    let sets = this.state.exerciseSets;
+    sets = sets.filter(set => set.id !== id);
+    sets.forEach((set, id) => {
+      set.id = id;
+    });
+    this.setState({ exerciseSets: sets });
+  }
+
   updateSet(id, newSet) {
     let sets = this.state.exerciseSets;
     sets[id] = newSet;
@@ -62,6 +71,15 @@ class ExerciseCard extends React.Component {
         this.props.onSetsChange(this.state.exerciseSets, this.props.id);
       }
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.state.exerciseSets !== this.props.exercise.exerciseSets &&
+      this.props.exercise.exerciseSets !== prevProps.exercise.exerciseSets
+    ) {
+      this.setState({ exerciseSets: this.props.exercise.exerciseSets });
+    }
   }
 
   render() {
@@ -116,12 +134,13 @@ class ExerciseCard extends React.Component {
             {this.state.exerciseSets.map((es, index) => {
               return (
                 <View key={index}>
-                  <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
                   <SetCard
                     set={es}
                     id={index}
+                    value={es}
                     onChange={this.updateSet}
                     darkTheme={this.props.darkTheme}
+                    onDeletePress={() => this.deleteSet(index)}
                   />
                 </View>
               );
