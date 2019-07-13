@@ -51,7 +51,6 @@ class ExerciseCard extends React.Component {
   }
 
   deleteSet(id) {
-    console.warn(id);
     let sets = this.state.exerciseSets;
     sets = sets.filter(set => set.id !== id);
     sets.forEach((set, id) => {
