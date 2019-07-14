@@ -118,8 +118,28 @@ class HomeScreen extends React.Component {
   };
 
   deleteWorkout(workout) {
-    const user = firebase.auth().currentUser;
-    firebase.database().ref("users/" + user.uid + "/workouts").child(workout.id).remove();
+    Alert.alert(
+      "Confirmation",
+      "Are you sure you want to delete this workout?",
+      [
+        {
+          text: "Delete",
+          onPress: () => {
+            const user = firebase.auth().currentUser;
+            firebase
+              .database()
+              .ref("users/" + user.uid + "/workouts")
+              .child(workout.id)
+              .remove();
+          },
+          style: "destructive"
+        },
+        {
+          text: "Cancel",
+          style: "cancel"
+        }
+      ]
+    );
   }
 
   render() {
