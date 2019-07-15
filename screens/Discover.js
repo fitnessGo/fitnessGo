@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import DiscoverItem from "../components/DiscoverItem";
-import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
 import firebase from 'react-native-firebase';
+import { showMessage } from "react-native-flash-message";
 
 class Discover extends Component {
   constructor(props) {
@@ -22,6 +23,15 @@ class Discover extends Component {
       () => {
         if (this.state.darkTheme != window.darkTheme) {
           this.setState({ darkTheme: window.darkTheme });
+        }
+        // Do not fetch when the tab opens for the first time. 
+        // Only do it if the user went back to this tab from another tab. 
+        // In case if user deleted a Discover workout from their library, we need to remove a label from it on this tab
+        if(this.state.dataReceived) {
+          this.setState({refreshing: true})
+          this.fetchWorkoutsFromDatabase(() => {
+            this.setState({ refreshing: false })
+          });
         }
       }
     );
@@ -75,21 +85,40 @@ class Discover extends Component {
     this.props.navigation.navigate('RunWorkout', { workout: workout });
   }
   _addWorkoutToUserLib(workout) {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      const timestamp = Number(moment().format('x'));
-      const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
-      var newWorkoutRef = userDataRef.push();
-      //update props
-      workout.timeCreated = timestamp;
-      delete workout.added; //only needed it on this screen
-      workout.refId = workout.id; //reference to Discover workout
-      workout.id = newWorkoutRef.key; //update id (new Id in the user lib)
-      newWorkoutRef.set(workout).then(data => {
-        alert(workout.name + " was added to your library");
-      }).catch(error => {
-        console.warn("Error adding to the library: " + error);
-      });
+    if (!workout.added) {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        const timestamp = Number(moment().format('x'));
+        const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
+        var newWorkoutRef = userDataRef.push();
+        //update props
+        workout.timeCreated = timestamp;
+        delete workout.added; //only needed it on this screen
+        workout.refId = workout.id; //reference to Discover workout
+        workout.id = newWorkoutRef.key; //update id (new Id in the user lib)
+        newWorkoutRef.set(workout).then(data => {
+          showMessage({
+            message: "Workout was added to your library",
+            icon: "auto",
+            type: "success"
+          })
+          workout.added = true;
+          this.setState({refreshing: false});
+        }).catch(error => {
+          showMessage({
+            message: "Could not add workout to your library",
+            description: error,
+            icon: "auto",
+            type: "danger"
+          })
+        });
+      }
+    } else {
+      showMessage({
+        message: "This workout has already been added to your library",
+        icon: "auto",
+        type: "info"
+      })
     }
   }
   _onRefresh = () => {
@@ -105,13 +134,13 @@ class Discover extends Component {
       discoverWorkoutViews = []
       this.workouts.map((workout, index) => {
         const workoutCard =
-          <Menu>
+          <Menu key={index} >
             <MenuTrigger
               triggerOnLongPress={true}
               customStyles={triggerMenuTouchable}
               onAlternativeAction={() => this.openWorkoutDetails(workout)} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
             >
-              <DiscoverItem workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+              <DiscoverItem workout={workout} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
@@ -127,7 +156,7 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <MenuProvider>
+       
           <View style={styles.menuLight}>
             <Text>Filter</Text>
           </View>
@@ -136,7 +165,7 @@ class Discover extends Component {
           >
             {discoverWorkoutViews}
           </ScrollView>
-        </MenuProvider>
+
       </SafeAreaView>
 
     );
