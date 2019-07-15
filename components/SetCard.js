@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, TextInput } from "react-native";
 import WorkoutCard from "../components/WorkoutCard";
 import { FontStyles, ScreenStyles } from "../styles/global";
+import { Button, Icon } from "react-native-elements";
 
 class SetCard extends React.Component {
   constructor(props) {
@@ -50,8 +51,35 @@ class SetCard extends React.Component {
       this.props.darkTheme || false
         ? setViewStyles.exersiseSetViewTextDark
         : setViewStyles.exersiseSetViewTextLight;
+        const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
+
     return (
       <View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "18%"
+          }}
+        >
+          <Text
+            style={{
+              color: "#000000",
+              fontSize: 16
+            }}
+          >
+            Set {this.props.id + 1}
+          </Text>
+          <Icon
+            name="close"
+            type="material-community"
+            size={16}
+            color={iconColor}
+            onPress={this.props.onDeletePress}
+          />
+        </View>
         <WorkoutCard style={setViewStyle}>
           <View style={setViewStyles.setCardRow}>
             <Text
@@ -67,9 +95,10 @@ class SetCard extends React.Component {
               keyboardType="number-pad"
               style={[setViewStyles.setDetailValue, FontStyles.h3]}
               placeholder="0"
-              
               onChangeText={reps => this.update("repetitions", reps)}
-            />
+            >
+              {this.props.value.repetitions}
+              </TextInput>
           </View>
           <View style={setViewStyles.setCardRow}>
             <Text
@@ -86,7 +115,9 @@ class SetCard extends React.Component {
               style={[setViewStyles.setDetailValue, FontStyles.h3]}
               placeholder="0"
               onChangeText={duration => this.update("duration", duration)}
-            />
+            >
+              {this.props.value.duration}
+              </TextInput>
             <Text style={FontStyles.h3}> sec</Text>
           </View>
           <View style={setViewStyles.setCardRow}>
@@ -104,7 +135,9 @@ class SetCard extends React.Component {
               style={[setViewStyles.setDetailValue, FontStyles.h3]}
               placeholder="0"
               onChangeText={newBreak => this.update("break", newBreak)}
-            />
+            >
+              {this.props.value.break}
+              </TextInput>
             <Text style={FontStyles.h3}> sec</Text>
           </View>
         </WorkoutCard>

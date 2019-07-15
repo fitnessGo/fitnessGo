@@ -74,7 +74,7 @@ const DiscoverStack = createStackNavigator({
   },
   transparentCard: false
 })
-const AuthStack = createStackNavigator({ SignIn: LogInOptionsScreen, Register: CreateAccount });
+const AuthStack = createStackNavigator({ SignIn: LogInOptionsScreen, Register: CreateAccount }, {headerMode: 'none'});
 
 const TabNavigator = createBottomTabNavigator(
   {
