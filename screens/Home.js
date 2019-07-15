@@ -178,7 +178,6 @@ class HomeScreen extends React.Component {
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <MenuProvider>
           <ScrollView
             style={ScreenStyles.screenContainer}
             showsVerticalScrollIndicator={false}
@@ -237,7 +236,6 @@ class HomeScreen extends React.Component {
               }
             />
           </View>
-        </MenuProvider>
       </SafeAreaView>
     );
   }
