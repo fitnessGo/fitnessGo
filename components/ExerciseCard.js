@@ -13,8 +13,7 @@ class ExerciseCard extends React.Component {
       id: 0,
       name: "",
       description: "",
-      exerciseSets: [
-      ]
+      exerciseSets: []
     };
 
     this.addSet = this.addSet.bind(this);
@@ -26,20 +25,19 @@ class ExerciseCard extends React.Component {
   addSet() {
     let sets = this.state.exerciseSets;
 
-      let set ={
-        id: sets.length,
-        duration: 0,
-        repetitions: 0,
-        weight: 0,
-        notes: "",
-        break: 0
-      };
+    let set = {
+      id: sets.length,
+      repetitions: 0,
+      duration: 0,
+      break: 0,
+      weight: 0
+    };
 
-      sets.push(set);
+    sets.push(set);
 
-      this.setState({
-          exerciseSets: sets
-      });
+    this.setState({
+      exerciseSets: sets
+    });
   }
 
   changeName(newName) {
@@ -52,14 +50,35 @@ class ExerciseCard extends React.Component {
     this.props.onDescChange(newDesc, id);
   }
 
-  updateSet(id, newSet){
+  deleteSet(id) {
+    let sets = this.state.exerciseSets;
+    sets = sets.filter(set => set.id !== id);
+    sets.forEach((set, id) => {
+      set.id = id;
+    });
+    this.setState({ exerciseSets: sets });
+  }
+
+  updateSet(id, newSet) {
     let sets = this.state.exerciseSets;
     sets[id] = newSet;
-    this.setState({
-      exerciseSets: sets
-    }, () => {
-      this.props.onSetsChange(this.state.exerciseSets, this.props.id)
-    });
+    this.setState(
+      {
+        exerciseSets: sets
+      },
+      () => {
+        this.props.onSetsChange(this.state.exerciseSets, this.props.id);
+      }
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.state.exerciseSets !== this.props.exercise.exerciseSets &&
+      this.props.exercise.exerciseSets !== prevProps.exercise.exerciseSets
+    ) {
+      this.setState({ exerciseSets: this.props.exercise.exerciseSets });
+    }
   }
 
   render() {
@@ -71,21 +90,37 @@ class ExerciseCard extends React.Component {
       this.props.darkTheme || false
         ? exerciseViewStyles.exersiseViewTextDark
         : exerciseViewStyles.exersiseViewTextLight;
+    const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
 
     return (
       <View style={this.props.style}>
         <WorkoutCard style={exerciseViewStyle}>
-          <TextInput
-            style={[
-              exerciseViewTextStyle,
-              { ...FontStyles.h1, ...FontStyles.bold }
-            ]}
-            placeholder="Exercise name"
-            onChangeText={this.changeName}
-            underlineColorAndroid="transparent"
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}
           >
-            {this.props.exercise.name}
-          </TextInput>
+            <TextInput
+              style={[
+                exerciseViewTextStyle,
+                { ...FontStyles.h1, ...FontStyles.bold }
+              ]}
+              placeholder="Exercise name"
+              onChangeText={this.changeName}
+              underlineColorAndroid="transparent"
+            >
+              {this.props.exercise.name}
+            </TextInput>
+            <Icon
+              name="close"
+              type="material-community"
+              size={22}
+              color={iconColor}
+              onPress={this.props.onDeletePress}
+            />
+          </View>
           <TextInput
             style={exerciseViewTextStyle}
             placeholder="Description"
@@ -98,17 +133,24 @@ class ExerciseCard extends React.Component {
             {this.state.exerciseSets.map((es, index) => {
               return (
                 <View key={index}>
-                  <Text style={exerciseViewTextStyle}>Set {index + 1}</Text>
-                  <SetCard set={es} id={index} onChange={this.updateSet} darkTheme={this.props.darkTheme} />
+                  <SetCard
+                    set={es}
+                    id={index}
+                    value={es}
+                    onChange={this.updateSet}
+                    darkTheme={this.props.darkTheme}
+                    onDeletePress={() => this.deleteSet(index)}
+                  />
                 </View>
               );
             })}
           </View>
           <Button
-                type="clear"
-                title="Add set"
-                style={{ flexDirection: "row", alignSelf: "flex-end" }}
-                onPress={this.addSet} />
+            type="clear"
+            title="Add set"
+            style={{ flexDirection: "row", alignSelf: "flex-end" }}
+            onPress={this.addSet}
+          />
         </WorkoutCard>
       </View>
     );
@@ -126,10 +168,6 @@ const exerciseViewStyles = StyleSheet.create({
   },
   exersiseViewTextLight: {
     color: "#000000",
-    fontSize: 16
-  },
-  exersiseViewTextDark: {
-    color: "#ffffff",
     fontSize: 16
   }
 });
