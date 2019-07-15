@@ -147,7 +147,7 @@ class HomeScreen extends React.Component {
     const workoutViewStyle = this.state.darkTheme
       ? styles.workoutViewDark
       : styles.workoutViewLight;
-    if (!this.state.workouts) {
+    if (!this.state.workouts || this.state.workouts.length == 0) {
       return (
         <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
           <ScrollView
@@ -161,8 +161,8 @@ class HomeScreen extends React.Component {
             }
           >
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={theme.text}>
-                No workouts found, create a new one
+              <Text style={[theme.text, {textAlign: 'center'}]}>
+                Click + to create a new workout or find more in the Discover Tab
               </Text>
               <Button
                 type="clear"
