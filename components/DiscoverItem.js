@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import WorkoutCard from "../components/WorkoutCard";
+import Card from "../components/Card";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Icon } from 'react-native-elements';
 import { FontStyles } from '../styles/global';
@@ -53,7 +53,7 @@ class DiscoverItem extends Component {
     }
 
     return (
-        <WorkoutCard style={[styles.viewStyle, this.props.style]}>
+        <Card style={[styles.viewStyle, this.props.style]}>
           <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
@@ -72,7 +72,7 @@ class DiscoverItem extends Component {
               onPress={this._onPlayButtonClick}
             />
           </View>
-        </WorkoutCard>
+        </Card>
     );
   }
 }

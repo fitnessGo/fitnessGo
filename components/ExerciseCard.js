@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, TextInput } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import WorkoutCard from "../components/WorkoutCard";
+import Card from "../components/Card";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
 import SetCard from "../components/SetCard";
@@ -94,7 +94,7 @@ class ExerciseCard extends React.Component {
 
     return (
       <View style={this.props.style}>
-        <WorkoutCard style={exerciseViewStyle}>
+        <Card style={exerciseViewStyle}>
           <View
             style={{
               display: "flex",
@@ -151,7 +151,7 @@ class ExerciseCard extends React.Component {
             style={{ flexDirection: "row", alignSelf: "flex-end" }}
             onPress={this.addSet}
           />
-        </WorkoutCard>
+        </Card>
       </View>
     );
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import WorkoutCard from '../components/WorkoutCard';
+import Card from '../components/Card';
 import { FontStyles } from '../styles/global';
 import SetDetailsView from './SetDetailsView';
 
@@ -10,7 +10,7 @@ class ExerciseDetailsView extends React.Component {
         const exerciseViewTextStyle = this.props.darkTheme || false ? exerciseViewStyles.exersiseViewTextDark : exerciseViewStyles.exersiseViewTextLight
         return (
             <View style={this.props.style}>
-                <WorkoutCard style={exerciseViewStyle}>
+                <Card style={exerciseViewStyle}>
                     <Text style={[exerciseViewTextStyle, { ...FontStyles.h1, ...FontStyles.bold }]}>{this.props.exercise.name}</Text>
                     <Text style={exerciseViewTextStyle}>{this.props.exercise.description}</Text>
                     <View style={{ marginTop: 10 }}>
@@ -24,7 +24,7 @@ class ExerciseDetailsView extends React.Component {
                         })
                         }
                     </View>
-                </WorkoutCard>
+                </Card>
             </View>
         )
     }

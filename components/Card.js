@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-class WorkoutCard extends Component {
+class Card extends Component {
   render() {
     return (
       <View style={[styles.container, this.props.style]}>
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default WorkoutCard;
+export default Card;

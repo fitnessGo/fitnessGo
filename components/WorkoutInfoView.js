@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import { FontStyles } from "../styles/global";
-import WorkoutCard from "../components/WorkoutCard";
+import Card from "../components/Card";
 
 /*
 This component renders information about workout
@@ -75,7 +75,7 @@ class WorkoutInfoView extends Component {
     );
 
     return (
-      <WorkoutCard style={this.props.style}>
+      <Card style={this.props.style}>
         {workoutName}
         {exercisesDescription}
         {exercisesDuration}
@@ -86,7 +86,7 @@ class WorkoutInfoView extends Component {
             onPress={this._onPlayButtonClick}
           />
         </View>
-      </WorkoutCard>
+      </Card>
     );
   }
 }
