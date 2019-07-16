@@ -10,7 +10,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import WorkoutView from "../components/WorkoutInfoView";
+import WorkoutCard from "../components/WorkoutCard";
 import {
   Menu,
   MenuOptions,
@@ -199,7 +199,7 @@ class HomeScreen extends React.Component {
                         this._onWorkoutSelect(w, view)
                       }
                     >
-                      <WorkoutView
+                      <WorkoutCard
                         style={workoutViewStyle}
                         workout={w}
                         onPress={(workout, view) =>
