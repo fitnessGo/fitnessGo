@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text, TextInput } from "react-native";
-import WorkoutCard from "../components/WorkoutCard";
+import Card from "../components/Card";
 import { FontStyles, ScreenStyles } from "../styles/global";
 import { Button, Icon } from "react-native-elements";
 
@@ -80,7 +80,7 @@ class SetCard extends React.Component {
             onPress={this.props.onDeletePress}
           />
         </View>
-        <WorkoutCard style={setViewStyle}>
+        <Card style={setViewStyle}>
           <View style={setViewStyles.setCardRow}>
             <Text
               style={[
@@ -140,7 +140,7 @@ class SetCard extends React.Component {
               </TextInput>
             <Text style={FontStyles.h3}> sec</Text>
           </View>
-        </WorkoutCard>
+        </Card>
       </View>
     );
   }
