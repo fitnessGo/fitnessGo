@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import DiscoverItem from "../components/DiscoverItem";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import WorkoutCard from "../components/WorkoutCard";
 import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
@@ -140,7 +140,7 @@ class Discover extends Component {
               customStyles={triggerMenuTouchable}
               onAlternativeAction={() => this.openWorkoutDetails(workout)} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
             >
-              <DiscoverItem workout={workout} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+              <WorkoutCard workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />

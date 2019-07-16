@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Card from "../components/Card";
+import Card from "./Card";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Icon } from 'react-native-elements';
 import { FontStyles } from '../styles/global';
 
-class DiscoverItem extends Component {
+class WorkoutCard extends Component {
   constructor(props) {
     super(props);
     this._onPlayButtonClick = this._onPlayButtonClick.bind(this);
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
     fontSize: FontStyles.default.fontSize
   }
 });
-export default DiscoverItem;
+export default WorkoutCard;
