@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import WorkoutCard from "../components/WorkoutCard";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, Modal, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -13,7 +13,8 @@ class Discover extends Component {
     super(props)
     this.state = {
       darkTheme: window.darkTheme,
-      refreshing: false
+      refreshing: false,
+      modalVisible: false
     }
     this.workouts = []
 
@@ -27,8 +28,8 @@ class Discover extends Component {
         // Do not fetch when the tab opens for the first time. 
         // Only do it if the user went back to this tab from another tab. 
         // In case if user deleted a Discover workout from their library, we need to remove a label from it on this tab
-        if(this.state.dataReceived) {
-          this.setState({refreshing: true})
+        if (this.state.dataReceived) {
+          this.setState({ refreshing: true })
           this.fetchWorkoutsFromDatabase(() => {
             this.setState({ refreshing: false })
           });
@@ -103,7 +104,7 @@ class Discover extends Component {
             type: "success"
           })
           workout.added = true;
-          this.setState({refreshing: false});
+          this.setState({ refreshing: false });
         }).catch(error => {
           showMessage({
             message: "Could not add workout to your library",
@@ -120,6 +121,36 @@ class Discover extends Component {
         type: "info"
       })
     }
+  }
+  shareWorkout(workout) {
+    //Generate a unique id for this workout (random enough for us) [source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript]
+    function uuidv4() {
+      return (workout.name.replace(/\s/g, "") + 'xxxxxxyyxxx4xxxyxxx').replace(/[axy]/g, function (c) {
+        var r = Math.random() * 32 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(32);
+      });
+    }
+    //Store this workout at a location available for all user upon the request
+    const timestamp = Number(moment().format('x'));
+    const dataRef = firebase.database().ref("common/sharedWorkouts/");
+    var newWorkoutRef = dataRef.push();
+    //update props
+    workout.timeCreated = timestamp;
+    delete workout.added; //only needed it on this screen
+    workout.refId = workout.id; //reference to Discover workout
+    const id = uuidv4();
+    workout.id = id; //update id (new unique Id)
+    newWorkoutRef.set(workout).then(data => {
+      alert("Show modal with the code to get this workout: " + id);
+      this.setState({ modalVisible: true })
+    }).catch(error => {
+      showMessage({
+        message: "Could not share this workout",
+        description: error,
+        icon: "auto",
+        type: "danger"
+      })
+    });
   }
   _onRefresh = () => {
     this.setState({ refreshing: true });
@@ -145,7 +176,7 @@ class Discover extends Component {
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
               <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
-              <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
+              <MenuOption text="Share" onSelect={() => this.shareWorkout(workout)} />
             </MenuOptions>
           </Menu>
         discoverWorkoutViews.push(workoutCard);
@@ -156,15 +187,26 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-       
-          <View style={styles.menuLight}>
-            <Text>Filter</Text>
+        <Modal animationType={"slide"} transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { console.log("Modal has been closed.") }}>
+          <View style={styles.modal}>
+            <Text style={styles.text}>Modal is open!</Text>
+            <TouchableOpacity onPress={() => {
+              this.toggleModal(!this.state.modalVisible)
+            }}>
+              <Text style={styles.text}>Close Modal</Text>
+            </TouchableOpacity>
           </View>
-          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
-            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
-          >
-            {discoverWorkoutViews}
-          </ScrollView>
+        </Modal>
+        <View style={styles.menuLight}>
+          <Text>Filter</Text>
+        </View>
+        <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+        >
+          {discoverWorkoutViews}
+        </ScrollView>
 
       </SafeAreaView>
 
