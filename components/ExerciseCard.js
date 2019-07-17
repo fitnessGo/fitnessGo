@@ -113,20 +113,29 @@ class ExerciseCard extends React.Component {
               }}
               itemStyle={{
                 height: 41,
-                ...FontStyles.h1, 
+                ...FontStyles.h1,
                 ...FontStyles.bold,
                 ...theme.text,
-                fontWeight: 'bold', 
-                textAlign: 'left'
+                fontWeight: "bold",
+                textAlign: "left"
               }}
-              
-              onValueChange={(itemValue, itemIndex) =>
-                this.setState({ name: itemValue })
-              }
+              onValueChange={(itemValue, itemIndex) => {
+                this.changeName(itemValue);
+                this.setState({ name: itemValue });
+                this.props.predefinedExercises.forEach(exercise => {
+                  if (exercise.name === itemValue && exercise.description) {
+                    this.changeDesc(exercise.description);
+                  }
+                });
+              }}
             >
-              {this.props.exerciseNames.map((exercise, index) => {
+              {this.props.predefinedExercises.map((exercise, index) => {
                 return (
-                  <Picker.Item key={index} label={exercise.name} value={exercise.name} />
+                  <Picker.Item
+                    key={index}
+                    label={exercise.name}
+                    value={exercise.name}
+                  />
                 );
               })}
             </Picker>
@@ -138,8 +147,8 @@ class ExerciseCard extends React.Component {
               onPress={this.props.onDeletePress}
             />
           </View>
-          {this.state.name === 'Custom' &&
-          <TextInput
+          {this.state.name === "Custom" && (
+            <TextInput
               style={[
                 exerciseViewTextStyle,
                 { ...FontStyles.h1, ...FontStyles.bold }
@@ -149,7 +158,8 @@ class ExerciseCard extends React.Component {
               underlineColorAndroid="transparent"
             >
               {this.props.exercise.name}
-            </TextInput>}
+            </TextInput>
+          )}
           <TextInput
             style={exerciseViewTextStyle}
             placeholder="Description"

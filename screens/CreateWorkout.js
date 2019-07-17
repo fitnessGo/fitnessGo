@@ -45,7 +45,7 @@ class CreateWorkoutScreen extends React.Component {
       ],
       saved: false,
       workoutCategories: [],
-      exerciseNames: []
+      predefinedExercises: []
     };
 
     const { params } = this.props.navigation.state;
@@ -79,11 +79,11 @@ class CreateWorkoutScreen extends React.Component {
       .database()
       .ref("/common/exercises/")
       .on("value", snapshot => {
-        let exerciseNames = [];
+        let predefinedExercises = [];
         snapshot.forEach(function(exercise) {
-          exerciseNames.push(exercise.val());
+          predefinedExercises.push(exercise.val());
         });
-        this.setState({ exerciseNames });
+        this.setState({ predefinedExercises });
       });
   }
 
@@ -286,7 +286,7 @@ class CreateWorkoutScreen extends React.Component {
                         key={idx}
                         id={idx}
                         exercise={exercise}
-                        exerciseNames={this.state.exerciseNames}
+                        predefinedExercises={this.state.predefinedExercises}
                         style={styles.exersiceDetails}
                         onNameChange={this.changeExerciseName}
                         onDescChange={this.changeExerciseDesc}
