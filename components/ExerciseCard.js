@@ -14,7 +14,7 @@ class ExerciseCard extends React.Component {
       id: 0,
       name: "",
       description: "",
-      exerciseSets: []
+      exerciseSets: [this.props.exercise.exerciseSets[0]]
     };
 
     this.addSet = this.addSet.bind(this);
@@ -24,7 +24,7 @@ class ExerciseCard extends React.Component {
   }
 
   addSet() {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
 
     let set = {
       id: sets.length,
@@ -35,10 +35,8 @@ class ExerciseCard extends React.Component {
     };
 
     sets.push(set);
+    this.props.onSetsChange(sets, this.props.id);
 
-    this.setState({
-      exerciseSets: sets
-    });
   }
 
   changeName(newName) {
@@ -52,16 +50,16 @@ class ExerciseCard extends React.Component {
   }
 
   deleteSet(id) {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
     sets = sets.filter(set => set.id !== id);
     sets.forEach((set, id) => {
       set.id = id;
     });
-    this.setState({ exerciseSets: sets });
+    this.props.onSetsChange(sets, this.props.id);
   }
 
   updateSet(id, newSet) {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
     sets[id] = newSet;
     this.setState(
       {
@@ -80,7 +78,7 @@ class ExerciseCard extends React.Component {
     ) {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
-    if(this.props.predefinedExercises != prevProps.predefinedExercises) {
+    if (this.props.predefinedExercises != prevProps.predefinedExercises) {
       this.changeName(this.props.predefinedExercises[0].name);
       this.changeDesc(this.props.predefinedExercises[0].description);
     }
@@ -109,7 +107,7 @@ class ExerciseCard extends React.Component {
             }}
           >
             <Picker
-              selectedValue={this.state.name}
+              selectedValue={this.props.exercise.name}
               style={{
                 height: 40,
                 minWidth: "85%",
@@ -147,13 +145,18 @@ class ExerciseCard extends React.Component {
                 );
               })}
             </Picker>
-            {this.props.id >= 1 && <Icon
-              name="close"
-              type="material-community"
-              size={22}
-              color={iconColor}
-              onPress={this.props.onDeletePress}
-            />}
+            {this.props.deletable >= 1 && (
+              <Icon
+                name="close"
+                type="material-community"
+                size={22}
+                color={iconColor}
+                onPress={() => {
+                  this.props.onDeletePress();
+                  this.setState({ name: this.props.exercise.name });
+                }}
+              />
+            )}
           </View>
           {this.state.name === "Custom" && (
             <TextInput
@@ -178,12 +181,13 @@ class ExerciseCard extends React.Component {
             {this.props.exercise.description}
           </TextInput>
           <View style={{ marginTop: 10 }}>
-            {this.state.exerciseSets.map((es, index) => {
+            {this.props.exercise.exerciseSets.map((es, index) => {
               return (
                 <View key={index}>
                   <SetCard
                     set={es}
                     id={index}
+                    deletable={this.props.exercise.exerciseSets.length > 1 ? true : false}
                     value={es}
                     onChange={this.updateSet}
                     darkTheme={this.props.darkTheme}

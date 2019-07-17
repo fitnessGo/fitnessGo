@@ -72,13 +72,13 @@ class SetCard extends React.Component {
           >
             Set {this.props.id + 1}
           </Text>
-          <Icon
+          {this.props.deletable && <Icon
             name="close"
             type="material-community"
             size={16}
             color={iconColor}
             onPress={this.props.onDeletePress}
-          />
+          />}
         </View>
         <Card style={setViewStyle}>
           <View style={setViewStyles.setCardRow}>

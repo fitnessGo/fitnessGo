@@ -40,7 +40,14 @@ class CreateWorkoutScreen extends React.Component {
           id: 0,
           name: "",
           description: "",
-          exerciseSets: []
+          exerciseSets: [{
+            id: 0,
+            duration: 0,
+            repetitions: 0,
+            weight: 0,
+            notes: "",
+            break: 0
+          }]
         }
       ],
       saved: false,
@@ -110,13 +117,15 @@ class CreateWorkoutScreen extends React.Component {
   }
 
   addExercise() {
+    let exerciseLength = this.state.exercises.length;
+    let predefinedExercises = this.state.predefinedExercises;
     let exercise = {
-      id: this.state.exercises.length,
-      name: "",
-      description: "",
+      id: exerciseLength,
+      name: predefinedExercises[0].name,
+      description: predefinedExercises[0].description,
       exerciseSets: [
         {
-          id: 0,
+          id: this.state.exercises[exerciseLength-1].exerciseSets.length,
           duration: 0,
           repetitions: 0,
           weight: 0,
@@ -285,6 +294,7 @@ class CreateWorkoutScreen extends React.Component {
                         darkTheme={this.state.darkTheme}
                         key={idx}
                         id={idx}
+                        deletable={this.state.exercises.length > 1 ? true : false}
                         exercise={exercise}
                         predefinedExercises={this.state.predefinedExercises}
                         style={styles.exersiceDetails}
