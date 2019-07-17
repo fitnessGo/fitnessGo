@@ -1,12 +1,21 @@
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import AppContainer from "./components/homeRouter"; 
+import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
+import AppContainer from "./components/homeRouter";
+import FlashMessage from "react-native-flash-message";
+import { MenuProvider } from "react-native-popup-menu";
 
 type Props = {};
 export default class App extends Component<Props> {
   render() {
-    return <AppContainer/>;
+    return (
+      <MenuProvider>
+        <View style={{ flex: 1 }}>
+          <AppContainer />
+          <FlashMessage position="top" />
+        </View>
+      </MenuProvider>
+    );
   }
 }
 

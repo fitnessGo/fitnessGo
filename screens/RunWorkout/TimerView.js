@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontStyles } from '../../styles/global';
 import { BreakTimer } from './Timer'
-import WorkoutCard from '../../components/WorkoutCard';
+import Card from '../../components/Card';
 
 export class TimerView extends Component {
     constructor(props) {
@@ -44,21 +44,21 @@ export class TimerView extends Component {
             timerStyle.backgroundColor = '#e2e2e2';
             return (
                 <TouchableOpacity onPress={this._onPress}>
-                    <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
+                    <Card style={[styles.container, this.props.style, timerStyle]}>
                         <View style={styles.leftSide}>
                             <Text style={[FontStyles.default, styles.textLight]}>Break</Text>
                         </View>
                         <View style={styles.rightSide}>
                             <Text style={[FontStyles.default, styles.textLight]}><Text style={[{ ...FontStyles.h1, ...FontStyles.bold }]}>{timer.time}</Text>sec</Text>
                         </View>
-                    </WorkoutCard>
+                    </Card>
                 </TouchableOpacity>
             )
         }
         timerStyle.backgroundColor = '#fafafa';
         return (
             <TouchableOpacity  onPress={this._onPress}>
-                <WorkoutCard style={[styles.container, this.props.style, timerStyle]}>
+                <Card style={[styles.container, this.props.style, timerStyle]}>
                     <View style={styles.leftSide}>
                         <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
                         <Text style={{ ...styles.textLight, ...FontStyles.default }}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
@@ -66,7 +66,7 @@ export class TimerView extends Component {
                     <View style={styles.rightSide}>
                         <Text style={{ ...styles.textLight, ...FontStyles.default }}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
                     </View>
-                </WorkoutCard>
+                </Card>
             </TouchableOpacity>
         )
     }

@@ -23,7 +23,7 @@ class LogInScreen extends React.Component {
       .catch(err => {
         var str = JSON.stringify(err);
         if (str.includes("CONNECTION_FAILURE")) {
-          alert("Connection Problem", "Unable to Sign you in. Please check your internet connection!");
+          alert( "Unable to Sign you in. Please check your internet connection!");
         }
         else {
           alert("There was a problem in signing you in. Please try again.");
@@ -32,7 +32,7 @@ class LogInScreen extends React.Component {
   }
 
   onLogInWithGoogleClick() {
-    handleGoogleLogin()
+     handleGoogleLogin()
       .then(err => {
         if (!err) {
           this.props.navigation.navigate("App");
@@ -40,7 +40,7 @@ class LogInScreen extends React.Component {
       })
       .catch(err => {
         if (this.toString(err) == "Error: NETWORK_ERROR") {
-          alert("Connection Problem", "Unable to Sign you in. Please check your internet connection!");
+          alert( "Unable to Sign you in. Please check your internet connection!");
         }
         else {
           alert("There was a problem in signing you in. Please try again.");

@@ -1,17 +1,19 @@
 import React, { Component } from "react";
-import DiscoverItem from "../components/DiscoverItem";
-import { MenuProvider } from "react-native-popup-menu";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, Alert } from "react-native";
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import WorkoutCard from "../components/WorkoutCard";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
-
+import moment from 'moment';
 import firebase from 'react-native-firebase';
+import { showMessage } from "react-native-flash-message";
 
 class Discover extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      darkTheme: window.darkTheme
+      darkTheme: window.darkTheme,
+      refreshing: false
     }
     this.workouts = []
 
@@ -22,28 +24,108 @@ class Discover extends Component {
         if (this.state.darkTheme != window.darkTheme) {
           this.setState({ darkTheme: window.darkTheme });
         }
+        // Do not fetch when the tab opens for the first time. 
+        // Only do it if the user went back to this tab from another tab. 
+        // In case if user deleted a Discover workout from their library, we need to remove a label from it on this tab
+        if(this.state.dataReceived) {
+          this.setState({refreshing: true})
+          this.fetchWorkoutsFromDatabase(() => {
+            this.setState({ refreshing: false })
+          });
+        }
       }
     );
-    this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
   }
   componentDidMount() {
-    this.fetchWorkoutsFromDatabase()
+    this.fetchWorkoutsFromDatabase(() => {
+      this.setState({ dataReceived: true })
+    });
   }
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
-  fetchWorkoutsFromDatabase() {
+  getUserSavedDiscoverWorkouts(onCompletion) {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
+        var references = []
+        snapshot.forEach(function (workoutRef) {
+          const w = workoutRef.val();
+          if (w.refId)
+            references.push(w.refId)
+        });
+        onCompletion(references)
+      });
+    } else {
+      onCompletion(null)
+    }
+  }
+
+  fetchWorkoutsFromDatabase(onCompletion) {
     firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
       var wrks = []
-      snapshot.forEach(function (workout) {
-        wrks.push(workout.val())
+      this.getUserSavedDiscoverWorkouts((references) => {
+        snapshot.forEach(function (workoutRef) {
+          var workout = workoutRef.val();
+          //check if the discover workout was added to the user library
+          if (references) {
+            workout.added = references.includes(workout.id);
+          }
+          wrks.push(workout)
+        });
+        this.workouts = wrks
+        onCompletion();
       });
-      this.workouts = wrks
-      this.setState({ dataReceived: true })
     });
   }
-  _onWorkoutSelect(workout) {
+  openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
+  }
+  playWorkout(workout) {
+    this.props.navigation.navigate('RunWorkout', { workout: workout });
+  }
+  _addWorkoutToUserLib(workout) {
+    if (!workout.added) {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        const timestamp = Number(moment().format('x'));
+        const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
+        var newWorkoutRef = userDataRef.push();
+        //update props
+        workout.timeCreated = timestamp;
+        delete workout.added; //only needed it on this screen
+        workout.refId = workout.id; //reference to Discover workout
+        workout.id = newWorkoutRef.key; //update id (new Id in the user lib)
+        newWorkoutRef.set(workout).then(data => {
+          showMessage({
+            message: "Workout was added to your library",
+            icon: "auto",
+            type: "success"
+          })
+          workout.added = true;
+          this.setState({refreshing: false});
+        }).catch(error => {
+          showMessage({
+            message: "Could not add workout to your library",
+            description: error,
+            icon: "auto",
+            type: "danger"
+          })
+        });
+      }
+    } else {
+      showMessage({
+        message: "This workout has already been added to your library",
+        icon: "auto",
+        type: "info"
+      })
+    }
+  }
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.fetchWorkoutsFromDatabase(() => {
+      this.setState({ refreshing: false });
+    });
   }
   render() {
     var discoverWorkoutViews;
@@ -51,10 +133,25 @@ class Discover extends Component {
       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
       this.workouts.map((workout, index) => {
-        discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
+        const workoutCard =
+          <Menu key={index} >
+            <MenuTrigger
+              triggerOnLongPress={true}
+              customStyles={triggerMenuTouchable}
+              onAlternativeAction={() => this.openWorkoutDetails(workout)} //because triggerOnLongPress triggers onPress, regular press triggers onAlternativeAction
+            >
+              <WorkoutCard workout={workout} key={index} onPress={(workout) => { this.openWorkoutDetails(workout) }} onPlayButtonClick={(workout) => this.playWorkout(workout)} style={style} />
+            </MenuTrigger>
+            <MenuOptions customStyles={popUpStyles}>
+              <MenuOption text="Details" onSelect={() => this.openWorkoutDetails(workout)} />
+              <MenuOption text="Add to my library" onSelect={() => this._addWorkoutToUserLib(workout)} />
+              <MenuOption text="Share" onSelect={() => alert(`Share will be added soon`)} />
+            </MenuOptions>
+          </Menu>
+        discoverWorkoutViews.push(workoutCard);
       })
     } else {
-      discoverWorkoutViews = <Text>Loading...</Text>
+      discoverWorkoutViews = <ActivityIndicator size="small" color="#2172ff" />
       setTimeout(
         function () {
           Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
@@ -63,14 +160,16 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <MenuProvider>
+       
           <View style={styles.menuLight}>
             <Text>Filter</Text>
           </View>
-          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}>
+          <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+          >
             {discoverWorkoutViews}
           </ScrollView>
-        </MenuProvider>
+
       </SafeAreaView>
 
     );
@@ -105,5 +204,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   }
 });
+
+const popUpStyles = {
+  optionsContainer: {
+    borderRadius: 6,
+    width: 130
+  }
+};
+
+const triggerMenuTouchable = { TriggerTouchableComponent: TouchableOpacity };
+
 
 export default Discover;

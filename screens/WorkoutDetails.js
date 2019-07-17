@@ -5,6 +5,7 @@ import getStyleSheet from "../styles/themestyles";
 import { FontStyles, ScreenStyles } from '../styles/global';
 import ExerciseDetailsView from './ExerciseDetailsView';
 import { NavigationActions } from 'react-navigation';
+import { showMessage } from "react-native-flash-message";
 class WorkoutDetailsScreen extends React.Component {
     constructor(props) {
         super(props)
@@ -72,7 +73,18 @@ class WorkoutDetailsScreen extends React.Component {
         else {this.props.navigation.pop()}
     }
     editButtonPressed() {
-        this.props.navigation.state.params.finishedEditing(this.workout);
+        if(this.state.editing) {
+            //was in edit state, need to save changes
+            //TODO: add save changes funct.
+
+            //show user that changes were saved
+            this.props.navigation.state.params.finishedEditing(this.workout);
+            showMessage({
+                message: "Changes saved",
+                icon: "auto",
+                type: "success"
+            });
+        }
         this.setState({editing: !this.state.editing})
         this.props.navigation.setParams({editing: !this.state.editing})
     }
