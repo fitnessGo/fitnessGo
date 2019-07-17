@@ -62,8 +62,11 @@ class HomeScreen extends React.Component {
             this.setState({ workouts });
         });
     } else {
-      Alert.alert("Unable to load your workouts. Please check your internet connection!.");
-    }
+      setTimeout(
+        function () {
+          Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+        }, 3000);
+     }
   }
 
   componentWillUnmount() {
