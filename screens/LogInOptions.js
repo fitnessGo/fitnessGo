@@ -23,7 +23,7 @@ class LogInScreen extends React.Component {
       .catch(err => {
         var str = JSON.stringify(err);
         if (str.includes("CONNECTION_FAILURE")) {
-          alert("Unable to Sign you in. Please check your internet connection!");
+          alert("Connection Problem", "Unable to Sign you in. Please check your internet connection!");
         }
         else {
           alert("There was a problem in signing you in. Please try again.");
@@ -40,7 +40,7 @@ class LogInScreen extends React.Component {
       })
       .catch(err => {
         if (this.toString(err) == "Error: NETWORK_ERROR") {
-          alert("Unable to Sign you in. Please check your internet connection!");
+          alert("Connection Problem", "Unable to Sign you in. Please check your internet connection!");
         }
         else {
           alert("There was a problem in signing you in. Please try again.");
@@ -59,8 +59,8 @@ class LogInScreen extends React.Component {
 
   render() {
     return (
-      <View style={{backgroundColor: "#3c1a5b", height: "100%"}}>
-        <View style={{alignItems: "center"}}>
+      <View style={{ backgroundColor: "#3c1a5b", height: "100%" }}>
+        <View style={{ alignItems: "center" }}>
           <Image
             style={styles.image}
             source={Logo}
@@ -70,7 +70,7 @@ class LogInScreen extends React.Component {
         <View style={styles.container}>
           <Button
             buttonStyle={[styles.button, { backgroundColor: "#3C5A99" }]}
-            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20}} />}
+            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20 }} />}
 
             title="Log in with Facebook"
             onPress={() => this.onLogInWithFaceBookClick()}
