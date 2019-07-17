@@ -25,7 +25,7 @@ class CreateWorkoutScreen extends React.Component {
     const { params = {} } = navigation.state;
     return {
       headerRight: <Button onPress={params.save} title="Save" />,
-      headerLeft: <Button onPress={params.goHome} title="< Home" />
+      headerLeft: <Button onPress={params.goHome} title="Close" />
     };
   };
 
