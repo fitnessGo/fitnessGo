@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TextInput } from "react-native";
 import Card from "../components/Card";
 import { FontStyles, ScreenStyles } from "../styles/global";
 import { Button, Icon } from "react-native-elements";
+import getStyleSheet from "../styles/themestyles";
 
 class SetCard extends React.Component {
   constructor(props) {
@@ -44,14 +45,11 @@ class SetCard extends React.Component {
 
   render() {
     const setViewStyle =
-      this.props.darkTheme || false
+      this.props.darkTheme
         ? setViewStyles.exersiseSetViewDark
         : setViewStyles.exersiseSetViewLight;
-    const setViewTextStyle =
-      this.props.darkTheme || false
-        ? setViewStyles.exersiseSetViewTextDark
-        : setViewStyles.exersiseSetViewTextLight;
-    const iconColor = this.props.darkTheme || false ? "#3A3A3C" : "#D1D1D6";
+    const iconColor = this.props.darkTheme ? "#3A3A3C" : "#FFFFFF";
+    const theme = getStyleSheet(this.props.darkTheme);
 
     return (
       <View>
@@ -65,10 +63,7 @@ class SetCard extends React.Component {
           }}
         >
           <Text
-            style={{
-              color: "#000000",
-              fontSize: 16
-            }}
+            style={[theme.text, FontStyles.h3]}
           >
             Set {this.props.id + 1}
           </Text>
@@ -84,7 +79,7 @@ class SetCard extends React.Component {
           <View style={setViewStyles.setCardRow}>
             <Text
               style={[
-                setViewTextStyle,
+                theme.text,
                 setViewStyles.setDetailName,
                 FontStyles.h3
               ]}
@@ -93,7 +88,7 @@ class SetCard extends React.Component {
             </Text>
             <TextInput
               keyboardType="number-pad"
-              style={[setViewStyles.setDetailValue, FontStyles.h3]}
+              style={[setViewStyles.setDetailValue, FontStyles.h3, theme.text]}
               placeholder="0"
               onChangeText={reps => this.update("repetitions", reps)}
             >
@@ -103,7 +98,7 @@ class SetCard extends React.Component {
           <View style={setViewStyles.setCardRow}>
             <Text
               style={[
-                setViewTextStyle,
+                theme.text,
                 setViewStyles.setDetailName,
                 FontStyles.h3
               ]}
@@ -112,18 +107,18 @@ class SetCard extends React.Component {
             </Text>
             <TextInput
               keyboardType="number-pad"
-              style={[setViewStyles.setDetailValue, FontStyles.h3]}
+              style={[setViewStyles.setDetailValue, FontStyles.h3, theme.text]}
               placeholder="0"
               onChangeText={duration => this.update("duration", duration)}
             >
               {this.props.value.duration}
               </TextInput>
-            <Text style={FontStyles.h3}> sec</Text>
+            <Text style={FontStyles.h3, theme.text}> sec</Text>
           </View>
           <View style={setViewStyles.setCardRow}>
             <Text
               style={[
-                setViewTextStyle,
+                theme.text,
                 setViewStyles.setDetailName,
                 FontStyles.h3
               ]}
@@ -132,13 +127,13 @@ class SetCard extends React.Component {
             </Text>
             <TextInput
               keyboardType="number-pad"
-              style={[setViewStyles.setDetailValue, FontStyles.h3]}
+              style={[setViewStyles.setDetailValue, FontStyles.h3, theme.text]}
               placeholder="0"
               onChangeText={newBreak => this.update("break", newBreak)}
             >
               {this.props.value.break}
               </TextInput>
-            <Text style={FontStyles.h3}> sec</Text>
+            <Text style={FontStyles.h3, theme.text}> sec</Text>
           </View>
         </Card>
       </View>

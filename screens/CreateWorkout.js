@@ -32,7 +32,7 @@ class CreateWorkoutScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: false,
+      darkTheme: window.darkTheme,
       name: "",
       category: "",
       exercises: [
@@ -249,6 +249,7 @@ class CreateWorkoutScreen extends React.Component {
                   onChangeText={name => this.setState({ name })}
                   placeholder="Workout Name"
                   style={[theme.text, FontStyles.h1, FontStyles.bold]}
+                  placeholderTextColor={theme.text.color}
                 >
                   {this.name}
                 </TextInput>
@@ -317,8 +318,9 @@ class CreateWorkoutScreen extends React.Component {
                   <Button
                     title="Add Exercise"
                     style={{
-                      marginBottom: 15
+                      marginBottom: 15,
                     }}
+                    color={theme.text.color}
                     onPress={this.addExercise}
                   />
                 </View>

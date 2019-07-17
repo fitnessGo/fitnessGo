@@ -87,31 +87,27 @@ class ExerciseCard extends React.Component {
     let predefinedNames = [];
     this.props.predefinedExercises.map(exercise => {
       predefinedNames.push(exercise.name);
-    })
+    });
 
-    if(this.props.exercise.name !== prevProps.exercise.name && this.props.exercise.name !== 'Custom') {
-      if(predefinedNames.includes(this.props.exercise.name)){
+    if (
+      this.props.exercise.name !== prevProps.exercise.name &&
+      this.props.exercise.name !== "Custom"
+    ) {
+      if (predefinedNames.includes(this.props.exercise.name)) {
         this.setState({ custom: false, name: this.props.exercise.name });
-      } else{
-        this.setState({ custom: true, name: 'Custom' });
+      } else {
+        this.setState({ custom: true, name: "Custom" });
       }
       // console.warn('true');
     }
-
-    
   }
 
   render() {
-    const exerciseViewStyle =
-      this.props.darkTheme || false
-        ? exerciseViewStyles.exersiseViewDark
-        : exerciseViewStyles.exersiseViewLight;
-    const exerciseViewTextStyle =
-      this.props.darkTheme || false
-        ? exerciseViewStyles.exersiseViewTextDark
-        : exerciseViewStyles.exersiseViewTextLight;
-    const iconColor = this.props.darkTheme || false ? "#3A3A3C" : "#D1D1D6";
-    const theme = getStyleSheet(this.state.darkTheme);
+    const exerciseViewStyle = this.props.darkTheme
+      ? exerciseViewStyles.exersiseViewDark
+      : exerciseViewStyles.exersiseViewLight;
+    const iconColor = this.props.darkTheme ? "#3A3A3C" : "#D1D1D6";
+    const theme = getStyleSheet(this.props.darkTheme);
 
     return (
       <View style={this.props.style}>
@@ -141,7 +137,7 @@ class ExerciseCard extends React.Component {
               onValueChange={(itemValue, itemIndex) => {
                 if (itemValue === "Custom") {
                   this.setState({ custom: true, name: itemValue });
-                  this.changeName('');
+                  this.changeName("");
                 } else {
                   this.changeName(itemValue);
                   this.setState({ custom: false, name: itemValue });
@@ -185,17 +181,19 @@ class ExerciseCard extends React.Component {
             <TextInput
               style={[
                 exerciseViewTextStyle,
-                { ...FontStyles.h1, ...FontStyles.bold }
+                { ...FontStyles.h1, ...FontStyles.bold },
+                theme.text
               ]}
               placeholder="Exercise name"
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
             >
-              {this.props.exercise.name !== "Custom" && this.props.exercise.name}
+              {this.props.exercise.name !== "Custom" &&
+                this.props.exercise.name}
             </TextInput>
           )}
           <TextInput
-            style={exerciseViewTextStyle}
+            style={theme.text}
             placeholder="Description"
             onChangeText={this.changeDesc}
             underlineColorAndroid="transparent"
@@ -224,6 +222,7 @@ class ExerciseCard extends React.Component {
           <Button
             type="clear"
             title="Add set"
+            titleStyle={theme.text}
             style={{ flexDirection: "row", alignSelf: "flex-end" }}
             onPress={this.addSet}
           />
