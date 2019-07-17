@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import WorkoutCard from "../components/WorkoutCard";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
-import { Overlay } from 'react-native-elements'
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Clipboard } from "react-native";
+import { Overlay, Icon, Button } from 'react-native-elements'
 import getStyleSheet from "../styles/themestyles";
-import { ScreenStyles } from '../styles/global';
+import { ScreenStyles, FontStyles } from '../styles/global';
 import moment from 'moment';
 import firebase from 'react-native-firebase';
 import { showMessage } from "react-native-flash-message";
@@ -14,7 +14,9 @@ class Discover extends Component {
     super(props)
     this.state = {
       darkTheme: window.darkTheme,
-      refreshing: false
+      refreshing: false,
+      overlayVisible: false,
+      sharedWorkoutCode: undefined
     }
     this.workouts = []
 
@@ -125,9 +127,9 @@ class Discover extends Component {
   shareWorkout(workout) {
     //Generate a unique id for this workout (random enough for us) [source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript]
     function uuidv4() {
-      return (workout.name.replace(/\s/g, "") + 'xxxxxxyyxxx4xxxyxxx').replace(/[axy]/g, function (c) {
+      return 'xyyx4xxxyx'.replace(/[axy]/g, function (c) {
         var r = Math.random() * 32 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(32);
+        return v.toString(32).toUpperCase();
       });
     }
     //Store this workout at a location available for all user upon the request
@@ -141,7 +143,7 @@ class Discover extends Component {
     const id = uuidv4();
     workout.id = id; //update id (new unique Id)
     newWorkoutRef.set(workout).then(data => {
-      alert("Show modal with the code to get this workout: " + id);
+      this.setState({sharedWorkoutCode: id, overlayVisible: true})
     }).catch(error => {
       showMessage({
         message: "Could not share this workout",
@@ -186,27 +188,43 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-
-        <View style={styles.menuLight}>
-          <Text>Filter</Text>
-        </View>
         <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
         >
           {discoverWorkoutViews}
         </ScrollView>
         <Overlay
-          isVisible={this.state.isVisible}
-          windowBackgroundColor="rgba(255, 255, 255, .5)"
-          overlayBackgroundColor="#ffffff"
-          width="40%"
+          isVisible={this.state.overlayVisible}
+          windowBackgroundColor="rgba(0, 0, 0, .4)"
           height="auto"
           overlayStyle={styles.overlayStyle}
-          onBackdropPress={() => this.setState({ isVisible: false })}
+          onBackdropPress={() => this.setState({ overlayVisible: false })}
         >
-          <Text>Almost done!</Text>
-          <Text>The code to access this workout is ready to be sent</Text>
-          <Text selectable="true">Code</Text>
+          <View style={{alignItems: 'center'}} >
+            <Text style={[FontStyles.h1, {marginTop: 5}]}>Almost done!</Text>
+            <Text style={[FontStyles.default, {marginTop: 5, textAlign: 'center'}]}>The code to access this workout is ready to be sent</Text>
+            <View style={{marginTop: 15, flexDirection: "row", width:"80%", alignSelf: 'center',alignItems: 'center'}}s>
+              <Text selectable={true} style={{textAlign: 'center', backgroundColor: '#f2f2f2', textAlign: 'center', padding: 5, borderRadius: 5, borderWidth: 1, borderColor: '#e0e0e0'}}>{this.state.sharedWorkoutCode}</Text>
+              <Button
+                type="clear"
+                title="copy "
+                iconRight
+                icon={
+                <Icon type="material-community" name="content-copy" size={16} color={theme.text.color} />
+                }
+                style={{ alignSelf: "flex-end", fontSize: 13 }}
+                titleStyle={FontStyles.default}
+                onPress={() => {
+                  Clipboard.setString(this.state.sharedWorkoutCode);
+                  showMessage({
+                    message: "Code copied",
+                    icon: "auto",
+                    type: "success"
+                  })
+                }}
+              />
+            </View>
+          </View>
         </Overlay>
         
       </SafeAreaView>
@@ -243,7 +261,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   overlayStyle: {
-    backgroundColor: 'red'
+    width: "80%",
+    top: "-10%",
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 15,
+    alignContent: 'center',
+    alignItems: 'center'
   }
 });
 
