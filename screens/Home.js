@@ -7,7 +7,7 @@ import {
   Alert,
   SafeAreaView,
   RefreshControl,
-  TouchableOpacity
+  TouchableOpacity, Dimensions, Image
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import WorkoutCard from "../components/WorkoutCard";
@@ -19,7 +19,7 @@ import {
   MenuProvider
 } from "react-native-popup-menu";
 import getStyleSheet from "../styles/themestyles";
-import { ScreenStyles } from "../styles/global";
+import { ScreenStyles, FontStyles } from "../styles/global";
 import firebase from "react-native-firebase";
 
 class HomeScreen extends React.Component {
@@ -161,86 +161,99 @@ class HomeScreen extends React.Component {
             }
           >
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={[theme.text, {textAlign: 'center'}]}>
+              <Text style={[theme.text, { textAlign: 'center', fontSize: 16 }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
               <Button
                 type="clear"
-                icon={<Icon name="add" size={44} color={theme.text.color} />}
+                icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
                 style={{ alignSelf: "flex-end" }}
                 onPress={this._onCreateNewButtonClick}
               />
             </View>
           </ScrollView>
+          <View style={styles.scaleImageContainer}>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Scales.png')}
+              style={styles.containerImage} />
+          </View>
+          <View style={styles.stopwatchImageContainer}>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
+              style={styles.containerImage} />
+          </View>
+          <View style={styles.weigthImageContainer}>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')}
+              style={styles.containerImage} />
+            {/* <View style={{backgroundColor: 'rgba(0,255,255, 1)', opacity:0.1, height: "90%"}}></View> */}
+          </View>
         </SafeAreaView>
       );
     }
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-          <ScrollView
-            style={ScreenStyles.screenContainer}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
-              />
-            }
-          >
-            <View ref="workoutsView" style={styles.workoutViewContainer}>
-              {this.state.workouts.map((w, index) => {
-                return (
-                  <Menu key={index}>
-                    <MenuTrigger
-                      triggerOnLongPress={true}
-                      customStyles={triggerMenuTouchable}
-                      onAlternativeAction={view =>
-                        this._onWorkoutSelect(w, view)
-                      }
-                    >
-                      <WorkoutCard
-                        style={workoutViewStyle}
-                        workout={w}
-                        onPress={(workout, view) =>
-                          this._onWorkoutSelect(workout, view)
-                        }
-                        onPlayButtonClick={workout =>
-                          this._onPlayButtonClick(workout)
-                        }
-                      />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={popUpStyles}>
-                      <MenuOption
-                        text="Details"
-                        onSelect={view => this._onWorkoutSelect(w, view)}
-                      />
-                      <MenuOption
-                        text="Delete"
-                        onSelect={() => this.deleteWorkout(w)}
-                      />
-                    </MenuOptions>
-                  </Menu>
-                );
-              })}
-            </View>
-          </ScrollView>
-          <View style={{ alignItems: "flex-end" }}>
-            <Button
-              type="clear"
-              icon={
-                <Icon name="add-circle" size={44} color={theme.text.color} />
-              }
-              onPress={workout =>
-                this._onCreateNewButtonClick(this.state.workouts)
-              }
+        <ScrollView
+          style={ScreenStyles.screenContainer}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
             />
+          }
+        >
+          <View ref="workoutsView" style={styles.workoutViewContainer}>
+            {this.state.workouts.map((w, index) => {
+              return (
+                <Menu key={index}>
+                  <MenuTrigger
+                    triggerOnLongPress={true}
+                    customStyles={triggerMenuTouchable}
+                    onAlternativeAction={view =>
+                      this._onWorkoutSelect(w, view)
+                    }
+                  >
+                    <WorkoutCard
+                      style={workoutViewStyle}
+                      workout={w}
+                      onPress={(workout, view) =>
+                        this._onWorkoutSelect(workout, view)
+                      }
+                      onPlayButtonClick={workout =>
+                        this._onPlayButtonClick(workout)
+                      }
+                    />
+                  </MenuTrigger>
+                  <MenuOptions customStyles={popUpStyles}>
+                    <MenuOption
+                      text="Details"
+                      onSelect={view => this._onWorkoutSelect(w, view)}
+                    />
+                    <MenuOption
+                      text="Delete"
+                      onSelect={() => this.deleteWorkout(w)}
+                    />
+                  </MenuOptions>
+                </Menu>
+              );
+            })}
           </View>
+        </ScrollView>
+        <View style={{ alignItems: "flex-end" }}>
+          <Button
+            type="clear"
+            icon={
+              <Icon name="add-circle" size={44} color={theme.text.color} />
+            }
+            onPress={workout =>
+              this._onCreateNewButtonClick(this.state.workouts)
+            }
+          />
+        </View>
       </SafeAreaView>
     );
   }
 }
-
+const win = Dimensions.get('window');
 const styles = StyleSheet.create({
   workoutViewContainer: {
     width: "90%",
@@ -259,7 +272,42 @@ const styles = StyleSheet.create({
     fontSize: 24,
     padding: 10,
     marginBottom: 10
-  }
+  },
+  containerImage: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    alignSelf: 'stretch'
+  },
+  scaleImageContainer: { 
+    position: 'absolute', 
+    bottom: "45%", 
+    right: "-0%", 
+    width: "30%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    transform: [{ rotate: '20deg' }]
+  },
+  stopwatchImageContainer: { 
+    position: 'absolute', 
+    bottom: "20%", 
+    left: "-10%", 
+    width: "55%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    padding: 0,
+    transform: [{ rotate: '-40deg' }]
+  },
+  weigthImageContainer: { 
+    position: 'absolute', 
+    bottom: "-6%", 
+    right: "-12%", 
+    width: "50%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    padding: 15 ,
+    transform: [{ rotate: '-20deg' }]
+  },
 });
 
 const popUpStyles = {
