@@ -14,9 +14,11 @@ class ExerciseCard extends React.Component {
       id: 0,
       name: "",
       description: "",
-      exerciseSets: [this.props.exercise.exerciseSets[0]]
+      exerciseSets: [this.props.exercise.exerciseSets[0]],
+      custom: false
     };
 
+    this.customName = "";
     this.addSet = this.addSet.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeDesc = this.changeDesc.bind(this);
@@ -36,7 +38,6 @@ class ExerciseCard extends React.Component {
 
     sets.push(set);
     this.props.onSetsChange(sets, this.props.id);
-
   }
 
   changeName(newName) {
@@ -82,6 +83,22 @@ class ExerciseCard extends React.Component {
       this.changeName(this.props.predefinedExercises[0].name);
       this.changeDesc(this.props.predefinedExercises[0].description);
     }
+
+    let predefinedNames = [];
+    this.props.predefinedExercises.map(exercise => {
+      predefinedNames.push(exercise.name);
+    })
+
+    if(this.props.exercise.name !== prevProps.exercise.name && this.props.exercise.name !== 'Custom') {
+      if(predefinedNames.includes(this.props.exercise.name)){
+        this.setState({ custom: false, name: this.props.exercise.name });
+      } else{
+        this.setState({ custom: true, name: 'Custom' });
+      }
+      // console.warn('true');
+    }
+
+    
   }
 
   render() {
@@ -107,7 +124,7 @@ class ExerciseCard extends React.Component {
             }}
           >
             <Picker
-              selectedValue={this.props.exercise.name}
+              selectedValue={this.state.name}
               style={{
                 height: 40,
                 minWidth: "85%",
@@ -122,8 +139,14 @@ class ExerciseCard extends React.Component {
                 textAlign: "left"
               }}
               onValueChange={(itemValue, itemIndex) => {
-                this.changeName(itemValue);
-                this.setState({ name: itemValue });
+                if (itemValue === "Custom") {
+                  this.setState({ custom: true, name: itemValue });
+                  this.changeName('');
+                } else {
+                  this.changeName(itemValue);
+                  this.setState({ custom: false, name: itemValue });
+                }
+
                 this.props.predefinedExercises.forEach(exercise => {
                   if (exercise.name === itemValue) {
                     if (exercise.description) {
@@ -158,7 +181,7 @@ class ExerciseCard extends React.Component {
               />
             )}
           </View>
-          {this.state.name === "Custom" && (
+          {this.state.custom && (
             <TextInput
               style={[
                 exerciseViewTextStyle,
@@ -168,8 +191,7 @@ class ExerciseCard extends React.Component {
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
             >
-              {this.props.exercise.name !== "Custom" &&
-                this.props.exercise.name}
+              {this.props.exercise.name !== "Custom" && this.props.exercise.name}
             </TextInput>
           )}
           <TextInput
@@ -187,7 +209,9 @@ class ExerciseCard extends React.Component {
                   <SetCard
                     set={es}
                     id={index}
-                    deletable={this.props.exercise.exerciseSets.length > 1 ? true : false}
+                    deletable={
+                      this.props.exercise.exerciseSets.length > 1 ? true : false
+                    }
                     value={es}
                     onChange={this.updateSet}
                     darkTheme={this.props.darkTheme}
