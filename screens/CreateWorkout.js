@@ -44,7 +44,8 @@ class CreateWorkoutScreen extends React.Component {
         }
       ],
       saved: false,
-      workoutCategories: []
+      workoutCategories: [],
+      exerciseNames: []
     };
 
     const { params } = this.props.navigation.state;
@@ -72,6 +73,17 @@ class CreateWorkoutScreen extends React.Component {
           workoutCategories.push(category.val());
         });
         this.setState({ category: workoutCategories[0], workoutCategories });
+      });
+
+    firebase
+      .database()
+      .ref("/common/exercises/")
+      .on("value", snapshot => {
+        let exerciseNames = [];
+        snapshot.forEach(function(exercise) {
+          exerciseNames.push(exercise.val());
+        });
+        this.setState({ exerciseNames });
       });
   }
 
@@ -274,6 +286,7 @@ class CreateWorkoutScreen extends React.Component {
                         key={idx}
                         id={idx}
                         exercise={exercise}
+                        exerciseNames={this.state.exerciseNames}
                         style={styles.exersiceDetails}
                         onNameChange={this.changeExerciseName}
                         onDescChange={this.changeExerciseDesc}
