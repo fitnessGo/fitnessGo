@@ -62,39 +62,16 @@ export default class SettingsScreen extends Component {
     this.setState({ darkTheme: window.darkTheme });
   }
 
-  toggleSwitchIcon() {
-    return (<Icon
-      name='toggle-switch'
-      type='material-community'
-      color={styles.iconDark.color}
-      size={35}
-      paddingLeft='1%'
-    />)
-
-  }
-
-  toggleSwitchOffIcon() {
-    return (<Icon
-      name='toggle-switch-off'
-      type='material-community'
-      color={styles.iconLight.color}
-      size={35}
-      paddingLeft='1%'
-    />)
-
-  }
-
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
     const textStyle = this.state.darkTheme ? styles.textDark : styles.textLight;
     const iconStyle = this.state.darkTheme ? styles.iconDark.color : styles.iconLight.color;
-    const toggleIcon = this.state.darkTheme ? this.toggleSwitchIcon() : this.toggleSwitchOffIcon();
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
         <View >
           <ListItem
             title='Delete Account'
-            leftIcon={{ name: 'delete', color: iconStyle, size: 35, paddingLeft: '1%', }}
+            leftIcon={{ name: 'delete', color: iconStyle, size: 22, paddingLeft: '7%', }}
             containerStyle={theme.background}
             titleStyle={textStyle}
             onPress={this.deleteAccount}
@@ -102,20 +79,21 @@ export default class SettingsScreen extends Component {
 
           <ListItem
             title='Log Out'
-            leftIcon={{ name: 'md-log-out', type: 'ionicon', color: iconStyle, size: 37, paddingLeft: '2%', }}
+            leftIcon={{ name: 'md-log-out', type: 'ionicon', color: iconStyle, size: 22, paddingLeft: '9%' }}
             containerStyle={theme.background}
             titleStyle={textStyle}
             onPress={this.logout}
           />
-
-          <ListItem
-            leftIcon={toggleIcon}
+           <ListItem
+            leftIcon={ <Switch
+                  onValueChange={this.toggleDarkTheme}
+                  value={this.state.darkTheme} /> }
             title='Dark theme'
             containerStyle={theme.background}
             titleStyle={textStyle}
             onPress={this.toggleDarkTheme}
           />
-        </View>
+         </View>
       </SafeAreaView>
     );
   }
@@ -132,13 +110,12 @@ const styles = StyleSheet.create({
   },
   textLight: {
     color: '#000000',
-    fontSize: 18,
-
-  },
+    fontSize: 16,
+   },
   textDark: {
     color: '#ffffff',
-    fontSize: 18,
-  },
+    fontSize: 16,
+   },
   iconLight: {
     color: '#000000'
   },
