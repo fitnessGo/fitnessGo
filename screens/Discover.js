@@ -26,7 +26,7 @@ class Discover extends Component {
     );
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
   }
-   componentDidMount() {
+  componentDidMount() {
     this.fetchWorkoutsFromDatabase()
   }
   componentWillUnmount() {
@@ -42,24 +42,23 @@ class Discover extends Component {
       this.setState({ dataReceived: true })
     });
   }
-   _onWorkoutSelect(workout) {
+  _onWorkoutSelect(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
   render() {
     var discoverWorkoutViews;
-     if (this.workouts.length > 0) {
-       let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
+    if (this.workouts.length > 0) {
+      let style = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight;
       discoverWorkoutViews = []
-      this.workouts.map( (workout, index) => { 
+      this.workouts.map((workout, index) => {
         discoverWorkoutViews.push(<DiscoverItem workout={workout} key={index} onPress={(workout) => { this._onWorkoutSelect(workout) }} style={style} />)
       })
     } else {
-       discoverWorkoutViews = <Text>Loading...</Text>
-       setTimeout( 
-         function(){
-            Alert.alert("Unable to load your workouts. Please check your internet connection!.");
-           }, 5000);
-         
+      discoverWorkoutViews = <Text>Loading...</Text>
+      setTimeout(
+        function () {
+          Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+        }, 3000);
     }
     const theme = getStyleSheet(this.state.darkTheme);
     return (
