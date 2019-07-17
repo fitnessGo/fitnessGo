@@ -223,10 +223,11 @@ class CreateWorkoutScreen extends React.Component {
           .catch(error => {
             console.error(error);
           });
-      } else {
-        Alert.alert("Couldn't save workout 😔 Try again later.", message);
       }
+    } else {
+      Alert.alert(message, "Couldn't save workout 😔", );
     }
+    
   }
 
   render() {
