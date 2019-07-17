@@ -1,10 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, TextInput, Picker } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import Card from "../components/Card";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
 import SetCard from "../components/SetCard";
+import getStyleSheet from "../styles/themestyles";
 
 class ExerciseCard extends React.Component {
   constructor(props) {
@@ -79,6 +80,10 @@ class ExerciseCard extends React.Component {
     ) {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
+    if(this.props.predefinedExercises != prevProps.predefinedExercises) {
+      this.changeName(this.props.predefinedExercises[0].name);
+      this.changeDesc(this.props.predefinedExercises[0].description);
+    }
   }
 
   render() {
@@ -91,6 +96,7 @@ class ExerciseCard extends React.Component {
         ? exerciseViewStyles.exersiseViewTextDark
         : exerciseViewStyles.exersiseViewTextLight;
     const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
+    const theme = getStyleSheet(this.state.darkTheme);
 
     return (
       <View style={this.props.style}>
@@ -102,6 +108,54 @@ class ExerciseCard extends React.Component {
               justifyContent: "space-between"
             }}
           >
+            <Picker
+              selectedValue={this.state.name}
+              style={{
+                height: 40,
+                minWidth: "85%",
+                alignSelf: "flex-start"
+              }}
+              itemStyle={{
+                height: 41,
+                ...FontStyles.h1,
+                ...FontStyles.bold,
+                ...theme.text,
+                fontWeight: "bold",
+                textAlign: "left"
+              }}
+              onValueChange={(itemValue, itemIndex) => {
+                this.changeName(itemValue);
+                this.setState({ name: itemValue });
+                this.props.predefinedExercises.forEach(exercise => {
+                  if (exercise.name === itemValue) {
+                    if (exercise.description) {
+                      this.changeDesc(exercise.description);
+                    } else {
+                      this.changeDesc("");
+                    }
+                  }
+                });
+              }}
+            >
+              {this.props.predefinedExercises.map((exercise, index) => {
+                return (
+                  <Picker.Item
+                    key={index}
+                    label={exercise.name}
+                    value={exercise.name}
+                  />
+                );
+              })}
+            </Picker>
+            <Icon
+              name="close"
+              type="material-community"
+              size={22}
+              color={iconColor}
+              onPress={this.props.onDeletePress}
+            />
+          </View>
+          {this.state.name === "Custom" && (
             <TextInput
               style={[
                 exerciseViewTextStyle,
@@ -111,16 +165,10 @@ class ExerciseCard extends React.Component {
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
             >
-              {this.props.exercise.name}
+              {this.props.exercise.name !== "Custom" &&
+                this.props.exercise.name}
             </TextInput>
-            <Icon
-              name="close"
-              type="material-community"
-              size={22}
-              color={iconColor}
-              onPress={this.props.onDeletePress}
-            />
-          </View>
+          )}
           <TextInput
             style={exerciseViewTextStyle}
             placeholder="Description"
