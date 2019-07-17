@@ -87,7 +87,8 @@ export default class SettingsScreen extends Component {
            <ListItem
             leftIcon={ <Switch
                   onValueChange={this.toggleDarkTheme}
-                  value={this.state.darkTheme} /> }
+                  value={this.state.darkTheme} 
+                  style={{ transform: [{ scaleX:  .9  }, { scaleY:  .9  }] }}/> }
             title='Dark theme'
             containerStyle={theme.background}
             titleStyle={textStyle}
@@ -110,11 +111,11 @@ const styles = StyleSheet.create({
   },
   textLight: {
     color: '#000000',
-    fontSize: 18
+    fontSize: 16
   },
   textDark: {
     color: '#ffffff',
-    fontSize: 18
+    fontSize: 16
   },
   iconLight: {
     color: '#000000'
