@@ -80,6 +80,10 @@ class ExerciseCard extends React.Component {
     ) {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
+    if(this.props.predefinedExercises != prevProps.predefinedExercises) {
+      this.changeName(this.props.predefinedExercises[0].name);
+      this.changeDesc(this.props.predefinedExercises[0].description);
+    }
   }
 
   render() {
@@ -123,8 +127,12 @@ class ExerciseCard extends React.Component {
                 this.changeName(itemValue);
                 this.setState({ name: itemValue });
                 this.props.predefinedExercises.forEach(exercise => {
-                  if (exercise.name === itemValue && exercise.description) {
-                    this.changeDesc(exercise.description);
+                  if (exercise.name === itemValue) {
+                    if (exercise.description) {
+                      this.changeDesc(exercise.description);
+                    } else {
+                      this.changeDesc("");
+                    }
                   }
                 });
               }}
@@ -157,7 +165,8 @@ class ExerciseCard extends React.Component {
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
             >
-              {this.props.exercise.name}
+              {this.props.exercise.name !== "Custom" &&
+                this.props.exercise.name}
             </TextInput>
           )}
           <TextInput
