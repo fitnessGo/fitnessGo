@@ -160,7 +160,7 @@ class HomeScreen extends React.Component {
               />
             }
           >
-            <View style={{ flex: 1, alignItems: "center" }}>
+            <View style={{ flex: 1, alignItems: "center", marginTop: "2%" }}>
               <Text style={[theme.text, { textAlign: 'center', fontSize: 16 }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
@@ -181,9 +181,7 @@ class HomeScreen extends React.Component {
               style={styles.containerImage} />
           </View>
           <View style={styles.weigthImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')}
-              style={styles.containerImage} />
-            {/* <View style={{backgroundColor: 'rgba(0,255,255, 1)', opacity:0.1, height: "90%"}}></View> */}
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
           </View>
         </SafeAreaView>
       );
