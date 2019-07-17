@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import WorkoutCard from "../components/WorkoutCard";
-import { SafeAreaView, View, ScrollView, Text, Modal, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { Overlay } from 'react-native-elements'
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -13,8 +14,7 @@ class Discover extends Component {
     super(props)
     this.state = {
       darkTheme: window.darkTheme,
-      refreshing: false,
-      modalVisible: false
+      refreshing: false
     }
     this.workouts = []
 
@@ -142,7 +142,6 @@ class Discover extends Component {
     workout.id = id; //update id (new unique Id)
     newWorkoutRef.set(workout).then(data => {
       alert("Show modal with the code to get this workout: " + id);
-      this.setState({ modalVisible: true })
     }).catch(error => {
       showMessage({
         message: "Could not share this workout",
@@ -187,18 +186,7 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <Modal animationType={"slide"} transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => { console.log("Modal has been closed.") }}>
-          <View style={styles.modal}>
-            <Text style={styles.text}>Modal is open!</Text>
-            <TouchableOpacity onPress={() => {
-              this.toggleModal(!this.state.modalVisible)
-            }}>
-              <Text style={styles.text}>Close Modal</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+
         <View style={styles.menuLight}>
           <Text>Filter</Text>
         </View>
@@ -207,7 +195,20 @@ class Discover extends Component {
         >
           {discoverWorkoutViews}
         </ScrollView>
-
+        <Overlay
+          isVisible={this.state.isVisible}
+          windowBackgroundColor="rgba(255, 255, 255, .5)"
+          overlayBackgroundColor="#ffffff"
+          width="40%"
+          height="auto"
+          overlayStyle={styles.overlayStyle}
+          onBackdropPress={() => this.setState({ isVisible: false })}
+        >
+          <Text>Almost done!</Text>
+          <Text>The code to access this workout is ready to be sent</Text>
+          <Text selectable="true">Code</Text>
+        </Overlay>
+        
       </SafeAreaView>
 
     );
@@ -240,6 +241,9 @@ const styles = StyleSheet.create({
     width: '90%',
     left: '5%',
     alignItems: 'flex-end'
+  },
+  overlayStyle: {
+    backgroundColor: 'red'
   }
 });
 
