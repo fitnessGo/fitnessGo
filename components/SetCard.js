@@ -51,7 +51,7 @@ class SetCard extends React.Component {
       this.props.darkTheme || false
         ? setViewStyles.exersiseSetViewTextDark
         : setViewStyles.exersiseSetViewTextLight;
-        const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
+    const iconColor = this.props.darkTheme || false ? "#3A3A3C" : "#D1D1D6";
 
     return (
       <View>

@@ -95,7 +95,7 @@ class ExerciseCard extends React.Component {
       this.props.darkTheme || false
         ? exerciseViewStyles.exersiseViewTextDark
         : exerciseViewStyles.exersiseViewTextLight;
-    const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
+    const iconColor = this.props.darkTheme || false ? "#3A3A3C" : "#D1D1D6";
     const theme = getStyleSheet(this.state.darkTheme);
 
     return (
@@ -147,13 +147,13 @@ class ExerciseCard extends React.Component {
                 );
               })}
             </Picker>
-            <Icon
+            {this.props.id >= 1 && <Icon
               name="close"
               type="material-community"
               size={22}
               color={iconColor}
               onPress={this.props.onDeletePress}
-            />
+            />}
           </View>
           {this.state.name === "Custom" && (
             <TextInput
