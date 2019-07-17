@@ -34,7 +34,7 @@ class CreateWorkoutScreen extends React.Component {
     this.state = {
       darkTheme: false,
       name: "",
-      category:  "",
+      category: "",
       exercises: [
         {
           id: 0,
@@ -54,6 +54,7 @@ class CreateWorkoutScreen extends React.Component {
     this.changeExerciseName = this.changeExerciseName.bind(this);
     this.changeExerciseDesc = this.changeExerciseDesc.bind(this);
     this.changeExerciseSets = this.changeExerciseSets.bind(this);
+    this.deleteExercise = this.deleteExercise.bind(this);
     this.saveWorkout = this.saveWorkout.bind(this);
     this.goHome = this.goHome.bind(this);
   }
@@ -61,13 +62,17 @@ class CreateWorkoutScreen extends React.Component {
   componentDidMount() {
     this.props.navigation.setParams({ save: this.saveWorkout });
     this.props.navigation.setParams({ goHome: this.goHome });
-    firebase.database().ref('/common/workoutCategories/').once('value').then((snapshot) => {
-      let workoutCategories = []
-      snapshot.forEach(function (category) {
-        workoutCategories.push(category.val())
+    firebase
+      .database()
+      .ref("/common/workoutCategories/")
+      .once("value")
+      .then(snapshot => {
+        let workoutCategories = [];
+        snapshot.forEach(function(category) {
+          workoutCategories.push(category.val());
+        });
+        this.setState({ category: workoutCategories[0], workoutCategories });
       });
-      this.setState({ category: workoutCategories[0], workoutCategories });
-    });
   }
 
   goHome() {
@@ -100,7 +105,7 @@ class CreateWorkoutScreen extends React.Component {
       exerciseSets: [
         {
           id: 0,
-          duration: 180,
+          duration: 0,
           repetitions: 0,
           weight: 0,
           notes: "",
@@ -133,6 +138,17 @@ class CreateWorkoutScreen extends React.Component {
     let exercise = exercises[i];
     exercise.exerciseSets = sets;
     this.setState({ exercises, saved: false });
+  }
+
+  deleteExercise(i) {
+    let exercises = this.state.exercises;
+    if (exercises.length > 1) {
+      exercises = exercises.filter(exercise => exercise.id !== i);
+      exercises.forEach((exercise, id) => {
+        exercise.id = id;
+      });
+      this.setState({ exercises });
+    }
   }
 
   validateWorkout() {
@@ -262,6 +278,7 @@ class CreateWorkoutScreen extends React.Component {
                         onNameChange={this.changeExerciseName}
                         onDescChange={this.changeExerciseDesc}
                         onSetsChange={this.changeExerciseSets}
+                        onDeletePress={() => this.deleteExercise(idx)}
                       />
                     );
                   })}
