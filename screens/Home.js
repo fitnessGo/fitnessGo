@@ -42,6 +42,7 @@ class HomeScreen extends React.Component {
       darkTheme: window.darkTheme,
       dataReady: true,
       refreshing: false,
+      refreshed: false,
       workouts: []
     };
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
@@ -81,8 +82,10 @@ class HomeScreen extends React.Component {
           onCompletion(workouts);
         });
     } else {
-      Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
-      onCompletion(null);
+      if (this.state.refreshed) {
+        Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+      }
+       onCompletion(null);
     }
   }
   componentWillUnmount() {
@@ -111,9 +114,9 @@ class HomeScreen extends React.Component {
     this.setState({ workouts });
   }
   _onRefresh = () => {
-    this.setState({ refreshing: true });
+    this.setState({ refreshing: true});
     this.fetchUserWorkouts(workouts => {
-      this.setState({ refreshing: false, workouts: workouts });
+      this.setState({ refreshing: false, workouts: workouts, refreshed: true  });
     });
   };
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import WorkoutCard from "../components/WorkoutCard";
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from "react-native";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
@@ -57,7 +57,10 @@ class Discover extends Component {
         onCompletion(references)
       });
     } else {
-      onCompletion(null)
+      if (this.state.refreshing) {
+        Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+      }
+       onCompletion(null)
     }
   }
 
@@ -67,7 +70,7 @@ class Discover extends Component {
       this.getUserSavedDiscoverWorkouts((references) => {
         snapshot.forEach(function (workoutRef) {
           var workout = workoutRef.val();
-          //check if the discover workout was added to the user library
+            //check if the discover workout was added to the user library
           if (references) {
             workout.added = references.includes(workout.id);
           }
@@ -76,7 +79,10 @@ class Discover extends Component {
         this.workouts = wrks
         onCompletion();
       });
-    });
+     });
+    //  if(!this.workouts || this.workouts.length == 0) {
+    //   Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+    //  }
   }
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
@@ -124,7 +130,7 @@ class Discover extends Component {
   _onRefresh = () => {
     this.setState({ refreshing: true });
     this.fetchWorkoutsFromDatabase(() => {
-      this.setState({ refreshing: false });
+         this.setState({ refreshing: false });
     });
   }
   render() {
@@ -152,7 +158,7 @@ class Discover extends Component {
       })
     } else {
       discoverWorkoutViews = <ActivityIndicator size="small" color="#2172ff" />
-    }
+       }
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
