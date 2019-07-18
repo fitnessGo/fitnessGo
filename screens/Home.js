@@ -42,7 +42,6 @@ class HomeScreen extends React.Component {
       darkTheme: window.darkTheme,
       dataReady: true,
       refreshing: false,
-      refreshed: false,
       workouts: []
     };
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
@@ -82,10 +81,7 @@ class HomeScreen extends React.Component {
           onCompletion(workouts);
         });
     } else {
-      if (this.state.refreshed) {
-        Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
-      }
-       onCompletion(null);
+      onCompletion(null);
     }
   }
   componentWillUnmount() {
@@ -114,10 +110,13 @@ class HomeScreen extends React.Component {
     this.setState({ workouts });
   }
   _onRefresh = () => {
-    this.setState({ refreshing: true});
+    this.setState({ refreshing: true });
     this.fetchUserWorkouts(workouts => {
-      this.setState({ refreshing: false, workouts: workouts, refreshed: true  });
+      this.setState({ refreshing: false, workouts: workouts });
     });
+     if (!firebase.auth().currentUser) {
+      Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
+    }
   };
 
   deleteWorkout(workout) {
@@ -164,7 +163,7 @@ class HomeScreen extends React.Component {
             }
           >
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={[theme.text, {textAlign: 'center'}]}>
+              <Text style={[theme.text, { textAlign: 'center' }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
               <Button
@@ -181,64 +180,64 @@ class HomeScreen extends React.Component {
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-          <ScrollView
-            style={ScreenStyles.screenContainer}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
-              />
-            }
-          >
-            <View ref="workoutsView" style={styles.workoutViewContainer}>
-              {this.state.workouts.map((w, index) => {
-                return (
-                  <Menu key={index}>
-                    <MenuTrigger
-                      triggerOnLongPress={true}
-                      customStyles={triggerMenuTouchable}
-                      onAlternativeAction={view =>
-                        this._onWorkoutSelect(w, view)
-                      }
-                    >
-                      <WorkoutCard
-                        style={workoutViewStyle}
-                        workout={w}
-                        onPress={(workout, view) =>
-                          this._onWorkoutSelect(workout, view)
-                        }
-                        onPlayButtonClick={workout =>
-                          this._onPlayButtonClick(workout)
-                        }
-                      />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={popUpStyles}>
-                      <MenuOption
-                        text="Details"
-                        onSelect={view => this._onWorkoutSelect(w, view)}
-                      />
-                      <MenuOption
-                        text="Delete"
-                        onSelect={() => this.deleteWorkout(w)}
-                      />
-                    </MenuOptions>
-                  </Menu>
-                );
-              })}
-            </View>
-          </ScrollView>
-          <View style={{ alignItems: "flex-end" }}>
-            <Button
-              type="clear"
-              icon={
-                <Icon name="add-circle" size={44} color={theme.text.color} />
-              }
-              onPress={workout =>
-                this._onCreateNewButtonClick(this.state.workouts)
-              }
+        <ScrollView
+          style={ScreenStyles.screenContainer}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
             />
+          }
+        >
+          <View ref="workoutsView" style={styles.workoutViewContainer}>
+            {this.state.workouts.map((w, index) => {
+              return (
+                <Menu key={index}>
+                  <MenuTrigger
+                    triggerOnLongPress={true}
+                    customStyles={triggerMenuTouchable}
+                    onAlternativeAction={view =>
+                      this._onWorkoutSelect(w, view)
+                    }
+                  >
+                    <WorkoutCard
+                      style={workoutViewStyle}
+                      workout={w}
+                      onPress={(workout, view) =>
+                        this._onWorkoutSelect(workout, view)
+                      }
+                      onPlayButtonClick={workout =>
+                        this._onPlayButtonClick(workout)
+                      }
+                    />
+                  </MenuTrigger>
+                  <MenuOptions customStyles={popUpStyles}>
+                    <MenuOption
+                      text="Details"
+                      onSelect={view => this._onWorkoutSelect(w, view)}
+                    />
+                    <MenuOption
+                      text="Delete"
+                      onSelect={() => this.deleteWorkout(w)}
+                    />
+                  </MenuOptions>
+                </Menu>
+              );
+            })}
           </View>
+        </ScrollView>
+        <View style={{ alignItems: "flex-end" }}>
+          <Button
+            type="clear"
+            icon={
+              <Icon name="add-circle" size={44} color={theme.text.color} />
+            }
+            onPress={workout =>
+              this._onCreateNewButtonClick(this.state.workouts)
+            }
+          />
+        </View>
       </SafeAreaView>
     );
   }
