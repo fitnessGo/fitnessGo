@@ -6,7 +6,7 @@ import { Overlay, Icon, Button } from 'react-native-elements'
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles, FontStyles } from '../styles/global';
 import moment from 'moment';
-import firebase from 'react-native-firebase';
+import DatabaseManager from '../components/DatabaseManager';
 import { showMessage } from "react-native-flash-message";
 
 class Discover extends Component {
@@ -39,7 +39,7 @@ class Discover extends Component {
       }
     );
   }
-  componentDidMount() {
+  componentDidMount() { 
     this.fetchWorkoutsFromDatabase(() => {
       this.setState({ dataReceived: true })
     });
@@ -47,40 +47,28 @@ class Discover extends Component {
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
-  getUserSavedDiscoverWorkouts(onCompletion) {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      firebase.database().ref("users/" + user.uid + "/workouts/").once('value').then((snapshot) => {
-        var references = []
-        snapshot.forEach(function (workoutRef) {
-          const w = workoutRef.val();
-          if (w.refId)
-            references.push(w.refId)
-        });
-        onCompletion(references)
-      });
-    } else {
-      onCompletion(null)
-    }
-  }
+
 
   fetchWorkoutsFromDatabase(onCompletion) {
-    firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
-      var wrks = []
-      this.getUserSavedDiscoverWorkouts((references) => {
-        snapshot.forEach(function (workoutRef) {
-          var workout = workoutRef.val();
-          //check if the discover workout was added to the user library
-          if (references) {
-            workout.added = references.includes(workout.id);
-          }
-          wrks.push(workout)
+    var wrks = []
+    DatabaseManager.GetAllWorkoutRefs().then( (workoutRefs) => {
+      if (workoutRefs && workoutRefs.length > 0) {
+        DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
+          workoutRefs.forEach(workoutRef => {
+            var workout = workoutRef.val();
+            //check if the discover workout was added to the user library
+            if (references) {
+              workout.added = references.includes(workout.id);
+            }
+            wrks.push(workout)
+          });
+          this.workouts = wrks
+          onCompletion();
         });
-        this.workouts = wrks
-        onCompletion();
-      });
+      }
     });
   }
+
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
@@ -89,61 +77,38 @@ class Discover extends Component {
   }
   _addWorkoutToUserLib(workout) {
     if (!workout.added) {
-      const user = firebase.auth().currentUser;
-      if (user) {
-        const timestamp = Number(moment().format('x'));
-        const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
-        var newWorkoutRef = userDataRef.push();
-        //update props
-        workout.timeCreated = timestamp;
-        delete workout.added; //only needed it on this screen
-        workout.refId = workout.id; //reference to Discover workout
-        workout.id = newWorkoutRef.key; //update id (new Id in the user lib)
-        newWorkoutRef.set(workout).then(data => {
-          showMessage({
-            message: "Workout was added to your library",
-            icon: "auto",
-            type: "success"
-          })
-          workout.added = true;
-          this.setState({ refreshing: false });
-        }).catch(error => {
-          showMessage({
-            message: "Could not add workout to your library",
-            description: error,
-            icon: "auto",
-            type: "danger"
-          })
+      //update props
+      workout.timeCreated = Number(moment().format('x'));
+      delete workout.added; //only needed it on this screen
+      workout.refId = workout.id; //reference to Discover workout
+      DatabaseManager.AddWorkoutToUserLibrary(workout).then( () => {
+        showMessage({
+          message: "Workout was added to your library",
+          icon: "auto",
+          type: "success"
         });
-      }
-    } else {
+        workout.added = true;
+        this.setState({ refreshing: false });
+      }).catch(error => {
+        showMessage({
+          message: "Could not add workout to your library",
+          description: error,
+          icon: "auto",
+          type: "danger"
+        });
+      });
+    }
+    else {
       showMessage({
         message: "This workout has already been added to your library",
         icon: "auto",
         type: "info"
-      })
+      });
     }
   }
   shareWorkout(workout) {
-    //Generate a unique id for this workout (random enough for us) [source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript]
-    function uuidv4() {
-      return 'xyyx4xxxyx'.replace(/[axy]/g, function (c) {
-        var r = Math.random() * 32 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(32).toUpperCase();
-      });
-    }
-    //Store this workout at a location available for all user upon the request
-    const timestamp = Number(moment().format('x'));
-    const dataRef = firebase.database().ref("common/sharedWorkouts/");
-    var newWorkoutRef = dataRef.push();
-    //update props
-    workout.timeCreated = timestamp;
-    delete workout.added; //only needed it on this screen
-    workout.refId = workout.id; //reference to Discover workout
-    const id = uuidv4();
-    workout.id = id; //update id (new unique Id)
-    newWorkoutRef.set(workout).then(data => {
-      this.setState({sharedWorkoutCode: id, overlayVisible: true})
+    DatabaseManager.AddWorkoutToSharedDirectory(workout).then(id => {
+      this.setState({ sharedWorkoutCode: id, overlayVisible: true })
     }).catch(error => {
       showMessage({
         message: "Could not share this workout",
@@ -151,7 +116,7 @@ class Discover extends Component {
         icon: "auto",
         type: "danger"
       })
-    });
+    })
   }
   _onRefresh = () => {
     this.setState({ refreshing: true });
@@ -200,17 +165,17 @@ class Discover extends Component {
           overlayStyle={styles.overlayStyle}
           onBackdropPress={() => this.setState({ overlayVisible: false })}
         >
-          <View style={{alignItems: 'center'}} >
-            <Text style={[FontStyles.h1, {marginTop: 5}]}>Almost done!</Text>
-            <Text style={[FontStyles.default, {marginTop: 5, textAlign: 'center'}]}>The code to access this workout is ready to be sent</Text>
-            <View style={{marginTop: 15, flexDirection: "row", width:"80%", alignSelf: 'center',alignItems: 'center'}}s>
-              <Text selectable={true} style={{textAlign: 'center', backgroundColor: '#f2f2f2', textAlign: 'center', padding: 5, borderRadius: 5, borderWidth: 1, borderColor: '#e0e0e0'}}>{this.state.sharedWorkoutCode}</Text>
+          <View style={{ alignItems: 'center' }} >
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Almost done!</Text>
+            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>The code to access this workout is ready to be sent</Text>
+            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} s>
+              <Text selectable={true} style={{ textAlign: 'center', backgroundColor: '#f2f2f2', textAlign: 'center', padding: 5, borderRadius: 5, borderWidth: 1, borderColor: '#e0e0e0' }}>{this.state.sharedWorkoutCode}</Text>
               <Button
                 type="clear"
                 title="copy "
                 iconRight
                 icon={
-                <Icon type="material-community" name="content-copy" size={16} color={theme.text.color} />
+                  <Icon type="material-community" name="content-copy" size={16} color={theme.text.color} />
                 }
                 style={{ alignSelf: "flex-end", fontSize: 13 }}
                 titleStyle={FontStyles.default}
@@ -226,7 +191,7 @@ class Discover extends Component {
             </View>
           </View>
         </Overlay>
-        
+
       </SafeAreaView>
 
     );
