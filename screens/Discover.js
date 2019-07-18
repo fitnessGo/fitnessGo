@@ -80,10 +80,7 @@ class Discover extends Component {
         onCompletion();
       });
      });
-    //  if(!this.workouts || this.workouts.length == 0) {
-    //   Alert.alert("Connection Problem", "Unable to load your workouts. Please check your internet connection!.");
-    //  }
-  }
+   }
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }

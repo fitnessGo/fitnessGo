@@ -44,8 +44,7 @@ class LogInScreen extends React.Component {
           alert("There was a problem in signing you in. Please try again.");
         }
       });
-    //this.props.navigation.navigate("App");
-  }
+   }
 
   //I have kept it SignIn for now
   onLogInWithEmailClick() {
