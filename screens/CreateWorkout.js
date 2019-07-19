@@ -232,6 +232,7 @@ class CreateWorkoutScreen extends React.Component {
 
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
+    const placeholderTextColor = this.state.darkTheme ? '#a9a9a9' : '#d3d3d3';
 
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
@@ -249,7 +250,7 @@ class CreateWorkoutScreen extends React.Component {
                   onChangeText={name => this.setState({ name })}
                   placeholder="Workout Name"
                   style={[theme.text, FontStyles.h1, FontStyles.bold]}
-                  placeholderTextColor={theme.text.color}
+                  placeholderTextColor={placeholderTextColor}
                 >
                   {this.name}
                 </TextInput>
