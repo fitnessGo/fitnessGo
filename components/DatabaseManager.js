@@ -2,9 +2,21 @@ import firebase from 'react-native-firebase';
 
 export default class DatabaseManager {
     //Get all pre-made workouts 
-    static GetAllWorkoutRefs() {
+    static GetAllWorkoutRefsOnce() {
         return new Promise((resolve, reject) => {
             firebase.database().ref('/common/workouts/').once('value').then((snapshot) => {
+                var wrks = []
+                snapshot.forEach(function (workoutRef) {
+                    var workout = workoutRef;
+                    wrks.push(workout)
+                });
+                resolve(wrks);
+            });
+        });
+    }
+    static GetAllWorkoutRefsOn() {
+        return new Promise((resolve, reject) => {
+            firebase.database().ref('/common/workouts/').on('value', snapshot => {
                 var wrks = []
                 snapshot.forEach(function (workoutRef) {
                     var workout = workoutRef;
