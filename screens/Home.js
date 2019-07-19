@@ -292,6 +292,9 @@ class HomeScreen extends React.Component {
                   onChangeText={code => this.sharedWorkoutCode = code}
                   placeholder="Code "
                   style={[theme.text]}
+                  onSubmitEditing={ () => 
+                    this.addSharedWorkout(this.sharedWorkoutCode)
+                  }
                 >
                 </TextInput>
                 <Button
