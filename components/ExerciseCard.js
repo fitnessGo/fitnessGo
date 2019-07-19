@@ -106,7 +106,7 @@ class ExerciseCard extends React.Component {
     const exerciseViewStyle = this.props.darkTheme
       ? exerciseViewStyles.exersiseViewDark
       : exerciseViewStyles.exersiseViewLight;
-    const iconColor = this.props.darkTheme ? "#3A3A3C" : "#D1D1D6";
+    const iconColor = this.props.darkTheme ? "#FFFFFF" : "#D1D1D6";
     const theme = getStyleSheet(this.props.darkTheme);
 
     return (
@@ -179,11 +179,7 @@ class ExerciseCard extends React.Component {
           </View>
           {this.state.custom && (
             <TextInput
-              style={[
-                exerciseViewTextStyle,
-                { ...FontStyles.h1, ...FontStyles.bold },
-                theme.text
-              ]}
+              style={[{ ...FontStyles.h1, ...FontStyles.bold }, theme.text]}
               placeholder="Exercise name"
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
