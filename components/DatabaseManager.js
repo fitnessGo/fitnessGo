@@ -70,9 +70,25 @@ export default class DatabaseManager {
             workout.id = id; //update id (new unique Id)
             newWorkoutRef.set(workout).then(data => {
                 resolve(id);
-            }).catch(error => { 
+            }).catch(error => {
                 reject(error);
             });
         })
+    }
+
+    static GetSharedWorkout(codeId) {
+        return new Promise((resolve, reject) => {
+            firebase.database().ref("common/sharedWorkouts/").orderByChild('id').equalTo(codeId).limitToFirst(1).once("value", function (snapshot) {
+                const snapVal = snapshot.val();
+                if (snapVal) {
+                    resolve(snapVal[Object.keys(snapshot.val())[0]]);
+                }
+                else {
+                    resolve(null)
+                }
+            }, function (errorObject) {
+                reject(errorObject.code);
+            });
+        });
     }
 }
