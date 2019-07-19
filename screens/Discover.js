@@ -30,12 +30,12 @@ class Discover extends Component {
         // Do not fetch when the tab opens for the first time. 
         // Only do it if the user went back to this tab from another tab. 
         // In case if user deleted a Discover workout from their library, we need to remove a label from it on this tab
-        if (this.state.dataReceived) {
-          this.setState({ refreshing: true })
-          this.fetchWorkoutsFromDatabase(() => {
-            this.setState({ refreshing: false })
-          });
-        }
+        // if (this.state.dataReceived) {
+        //   this.setState({ refreshing: true })
+        //   this.fetchWorkoutsFromDatabase(() => {
+        //     this.setState({ refreshing: false })
+        //   });
+        // }
       }
     );
   }
@@ -51,7 +51,7 @@ class Discover extends Component {
 
   fetchWorkoutsFromDatabase(onCompletion) {
     var wrks = []
-    DatabaseManager.GetAllWorkoutRefs().then( (workoutRefs) => {
+    DatabaseManager.GetAllWorkoutRefsOnce().then( (workoutRefs) => {
       if (workoutRefs && workoutRefs.length > 0) {
         DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
           workoutRefs.forEach(workoutRef => {
@@ -191,9 +191,7 @@ class Discover extends Component {
             </View>
           </View>
         </Overlay>
-
       </SafeAreaView>
-
     );
   }
 }
