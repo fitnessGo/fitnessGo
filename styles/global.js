@@ -22,5 +22,9 @@ export const FontStyles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold'
+  },
+  warn: {
+    fontWeight: 'bold',
+    color: 'red'
   }
 });
