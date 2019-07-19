@@ -174,20 +174,35 @@ class CreateWorkoutScreen extends React.Component {
 
   validateWorkout() {
     let exercises = this.state.exercises;
+    let sets = [];
     let exerciseNameMissing = false;
+    let setsDurationZero = false;
     let message = "";
     for (let i = 0; i < exercises.length; i++) {
+      for(let j=0; j<exercises[i].exerciseSets.length; j++) {
+        sets.push(exercises[i].exerciseSets[j]);
+      }
       if (exercises[i].name === "") {
         exerciseNameMissing = true;
       }
     }
+
+    for(let i = 0; i < sets.length; i++) {
+      if (sets[i].duration === 0) {
+        setsDurationZero = true;
+      }
+    }
+
+    console.warn(sets);
 
     if (this.state.name === "") {
       message = "Workout name is missing";
     } else if (this.state.exercises.length === 0) {
       message = "Add some exercises to the workout";
     } else if (exerciseNameMissing) {
-      message = "Ensure that all exercises have names.";
+      message = "Ensure that all exercises have names";
+    } else if (setsDurationZero) {
+      message = "Ensure that all sets have duration greater than zero";
     }
 
     return message;
