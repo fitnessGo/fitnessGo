@@ -8,7 +8,6 @@ import { ScreenStyles, FontStyles } from '../styles/global';
 import moment from 'moment';
 import DatabaseManager from '../components/DatabaseManager';
 import { showMessage } from "react-native-flash-message";
-import { Button, Icon } from "react-native-elements";
 
 class Discover extends Component {
   static navigationOptions = ({ navigation }) => {
