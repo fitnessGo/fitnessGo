@@ -6,13 +6,14 @@ import { FontStyles, ScreenStyles } from '../styles/global';
 import ExerciseDetailsView from './ExerciseDetailsView';
 import { NavigationActions } from 'react-navigation';
 import { showMessage } from "react-native-flash-message";
+import DatabaseManager from '../components/DatabaseManager';
 class WorkoutDetailsScreen extends React.Component {
     constructor(props) {
         super(props)
 
         const { params } = this.props.navigation.state;
-        this.workout = params.workout 
-        this.discoverWorkout = params.discoverWorkout 
+        this.workout = params.workout
+        this.discoverWorkout = params.discoverWorkout
         //TODO: this should show all the categories available in the database
         this.workoutCategories = [
             'Stretching', 'Cardio'
@@ -24,22 +25,28 @@ class WorkoutDetailsScreen extends React.Component {
         }
         this.closeButtonPressed = this.closeButtonPressed.bind(this);
         this.editButtonPressed = this.editButtonPressed.bind(this);
+        this.addButtonPressed = this.addButtonPressed.bind(this);
     }
 
-    componentDidMount(){ 
-        this.props.navigation.setParams({ closeButtonPressed: this.closeButtonPressed, editButtonPressed: this.editButtonPressed });
+    componentDidMount() {
+        this.props.navigation.setParams({
+            closeButtonPressed: this.closeButtonPressed,
+            editButtonPressed: this.editButtonPressed,
+            addButtonPressed: this.addButtonPressed
+        });
         const backAction = NavigationActions.back({
             key: 'Profile',
-          });
+        });
         this.props.navigation.dispatch(backAction);
     }
 
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
-        
-        if(params.discoverWorkout) { 
+
+        if (params.discoverWorkout) {
             return {
-                headerLeft: <Button type="clear" onPress={params.closeButtonPressed} title="Close" />
+                headerLeft: <Button type="clear" onPress={params.closeButtonPressed} title="Close" />,
+                headerRight: <Button type="clear" onPress={params.addButtonPressed} title="Add" />
             }
         }
         //Show edit if the workout is in user library
@@ -53,27 +60,27 @@ class WorkoutDetailsScreen extends React.Component {
     };
 
     closeButtonPressed() {
-        if(this.state.editing) {
+        if (this.state.editing) {
             Alert.alert(
                 "Workout not saved",
                 "All unsaved changes will be lost",
                 [
-                  {
-                    text: "Ok",
-                    onPress: () => this.props.navigation.pop(),
-                  },
-                  {
-                    text: "Cancel",
-                    style: "cancel"
-                  }
+                    {
+                        text: "Ok",
+                        onPress: () => this.props.navigation.pop(),
+                    },
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    }
                 ],
                 { cancelable: false }
-              );
+            );
         }
-        else {this.props.navigation.pop()}
+        else { this.props.navigation.pop() }
     }
     editButtonPressed() {
-        if(this.state.editing) {
+        if (this.state.editing) {
             //was in edit state, need to save changes
             //TODO: add save changes funct.
 
@@ -85,17 +92,43 @@ class WorkoutDetailsScreen extends React.Component {
                 type: "success"
             });
         }
-        this.setState({editing: !this.state.editing})
-        this.props.navigation.setParams({editing: !this.state.editing})
+        this.setState({ editing: !this.state.editing })
+        this.props.navigation.setParams({ editing: !this.state.editing })
+    }
+    addButtonPressed() {
+        if (!this.workout.added) {
+            var workout = { ...this.workout, refId: this.workout.id };
+            DatabaseManager.AddWorkoutToUserLibrary(workout).then(() => {
+                showMessage({
+                    message: "Workout was added to your library",
+                    icon: "auto",
+                    type: "success"
+                });
+                this.workout.added = true;
+            }).catch(error => {
+                showMessage({
+                    message: "Could not add workout to your library",
+                    description: error,
+                    icon: "auto",
+                    type: "danger"
+                });
+            })
+        } else {
+            showMessage({
+                message: "This workout is already in your library",
+                icon: "auto",
+                type: "info"
+            });
+        }
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
-        if(this.workout.exercises === undefined ) {
+        if (this.workout.exercises === undefined) {
             return null
         }
         return (
             <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-                <ScrollView style={[ScreenStyles.screenContainer, {height: 20}]}>
+                <ScrollView style={[ScreenStyles.screenContainer, { height: 20 }]}>
                     <View style={styles.container}>
                         <View style={styles.workoutInfo}>
                             <TextInput
@@ -109,7 +142,7 @@ class WorkoutDetailsScreen extends React.Component {
                                 <Picker
                                     enabled={this.state.editing}
                                     selectedValue={this.state.workoutcategory}
-                                    style={{ height: 30, minWidth: '30%', alignSelf: 'flex-start' }} itemStyle={{ height: 34, ...FontStyles.default, ...theme.text,}}
+                                    style={{ height: 30, minWidth: '30%', alignSelf: 'flex-start' }} itemStyle={{ height: 34, ...FontStyles.default, ...theme.text, }}
                                     onValueChange={(itemValue, itemIndex) =>
                                         this.setState({ workoutcategory: itemValue })
                                     }>
@@ -134,7 +167,7 @@ class WorkoutDetailsScreen extends React.Component {
                         </View>
                     </View>
                 </ScrollView>
-                
+
             </SafeAreaView>
         );
     }

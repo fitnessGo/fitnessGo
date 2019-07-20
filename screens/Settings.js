@@ -4,6 +4,7 @@ import { ScreenStyles } from "../styles/global";
 import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
 import firebase from 'react-native-firebase';
+import { ListItem, Icon } from 'react-native-elements';
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -64,22 +65,35 @@ export default class SettingsScreen extends Component {
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
     const textStyle = this.state.darkTheme ? styles.textDark : styles.textLight; 
+    const iconStyle = this.state.darkTheme ? styles.iconDark.color : styles.iconLight.color;
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <View style={styles.container}>
-          <Button
-            style={styles.button}
-            title="Delete Account"
-            color="red"
+        <View>
+          <ListItem
+            title='Delete Account'
+            leftIcon={{ name: 'delete', color: iconStyle, size: 22, paddingLeft: '7%', }}
+            containerStyle={theme.background}
+            titleStyle={textStyle}
             onPress={this.deleteAccount}
           />
-          <Button style={styles.button} title="Logout" onPress={this.logout} />
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={textStyle}>Dark theme </Text>
-            <Switch
-              onValueChange={this.toggleDarkTheme}
-              value={this.state.darkTheme} /></View>
+          <ListItem
+            title='Log Out'
+            leftIcon={{ name: 'md-log-out', type: 'ionicon', color: iconStyle, size: 22, paddingLeft: '9%' }}
+            containerStyle={theme.background}
+            titleStyle={textStyle}
+            onPress={this.logout}
+          />
+           <ListItem
+            leftIcon={ <Switch
+                  onValueChange={this.toggleDarkTheme}
+                  value={this.state.darkTheme} 
+                  style={{ transform: [{ scaleX:  .9  }, { scaleY:  .9  }] }}/> }
+            title='Dark theme'
+            containerStyle={theme.background}
+            titleStyle={textStyle}
+            onPress={this.toggleDarkTheme}
+          />
         </View>
       </SafeAreaView>
     );
@@ -97,10 +111,16 @@ const styles = StyleSheet.create({
   },
   textLight: {
     color: '#000000',
-    fontSize: 18
+    fontSize: 16
   },
   textDark: {
     color: '#ffffff',
-    fontSize: 18
+    fontSize: 16
+  },
+  iconLight: {
+    color: '#000000'
+  },
+  iconDark: {
+    color: '#ffffff',
   }
 });

@@ -7,21 +7,25 @@ import {
   Alert,
   SafeAreaView,
   RefreshControl,
-  TouchableOpacity, Dimensions, Image
+  TouchableOpacity, 
+  Dimensions, 
+  Image,
+  TextInput, 
+  Clipboard
 } from "react-native";
-import { Button, Icon } from "react-native-elements";
+import { Button, Icon, Overlay } from "react-native-elements";
 import WorkoutCard from "../components/WorkoutCard";
 import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger,
-  MenuProvider
+  MenuTrigger, renderers
 } from "react-native-popup-menu";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles, FontStyles } from "../styles/global";
 import firebase from "react-native-firebase";
-
+import DatabaseManager from "../components/DatabaseManager";
+import { showMessage } from "react-native-flash-message";
 class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -42,7 +46,11 @@ class HomeScreen extends React.Component {
       darkTheme: window.darkTheme,
       dataReady: true,
       refreshing: false,
-      workouts: []
+      workouts: [],
+      getSharedWorkoutOverlayVisible: false,
+      shareWorkoutOverlayVisible: false,
+      sharedWorkoutCode: undefined,
+      overlayErrorMessage: ""
     };
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
     this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
@@ -141,7 +149,41 @@ class HomeScreen extends React.Component {
       ]
     );
   }
-
+  shareWorkout(workout) {
+    DatabaseManager.AddWorkoutToSharedDirectory(workout).then(id => {
+      this.setState({ sharedWorkoutCode: id, shareWorkoutOverlayVisible: true })
+    }).catch(error => {
+      showMessage({
+        message: "Could not share this workout",
+        description: error,
+        icon: "auto",
+        type: "danger"
+      })
+    })
+  }
+  addSharedWorkout(code) {
+    //check if code is not empty
+    if (code && code.length) {
+      DatabaseManager.GetSharedWorkout(code).then((workout) => {
+        if (workout) {
+          this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" })
+          this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
+        } else {
+          //Not foiund in the database, maybe wrong code
+          this.setState({ overlayErrorMessage: "Workout with this code not found" })
+        }
+      });
+    }
+    //Code not entered
+    else {
+      this.setState({ overlayErrorMessage: "Code not entered" })
+    }
+    this.sharedWorkoutCode = undefined
+  }
+  //Open view and prompt a workoud code from user 
+  addSharedWorkoutButtonPressed() {
+    this.setState({ getSharedWorkoutOverlayVisible: true })
+  }
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
     const workoutViewStyle = this.state.darkTheme
@@ -160,29 +202,79 @@ class HomeScreen extends React.Component {
               />
             }
           >
-            <View style={{ flex: 1, alignItems: "center", marginTop: "2%" }}>
-              <Text style={[theme.text, { textAlign: 'center', fontSize: 16 }]}>
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={[theme.text, { textAlign: 'center' }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
-              <Button
-                type="clear"
-                icon={<Icon name="add-circle" size={44} color={theme.text.color} />}
-                style={{ alignSelf: "flex-end" }}
-                onPress={this._onCreateNewButtonClick}
-              />
+              <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
+                <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
+                  <View style={{ padding: "1%" }}>
+                    <Icon name="add-circle" size={44} color={theme.text.color} />
+                  </View>
+                </MenuTrigger>
+                <MenuOptions customStyles={popUpStyles}>
+                  <MenuOption text="Add shared workout" onSelect={() =>
+                    this.addSharedWorkoutButtonPressed()} />
+                </MenuOptions>
+              </Menu>
             </View>
           </ScrollView>
           <View style={styles.scaleImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')} 
-               style={styles.containerImage}/>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')} 
+             style={styles.containerImage}/>
+        </View>
+        <View style={styles.stopwatchImageContainer}>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
+            style={[styles.containerImage]} />
+        </View>
+        <View style={styles.weigthImageContainer}>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
+        </View>
+          {/* Add shared workout overlay */}
+        <Overlay
+          isVisible={this.state.getSharedWorkoutOverlayVisible}
+          windowBackgroundColor="rgba(0, 0, 0, .4)"
+          height="auto"
+          overlayStyle={styles.overlayStyle}
+          onBackdropPress={() => {
+            this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+            this.code = undefined;
+          }}
+        >
+          <View style={{ alignItems: 'center' }} >
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
+            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+
+            {
+              this.state.overlayErrorMessage !== "" &&
+              <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
+            }
+
+
+            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
+              <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  onChangeText={code => this.sharedWorkoutCode = code}
+                  placeholder="Code "
+                  style={[theme.text]}
+                  onSubmitEditing={() =>
+                    this.addSharedWorkout(this.sharedWorkoutCode)
+                  }
+                >
+                </TextInput>
+                <Button
+                  type="outline"
+                  title="enter "
+                  titleStyle={FontStyles.default}
+                  onPress={() => {
+                    this.addSharedWorkout(this.sharedWorkoutCode);
+                  }}
+                />
+              </View>
+            </View>
           </View>
-          <View style={styles.stopwatchImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
-              style={[styles.containerImage]} />
-          </View>
-          <View style={styles.weigthImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
-          </View>
+        </Overlay>
         </SafeAreaView>
       );
     }
@@ -227,6 +319,10 @@ class HomeScreen extends React.Component {
                       onSelect={view => this._onWorkoutSelect(w, view)}
                     />
                     <MenuOption
+                      text="Share"
+                      onSelect={() => this.shareWorkout(w)}
+                    />
+                    <MenuOption
                       text="Delete"
                       onSelect={() => this.deleteWorkout(w)}
                     />
@@ -237,16 +333,98 @@ class HomeScreen extends React.Component {
           </View>
         </ScrollView>
         <View style={{ alignItems: "flex-end" }}>
-          <Button
-            type="clear"
-            icon={
-              <Icon name="add-circle" size={44} color={theme.text.color} />
-            }
-            onPress={workout =>
-              this._onCreateNewButtonClick(this.state.workouts)
-            }
-          />
+          <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
+            <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
+              <View style={{ padding: "1%" }}>
+                <Icon name="add-circle" size={44} color={theme.text.color} />
+              </View>
+            </MenuTrigger>
+            <MenuOptions customStyles={popUpStyles}>
+              <MenuOption text="Add shared workout" onSelect={() =>
+                this.addSharedWorkoutButtonPressed()} />
+            </MenuOptions>
+          </Menu>
+
         </View>
+        {/* Share workout overlay */}
+        <Overlay
+          isVisible={this.state.shareWorkoutOverlayVisible}
+          windowBackgroundColor="rgba(0, 0, 0, .4)"
+          height="auto"
+          overlayStyle={styles.overlayStyle}
+          onBackdropPress={() => this.setState({ shareWorkoutOverlayVisible: false })}
+        >
+          <View style={{ alignItems: 'center' }} >
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Almost done!</Text>
+            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>The code to access this workout is ready to be sent</Text>
+            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }}>
+              <Text selectable={true} style={{ textAlign: 'center', backgroundColor: '#f2f2f2', textAlign: 'center', padding: 5, borderRadius: 5, borderWidth: 1, borderColor: '#e0e0e0' }}>{this.state.sharedWorkoutCode}</Text>
+              <Button
+                type="clear"
+                title="copy "
+                iconRight
+                icon={
+                  <Icon type="material-community" name="content-copy" size={16} color={theme.text.color} />
+                }
+                style={{ alignSelf: "flex-end", fontSize: 13 }}
+                titleStyle={FontStyles.default}
+                onPress={() => {
+                  Clipboard.setString(this.state.sharedWorkoutCode);
+                  showMessage({
+                    message: "Code copied",
+                    icon: "auto",
+                    type: "success"
+                  })
+                }}
+              />
+            </View>
+          </View>
+        </Overlay>
+        {/* Add shared workout overlay */}
+        <Overlay
+          isVisible={this.state.getSharedWorkoutOverlayVisible}
+          windowBackgroundColor="rgba(0, 0, 0, .4)"
+          height="auto"
+          overlayStyle={styles.overlayStyle}
+          onBackdropPress={() => {
+            this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+            this.code = undefined;
+          }}
+        >
+          <View style={{ alignItems: 'center' }} >
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
+            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+
+            {
+              this.state.overlayErrorMessage !== "" &&
+              <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
+            }
+
+
+            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
+              <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  onChangeText={code => this.sharedWorkoutCode = code}
+                  placeholder="Code "
+                  style={[theme.text]}
+                  onSubmitEditing={() =>
+                    this.addSharedWorkout(this.sharedWorkoutCode)
+                  }
+                >
+                </TextInput>
+                <Button
+                  type="outline"
+                  title="enter "
+                  titleStyle={FontStyles.default}
+                  onPress={() => {
+                    this.addSharedWorkout(this.sharedWorkoutCode);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Overlay>
       </SafeAreaView>
     );
   }
@@ -306,12 +484,21 @@ const styles = StyleSheet.create({
     padding: 15 ,
     transform: [{ rotate: '-20deg' }]
   },
+  overlayStyle: {
+    width: "80%",
+    top: "-10%",
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 15,
+    alignContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 const popUpStyles = {
   optionsContainer: {
     borderRadius: 6,
-    width: 130
+    width: 160
   }
 };
 

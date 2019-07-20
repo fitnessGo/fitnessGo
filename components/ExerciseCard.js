@@ -1,10 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, TextInput, Picker } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import Card from "../components/Card";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
 import SetCard from "../components/SetCard";
+import getStyleSheet from "../styles/themestyles";
 
 class ExerciseCard extends React.Component {
   constructor(props) {
@@ -13,9 +14,11 @@ class ExerciseCard extends React.Component {
       id: 0,
       name: "",
       description: "",
-      exerciseSets: []
+      exerciseSets: [this.props.exercise.exerciseSets[0]],
+      custom: false
     };
 
+    this.customName = "";
     this.addSet = this.addSet.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeDesc = this.changeDesc.bind(this);
@@ -23,7 +26,7 @@ class ExerciseCard extends React.Component {
   }
 
   addSet() {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
 
     let set = {
       id: sets.length,
@@ -34,10 +37,7 @@ class ExerciseCard extends React.Component {
     };
 
     sets.push(set);
-
-    this.setState({
-      exerciseSets: sets
-    });
+    this.props.onSetsChange(sets, this.props.id);
   }
 
   changeName(newName) {
@@ -51,16 +51,16 @@ class ExerciseCard extends React.Component {
   }
 
   deleteSet(id) {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
     sets = sets.filter(set => set.id !== id);
     sets.forEach((set, id) => {
       set.id = id;
     });
-    this.setState({ exerciseSets: sets });
+    this.props.onSetsChange(sets, this.props.id);
   }
 
   updateSet(id, newSet) {
-    let sets = this.state.exerciseSets;
+    let sets = this.props.exercise.exerciseSets;
     sets[id] = newSet;
     this.setState(
       {
@@ -79,18 +79,35 @@ class ExerciseCard extends React.Component {
     ) {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
+    if (this.props.predefinedExercises != prevProps.predefinedExercises) {
+      this.changeName(this.props.predefinedExercises[0].name);
+      this.changeDesc(this.props.predefinedExercises[0].description);
+    }
+
+    let predefinedNames = [];
+    this.props.predefinedExercises.map(exercise => {
+      predefinedNames.push(exercise.name);
+    });
+
+    if (
+      this.props.exercise.name !== prevProps.exercise.name &&
+      this.props.exercise.name !== "Custom"
+    ) {
+      if (predefinedNames.includes(this.props.exercise.name)) {
+        this.setState({ custom: false, name: this.props.exercise.name });
+      } else {
+        this.setState({ custom: true, name: "Custom" });
+      }
+      // console.warn('true');
+    }
   }
 
   render() {
-    const exerciseViewStyle =
-      this.props.darkTheme || false
-        ? exerciseViewStyles.exersiseViewDark
-        : exerciseViewStyles.exersiseViewLight;
-    const exerciseViewTextStyle =
-      this.props.darkTheme || false
-        ? exerciseViewStyles.exersiseViewTextDark
-        : exerciseViewStyles.exersiseViewTextLight;
-    const iconColor = this.props.darkTheme || false ? "#ff453a" : "#ff3b30";
+    const exerciseViewStyle = this.props.darkTheme
+      ? exerciseViewStyles.exersiseViewDark
+      : exerciseViewStyles.exersiseViewLight;
+    const iconColor = this.props.darkTheme ? "#FFFFFF" : "#D1D1D6";
+    const theme = getStyleSheet(this.props.darkTheme);
 
     return (
       <View style={this.props.style}>
@@ -102,27 +119,77 @@ class ExerciseCard extends React.Component {
               justifyContent: "space-between"
             }}
           >
+            <Picker
+              selectedValue={this.state.name}
+              style={{
+                height: 40,
+                minWidth: "85%",
+                alignSelf: "flex-start"
+              }}
+              itemStyle={{
+                height: 41,
+                ...FontStyles.h1,
+                ...FontStyles.bold,
+                ...theme.text,
+                fontWeight: "bold",
+                textAlign: "left"
+              }}
+              onValueChange={(itemValue, itemIndex) => {
+                if (itemValue === "Custom") {
+                  this.setState({ custom: true, name: itemValue });
+                  this.changeName("");
+                } else {
+                  this.changeName(itemValue);
+                  this.setState({ custom: false, name: itemValue });
+                }
+
+                this.props.predefinedExercises.forEach(exercise => {
+                  if (exercise.name === itemValue) {
+                    if (exercise.description) {
+                      this.changeDesc(exercise.description);
+                    } else {
+                      this.changeDesc("");
+                    }
+                  }
+                });
+              }}
+            >
+              {this.props.predefinedExercises.map((exercise, index) => {
+                return (
+                  <Picker.Item
+                    key={index}
+                    label={exercise.name}
+                    value={exercise.name}
+                  />
+                );
+              })}
+            </Picker>
+            {this.props.deletable >= 1 && (
+              <Icon
+                name="close"
+                type="material-community"
+                size={22}
+                color={iconColor}
+                onPress={() => {
+                  this.props.onDeletePress();
+                  this.setState({ name: this.props.exercise.name });
+                }}
+              />
+            )}
+          </View>
+          {this.state.custom && (
             <TextInput
-              style={[
-                exerciseViewTextStyle,
-                { ...FontStyles.h1, ...FontStyles.bold }
-              ]}
+              style={[{ ...FontStyles.h1, ...FontStyles.bold }, theme.text]}
               placeholder="Exercise name"
               onChangeText={this.changeName}
               underlineColorAndroid="transparent"
             >
-              {this.props.exercise.name}
+              {this.props.exercise.name !== "Custom" &&
+                this.props.exercise.name}
             </TextInput>
-            <Icon
-              name="close"
-              type="material-community"
-              size={22}
-              color={iconColor}
-              onPress={this.props.onDeletePress}
-            />
-          </View>
+          )}
           <TextInput
-            style={exerciseViewTextStyle}
+            style={theme.text}
             placeholder="Description"
             onChangeText={this.changeDesc}
             underlineColorAndroid="transparent"
@@ -130,12 +197,15 @@ class ExerciseCard extends React.Component {
             {this.props.exercise.description}
           </TextInput>
           <View style={{ marginTop: 10 }}>
-            {this.state.exerciseSets.map((es, index) => {
+            {this.props.exercise.exerciseSets.map((es, index) => {
               return (
                 <View key={index}>
                   <SetCard
                     set={es}
                     id={index}
+                    deletable={
+                      this.props.exercise.exerciseSets.length > 1 ? true : false
+                    }
                     value={es}
                     onChange={this.updateSet}
                     darkTheme={this.props.darkTheme}
@@ -148,6 +218,7 @@ class ExerciseCard extends React.Component {
           <Button
             type="clear"
             title="Add set"
+            titleStyle={theme.text}
             style={{ flexDirection: "row", alignSelf: "flex-end" }}
             onPress={this.addSet}
           />
