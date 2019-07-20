@@ -30,12 +30,12 @@ class Discover extends Component {
         // Do not fetch when the tab opens for the first time. 
         // Only do it if the user went back to this tab from another tab. 
         // In case if user deleted a Discover workout from their library, we need to remove a label from it on this tab
-        // if (this.state.dataReceived) {
-        //   this.setState({ refreshing: true })
-        //   this.fetchWorkoutsFromDatabase(() => {
-        //     this.setState({ refreshing: false })
-        //   });
-        // }
+        if (this.state.dataReceived) {
+          this.setState({ refreshing: true })
+          this.refreshUserWorkouts(() => {
+            this.setState({ refreshing: false })
+          });
+        }
       }
     );
   }
@@ -69,6 +69,17 @@ class Discover extends Component {
     });
   }
 
+  refreshUserWorkouts(onCompletion) {
+    DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
+      this.workouts.forEach(workout => {
+        //check if the discover workout was added to the user library
+        if (references) {
+          workout.added = references.includes(workout.id);
+        }
+      });
+      onCompletion();
+    });
+  }
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
@@ -107,6 +118,7 @@ class Discover extends Component {
     }
   }
   shareWorkout(workout) {
+    delete workout.added;
     DatabaseManager.AddWorkoutToSharedDirectory(workout).then(id => {
       this.setState({ sharedWorkoutCode: id, overlayVisible: true })
     }).catch(error => {
