@@ -7,8 +7,11 @@ import {
   Alert,
   SafeAreaView,
   RefreshControl,
-  TouchableOpacity,
-  TextInput, Clipboard
+  TouchableOpacity, 
+  Dimensions, 
+  Image,
+  TextInput, 
+  Clipboard
 } from "react-native";
 import { Button, Icon, Overlay } from "react-native-elements";
 import WorkoutCard from "../components/WorkoutCard";
@@ -216,6 +219,17 @@ class HomeScreen extends React.Component {
               </Menu>
             </View>
           </ScrollView>
+          <View style={styles.scaleImageContainer}>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')} 
+             style={styles.containerImage}/>
+        </View>
+        <View style={styles.stopwatchImageContainer}>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
+            style={[styles.containerImage]} />
+        </View>
+        <View style={styles.weigthImageContainer}>
+          <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
+        </View>
           {/* Add shared workout overlay */}
         <Overlay
           isVisible={this.state.getSharedWorkoutOverlayVisible}
@@ -415,7 +429,7 @@ class HomeScreen extends React.Component {
     );
   }
 }
-
+const win = Dimensions.get('window');
 const styles = StyleSheet.create({
   workoutViewContainer: {
     width: "90%",
@@ -434,6 +448,41 @@ const styles = StyleSheet.create({
     fontSize: 24,
     padding: 10,
     marginBottom: 10
+  },
+  containerImage: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    alignSelf: 'stretch'
+  },
+  scaleImageContainer: { 
+    position: 'absolute', 
+    bottom: "20%", 
+    left: "-10%", 
+    width: "55%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    padding: 0,
+    transform: [{ rotateY: '180deg' }]
+  },
+  stopwatchImageContainer: { 
+    position: 'absolute', 
+    bottom: "45%", 
+    right: "-5%", 
+    width: "32%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    transform: [{ rotate: '-25deg' }]
+  },
+  weigthImageContainer: { 
+    position: 'absolute', 
+    bottom: "-6%", 
+    right: "-12%", 
+    width: "50%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    padding: 15 ,
+    transform: [{ rotate: '-20deg' }]
   },
   overlayStyle: {
     width: "80%",
