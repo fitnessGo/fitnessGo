@@ -7,8 +7,22 @@ import { ScreenStyles } from '../styles/global';
 import moment from 'moment';
 import firebase from 'react-native-firebase';
 import { showMessage } from "react-native-flash-message";
+import { Button, Icon } from "react-native-elements";
 
 class Discover extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <Button
+          type="clear"
+          icon={<Icon name="settings" size={22} />}
+          style={{ flexDirection: "row", alignSelf: "flex-end" }}
+          onPress={() => navigation.navigate("Settings")}
+        />
+      )
+    };
+  };
+
   constructor(props) {
     super(props)
     this.state = {
