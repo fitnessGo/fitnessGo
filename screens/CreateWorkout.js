@@ -193,8 +193,6 @@ class CreateWorkoutScreen extends React.Component {
       }
     }
 
-    console.warn(sets);
-
     if (this.state.name === "") {
       message = "Workout name is missing";
     } else if (this.state.exercises.length === 0) {
