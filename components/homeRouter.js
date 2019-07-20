@@ -50,11 +50,7 @@ const WorkoutStack = createStackNavigator(
     }
   },
   {
-    initialRoute: "UserLibrary",
-    mode: "modal",
-    cardStyle: {
-      opacity: 1.0
-    }
+    mode: "modal"
   }
 );
 
