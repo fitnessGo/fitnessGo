@@ -173,12 +173,12 @@ class HomeScreen extends React.Component {
             </View>
           </ScrollView>
           <View style={styles.scaleImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Scales.png')}
-              style={styles.containerImage} />
+            <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')} 
+               style={styles.containerImage}/>
           </View>
           <View style={styles.stopwatchImageContainer}>
             <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
-              style={styles.containerImage} />
+              style={[styles.containerImage]} />
           </View>
           <View style={styles.weigthImageContainer}>
             <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
@@ -279,22 +279,22 @@ const styles = StyleSheet.create({
   },
   scaleImageContainer: { 
     position: 'absolute', 
-    bottom: "45%", 
-    right: "-0%", 
-    width: "30%", 
-    aspectRatio: 1, 
-    justifyContent: 'center', 
-    transform: [{ rotate: '20deg' }]
-  },
-  stopwatchImageContainer: { 
-    position: 'absolute', 
     bottom: "20%", 
     left: "-10%", 
     width: "55%", 
     aspectRatio: 1, 
     justifyContent: 'center', 
     padding: 0,
-    transform: [{ rotate: '-40deg' }]
+    transform: [{ rotateY: '180deg' }]
+  },
+  stopwatchImageContainer: { 
+    position: 'absolute', 
+    bottom: "45%", 
+    right: "-5%", 
+    width: "32%", 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    transform: [{ rotate: '-25deg' }]
   },
   weigthImageContainer: { 
     position: 'absolute', 
