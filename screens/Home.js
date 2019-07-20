@@ -203,14 +203,64 @@ class HomeScreen extends React.Component {
               <Text style={[theme.text, { textAlign: 'center' }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
-              <Button
-                type="clear"
-                icon={<Icon name="add" size={44} color={theme.text.color} />}
-                style={{ alignSelf: "flex-end" }}
-                onPress={this._onCreateNewButtonClick}
-              />
+              <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
+                <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
+                  <View style={{ padding: "1%" }}>
+                    <Icon name="add-circle" size={44} color={theme.text.color} />
+                  </View>
+                </MenuTrigger>
+                <MenuOptions customStyles={popUpStyles}>
+                  <MenuOption text="Add shared workout" onSelect={() =>
+                    this.addSharedWorkoutButtonPressed()} />
+                </MenuOptions>
+              </Menu>
             </View>
           </ScrollView>
+          {/* Add shared workout overlay */}
+        <Overlay
+          isVisible={this.state.getSharedWorkoutOverlayVisible}
+          windowBackgroundColor="rgba(0, 0, 0, .4)"
+          height="auto"
+          overlayStyle={styles.overlayStyle}
+          onBackdropPress={() => {
+            this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+            this.code = undefined;
+          }}
+        >
+          <View style={{ alignItems: 'center' }} >
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
+            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+
+            {
+              this.state.overlayErrorMessage !== "" &&
+              <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
+            }
+
+
+            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
+              <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  onChangeText={code => this.sharedWorkoutCode = code}
+                  placeholder="Code "
+                  style={[theme.text]}
+                  onSubmitEditing={() =>
+                    this.addSharedWorkout(this.sharedWorkoutCode)
+                  }
+                >
+                </TextInput>
+                <Button
+                  type="outline"
+                  title="enter "
+                  titleStyle={FontStyles.default}
+                  onPress={() => {
+                    this.addSharedWorkout(this.sharedWorkoutCode);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Overlay>
         </SafeAreaView>
       );
     }
