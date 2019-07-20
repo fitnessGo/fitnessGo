@@ -25,14 +25,14 @@ class CreateWorkoutScreen extends React.Component {
     const { params = {} } = navigation.state;
     return {
       headerRight: <Button onPress={params.save} title="Save" />,
-      headerLeft: <Button onPress={params.goHome} title="< Home" />
+      headerLeft: <Button onPress={params.goHome} title="Close" />
     };
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: false,
+      darkTheme: window.darkTheme,
       name: "",
       category: "",
       exercises: [
@@ -40,7 +40,14 @@ class CreateWorkoutScreen extends React.Component {
           id: 0,
           name: "",
           description: "",
-          exerciseSets: []
+          exerciseSets: [{
+            id: 0,
+            duration: 0,
+            repetitions: 0,
+            weight: 0,
+            notes: "",
+            break: 0
+          }]
         }
       ],
       saved: false,
@@ -110,13 +117,15 @@ class CreateWorkoutScreen extends React.Component {
   }
 
   addExercise() {
+    let exerciseLength = this.state.exercises.length;
+    let predefinedExercises = this.state.predefinedExercises;
     let exercise = {
-      id: this.state.exercises.length,
-      name: "",
-      description: "",
+      id: exerciseLength,
+      name: predefinedExercises[0].name,
+      description: predefinedExercises[0].description,
       exerciseSets: [
         {
-          id: 0,
+          id: this.state.exercises[exerciseLength-1].exerciseSets.length,
           duration: 0,
           repetitions: 0,
           weight: 0,
@@ -165,11 +174,22 @@ class CreateWorkoutScreen extends React.Component {
 
   validateWorkout() {
     let exercises = this.state.exercises;
+    let sets = [];
     let exerciseNameMissing = false;
+    let setsDurationZero = false;
     let message = "";
     for (let i = 0; i < exercises.length; i++) {
+      for(let j=0; j<exercises[i].exerciseSets.length; j++) {
+        sets.push(exercises[i].exerciseSets[j]);
+      }
       if (exercises[i].name === "") {
         exerciseNameMissing = true;
+      }
+    }
+
+    for(let i = 0; i < sets.length; i++) {
+      if (sets[i].duration === 0) {
+        setsDurationZero = true;
       }
     }
 
@@ -178,7 +198,9 @@ class CreateWorkoutScreen extends React.Component {
     } else if (this.state.exercises.length === 0) {
       message = "Add some exercises to the workout";
     } else if (exerciseNameMissing) {
-      message = "Ensure that all exercises have names.";
+      message = "Ensure that all exercises have names";
+    } else if (setsDurationZero) {
+      message = "Ensure that all sets have duration greater than zero";
     }
 
     return message;
@@ -214,14 +236,16 @@ class CreateWorkoutScreen extends React.Component {
           .catch(error => {
             console.error(error);
           });
-      } else {
-        Alert.alert("Couldn't save workout 😔 Try again later.", message);
       }
+    } else {
+      Alert.alert(message, "Couldn't save workout 😔", );
     }
+    
   }
 
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
+    const placeholderTextColor = this.state.darkTheme ? '#a9a9a9' : '#d3d3d3';
 
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
@@ -239,6 +263,7 @@ class CreateWorkoutScreen extends React.Component {
                   onChangeText={name => this.setState({ name })}
                   placeholder="Workout Name"
                   style={[theme.text, FontStyles.h1, FontStyles.bold]}
+                  placeholderTextColor={placeholderTextColor}
                 >
                   {this.name}
                 </TextInput>
@@ -285,6 +310,7 @@ class CreateWorkoutScreen extends React.Component {
                         darkTheme={this.state.darkTheme}
                         key={idx}
                         id={idx}
+                        deletable={this.state.exercises.length > 1 ? true : false}
                         exercise={exercise}
                         predefinedExercises={this.state.predefinedExercises}
                         style={styles.exersiceDetails}
@@ -306,8 +332,9 @@ class CreateWorkoutScreen extends React.Component {
                   <Button
                     title="Add Exercise"
                     style={{
-                      marginBottom: 15
+                      marginBottom: 15,
                     }}
+                    color={theme.text.color}
                     onPress={this.addExercise}
                   />
                 </View>
