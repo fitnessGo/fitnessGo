@@ -277,12 +277,12 @@ class HomeScreen extends React.Component {
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
               <MenuOption text="Add shared workout" onSelect={() =>
-                this.addSharedWorkoutButtonPressed()}/>
+                this.addSharedWorkoutButtonPressed()} />
             </MenuOptions>
           </Menu>
 
         </View>
-
+        {/* Share workout overlay */}
         <Overlay
           isVisible={this.state.shareWorkoutOverlayVisible}
           windowBackgroundColor="rgba(0, 0, 0, .4)"
@@ -316,7 +316,7 @@ class HomeScreen extends React.Component {
             </View>
           </View>
         </Overlay>
-
+        {/* Add shared workout overlay */}
         <Overlay
           isVisible={this.state.getSharedWorkoutOverlayVisible}
           windowBackgroundColor="rgba(0, 0, 0, .4)"
