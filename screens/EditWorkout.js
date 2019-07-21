@@ -24,7 +24,7 @@ class EditWorkout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: false,
+      darkTheme: window.darkTheme,
       name: "",
       category: "",
       exercises: [
@@ -32,7 +32,14 @@ class EditWorkout extends React.Component {
           id: 0,
           name: "",
           description: "",
-          exerciseSets: []
+          exerciseSets: [{
+            id: 0,
+            duration: 0,
+            repetitions: 0,
+            weight: 0,
+            notes: "",
+            break: 0
+          }]
         }
       ],
       saved: false,
@@ -102,10 +109,13 @@ class EditWorkout extends React.Component {
   }
 
   addExercise() {
+    let exerciseLength = this.state.exercises.length;
+    let predefinedExercises = this.state.predefinedExercises;
+
     let exercise = {
-      id: this.state.exercises.length,
-      name: "",
-      description: "",
+      id: exerciseLength,
+      name: predefinedExercises[0].name,
+      description: predefinedExercises[0].description,
       exerciseSets: [
         {
           id: 0,
@@ -157,11 +167,22 @@ class EditWorkout extends React.Component {
 
   validateWorkout() {
     let exercises = this.state.exercises;
+    let sets = [];
     let exerciseNameMissing = false;
+    let setsDurationZero = false;
     let message = "";
     for (let i = 0; i < exercises.length; i++) {
+      for(let j=0; j<exercises[i].exerciseSets.length; j++) {
+        sets.push(exercises[i].exerciseSets[j]);
+      }
       if (exercises[i].name === "") {
         exerciseNameMissing = true;
+      }
+    }
+
+    for(let i = 0; i < sets.length; i++) {
+      if (sets[i].duration === 0) {
+        setsDurationZero = true;
       }
     }
 
@@ -170,39 +191,31 @@ class EditWorkout extends React.Component {
     } else if (this.state.exercises.length === 0) {
       message = "Add some exercises to the workout";
     } else if (exerciseNameMissing) {
-      message = "Ensure that all exercises have names.";
+      message = "Ensure that all exercises have names";
+    } else if (setsDurationZero) {
+      message = "Ensure that all sets have duration greater than zero";
     }
 
     return message;
   }
 
-  saveWorkout() {
+  saveWorkout(parentObj) {
     let message = this.validateWorkout();
     if (message === "") {
       this.setState({ saved: true });
       const user = firebase.auth().currentUser;
       if (user) {
         const timestamp = Number(moment().format("x"));
-
-        const userDataRef = firebase
+        parentObj.name = this.state.name;
+        parentObj.category = this.state.category;
+        firebase
           .database()
-          .ref("users/" + user.uid + "/workouts/");
-        //push() method without arguments is a pure client-side operation.
-        //generate a new ref where the object will be saved
-        var newWorkoutRef = userDataRef.push();
-        newWorkoutRef
-          .set({
-            //use refKey as a unique id
-            id: newWorkoutRef.key,
+          .ref("users/" + user.uid + "/workouts/" + parentObj.id).update({
             name: this.state.name,
             category: this.state.category,
             createdBy: user.email,
             timeCreated: timestamp,
             exercises: this.state.exercises
-          })
-          .then(data => {
-            this.goHome();
-            console.warn(JSON.stringify(this.state));
           })
           .catch(error => {
             console.error(error);
@@ -274,6 +287,7 @@ class EditWorkout extends React.Component {
                       key={idx}
                       id={idx}
                       exercise={exercise}
+                      deletable={this.state.exercises.length > 1 ? true : false}
                       predefinedExercises={this.state.predefinedExercises}
                       style={styles.exersiceDetails}
                       onNameChange={this.changeExerciseName}

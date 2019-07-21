@@ -8,12 +8,13 @@ import getStyleSheet from "../styles/themestyles";
 class SetCard extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      id: 0,
-      repetitions: 0,
-      duration: 0,
-      break: 0,
-      weight: 0
+      id: this.props.set.id,
+      repetitions: this.props.set.repetitions,
+      duration: this.props.set.duration,
+      break: this.props.set.break,
+      weight: this.props.set.weight
     };
 
     this.update = this.update.bind(this);
@@ -43,11 +44,21 @@ class SetCard extends React.Component {
     this.props.onChange(this.state.id, this.state);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.set !== this.props.set) {
+      this.setState({
+        repetitions: this.props.set.repetitions,
+        duration: this.props.set.duration,
+        break: this.props.set.break,
+        weight: this.props.set.weight
+      });
+    }
+  }
+
   render() {
-    const setViewStyle =
-      this.props.darkTheme
-        ? setViewStyles.exersiseSetViewDark
-        : setViewStyles.exersiseSetViewLight;
+    const setViewStyle = this.props.darkTheme
+      ? setViewStyles.exersiseSetViewDark
+      : setViewStyles.exersiseSetViewLight;
     const iconColor = this.props.darkTheme ? "#FFFFFF" : "#3A3A3C";
     const theme = getStyleSheet(this.props.darkTheme);
 
@@ -62,27 +73,23 @@ class SetCard extends React.Component {
             width: "18%"
           }}
         >
-          <Text
-            style={[theme.text, FontStyles.h3]}
-          >
+          <Text style={[theme.text, FontStyles.h3]}>
             Set {this.props.id + 1}
           </Text>
-          {this.props.deletable && <Icon
-            name="close"
-            type="material-community"
-            size={16}
-            color={iconColor}
-            onPress={this.props.onDeletePress}
-          />}
+          {this.props.deletable && (
+            <Icon
+              name="close"
+              type="material-community"
+              size={16}
+              color={iconColor}
+              onPress={this.props.onDeletePress}
+            />
+          )}
         </View>
         <Card style={setViewStyle}>
           <View style={setViewStyles.setCardRow}>
             <Text
-              style={[
-                theme.text,
-                setViewStyles.setDetailName,
-                FontStyles.h3
-              ]}
+              style={[theme.text, setViewStyles.setDetailName, FontStyles.h3]}
             >
               Repetitions:{" "}
             </Text>
@@ -93,15 +100,11 @@ class SetCard extends React.Component {
               onChangeText={reps => this.update("repetitions", reps)}
             >
               {this.props.value.repetitions}
-              </TextInput>
+            </TextInput>
           </View>
           <View style={setViewStyles.setCardRow}>
             <Text
-              style={[
-                theme.text,
-                setViewStyles.setDetailName,
-                FontStyles.h3
-              ]}
+              style={[theme.text, setViewStyles.setDetailName, FontStyles.h3]}
             >
               Duration:{" "}
             </Text>
@@ -112,16 +115,12 @@ class SetCard extends React.Component {
               onChangeText={duration => this.update("duration", duration)}
             >
               {this.props.value.duration}
-              </TextInput>
-            <Text style={FontStyles.h3, theme.text}> sec</Text>
+            </TextInput>
+            <Text style={(FontStyles.h3, theme.text)}> sec</Text>
           </View>
           <View style={setViewStyles.setCardRow}>
             <Text
-              style={[
-                theme.text,
-                setViewStyles.setDetailName,
-                FontStyles.h3
-              ]}
+              style={[theme.text, setViewStyles.setDetailName, FontStyles.h3]}
             >
               Break:{" "}
             </Text>
@@ -132,8 +131,8 @@ class SetCard extends React.Component {
               onChangeText={newBreak => this.update("break", newBreak)}
             >
               {this.props.value.break}
-              </TextInput>
-            <Text style={FontStyles.h3, theme.text}> sec</Text>
+            </TextInput>
+            <Text style={(FontStyles.h3, theme.text)}> sec</Text>
           </View>
         </Card>
       </View>

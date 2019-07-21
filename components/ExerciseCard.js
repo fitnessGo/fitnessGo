@@ -10,10 +10,11 @@ import getStyleSheet from "../styles/themestyles";
 class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      id: 0,
-      name: "",
-      description: "",
+      id: this.props.exercise.id,
+      name: '',
+      description: '',
       exerciseSets: [this.props.exercise.exerciseSets[0]],
       custom: false
     };
@@ -80,8 +81,10 @@ class ExerciseCard extends React.Component {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
     if (this.props.predefinedExercises != prevProps.predefinedExercises) {
-      this.changeName(this.props.predefinedExercises[0].name);
-      this.changeDesc(this.props.predefinedExercises[0].description);
+      if(this.state.name === '' && this.props.exercise.name === ""){
+        this.changeName(this.props.predefinedExercises[0].name);
+        this.changeDesc(this.props.predefinedExercises[0].description);
+      }
     }
 
     let predefinedNames = [];
@@ -91,14 +94,22 @@ class ExerciseCard extends React.Component {
 
     if (
       this.props.exercise.name !== prevProps.exercise.name &&
-      this.props.exercise.name !== "Custom"
+      this.props.exercise.name !== "Custom" && predefinedNames.length>1
     ) {
       if (predefinedNames.includes(this.props.exercise.name)) {
         this.setState({ custom: false, name: this.props.exercise.name });
       } else {
         this.setState({ custom: true, name: "Custom" });
       }
-      // console.warn('true');
+      
+    }
+
+    if(this.props.exercise.name !== this.state.name && this.state.name !== "Custom" && predefinedNames.length>1){
+      if (predefinedNames.includes(this.props.exercise.name)) {
+        this.setState({ custom: false, name: this.props.exercise.name });
+      } else {
+        this.setState({ custom: true, name: "Custom" });
+      }
     }
   }
 
@@ -108,7 +119,6 @@ class ExerciseCard extends React.Component {
       : exerciseViewStyles.exersiseViewLight;
     const iconColor = this.props.darkTheme ? "#FFFFFF" : "#D1D1D6";
     const theme = getStyleSheet(this.props.darkTheme);
-
     return (
       <View style={this.props.style}>
         <Card style={exerciseViewStyle}>
@@ -164,7 +174,7 @@ class ExerciseCard extends React.Component {
                 );
               })}
             </Picker>
-            {this.props.deletable >= 1 && (
+            {this.props.deletable && (
               <Icon
                 name="close"
                 type="material-community"
