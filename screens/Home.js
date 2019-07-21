@@ -103,7 +103,7 @@ class HomeScreen extends React.Component {
     });
   }
   _onWorkoutUpdate() {
-    this.selectedWorkout.forceUpdate();
+    // this.selectedWorkout.forceUpdate();
   }
   _onWorkoutSelect(w, view) {
     this.selectedWorkout = view;
