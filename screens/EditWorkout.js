@@ -208,6 +208,7 @@ class EditWorkout extends React.Component {
         const timestamp = Number(moment().format("x"));
         parentObj.name = this.state.name;
         parentObj.category = this.state.category;
+        parentObj.exercises = this.state.exercises;
         firebase
           .database()
           .ref("users/" + user.uid + "/workouts/" + parentObj.id).update({
