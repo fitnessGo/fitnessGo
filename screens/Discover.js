@@ -90,9 +90,8 @@ class Discover extends Component {
           workout.added = references.includes(workout.id);
         }
       });
-      onCompletion();
-    });
-  }
+     });
+   }
   openWorkoutDetails(workout) {
     this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
   }
