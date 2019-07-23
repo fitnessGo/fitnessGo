@@ -20,15 +20,7 @@ import { KeyboardAvoidingView } from "react-native";
 import firebase from "react-native-firebase";
 import moment from "moment";
 
-class CreateWorkoutScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
-    return {
-      headerRight: <Button onPress={params.save} title="Save" />,
-      headerLeft: <Button onPress={params.goHome} title="Close" />
-    };
-  };
-
+class EditWorkout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,8 +47,8 @@ class CreateWorkoutScreen extends React.Component {
       predefinedExercises: []
     };
 
-    const { params } = this.props.navigation.state;
-    this.workouts = params.workouts;
+    // const { params } = this.props.navigation.state;
+    // this.workouts = params.workouts;
 
     this.addExercise = this.addExercise.bind(this);
     this.changeExerciseName = this.changeExerciseName.bind(this);
@@ -68,8 +60,12 @@ class CreateWorkoutScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({ save: this.saveWorkout });
-    this.props.navigation.setParams({ goHome: this.goHome });
+    this.setState({
+        name: this.props.workout.name,
+        category: this.props.workout.category,
+        exercises: this.props.workout.exercises,
+    });
+
     firebase
       .database()
       .ref("/common/workoutCategories/")
@@ -79,7 +75,7 @@ class CreateWorkoutScreen extends React.Component {
         snapshot.forEach(function(category) {
           workoutCategories.push(category.val());
         });
-        this.setState({ category: workoutCategories[0], workoutCategories });
+        this.setState({ workoutCategories });
       });
 
     firebase
@@ -95,37 +91,34 @@ class CreateWorkoutScreen extends React.Component {
   }
 
   goHome() {
-    if (this.state.saved) {
-      this.props.navigation.navigate("UserLibrary");
-    } else {
-      Alert.alert(
-        "Workout not saved",
-        "Are you sure you want go back to home screen?",
-        [
-          {
-            text: "Yes",
-            onPress: () => this.props.navigation.navigate("UserLibrary")
-          },
-          {
-            text: "Cancel",
-            style: "cancel"
-          }
-        ],
-        { cancelable: false }
-      );
-    }
+    Alert.alert(
+      "Workout not saved",
+      "Are you sure you want go back to home screen?",
+      [
+        {
+          text: "Yes"
+          // onPress: () => this.props.navigation.navigate("UserLibrary")
+        },
+        {
+          text: "Cancel",
+          style: "cancel"
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
   addExercise() {
     let exerciseLength = this.state.exercises.length;
     let predefinedExercises = this.state.predefinedExercises;
+
     let exercise = {
       id: exerciseLength,
       name: predefinedExercises[0].name,
       description: predefinedExercises[0].description,
       exerciseSets: [
         {
-          id: this.state.exercises[exerciseLength-1].exerciseSets.length,
+          id: 0,
           duration: 0,
           repetitions: 0,
           weight: 0,
@@ -206,143 +199,125 @@ class CreateWorkoutScreen extends React.Component {
     return message;
   }
 
-  saveWorkout() {
+  saveWorkout(parentObj) {
     let message = this.validateWorkout();
     if (message === "") {
       this.setState({ saved: true });
       const user = firebase.auth().currentUser;
       if (user) {
         const timestamp = Number(moment().format("x"));
-
-        const userDataRef = firebase
+        parentObj.name = this.state.name;
+        parentObj.category = this.state.category;
+        parentObj.exercises = this.state.exercises;
+        firebase
           .database()
-          .ref("users/" + user.uid + "/workouts/");
-        //push() method without arguments is a pure client-side operation.
-        //generate a new ref where the object will be saved
-        var newWorkoutRef = userDataRef.push();
-        newWorkoutRef
-          .set({
-            //use refKey as a unique id
-            id: newWorkoutRef.key,
+          .ref("users/" + user.uid + "/workouts/" + parentObj.id).update({
             name: this.state.name,
             category: this.state.category,
             createdBy: user.email,
             timeCreated: timestamp,
             exercises: this.state.exercises
           })
-          .then(data => {
-            this.goHome();
-          })
           .catch(error => {
             console.error(error);
           });
+      } else {
+        Alert.alert("Couldn't save workout 😔 Try again later.", message);
       }
-    } else {
-      Alert.alert(message, "Couldn't save workout 😔", );
     }
-    
   }
 
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
-    const placeholderTextColor = this.state.darkTheme ? '#a9a9a9' : '#d3d3d3';
 
     return (
-      <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
-        <KeyboardAvoidingView
-          style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
-          behavior="padding"
-          enabled
-          keyboardVerticalOffset={100}
-        >
-          <ScrollView style={ScreenStyles.screenContainer}>
-            <View style={styles.container}>
-              <View style={styles.workoutInfo}>
-                <TextInput
-                  underlineColorAndroid="transparent"
-                  onChangeText={name => this.setState({ name })}
-                  placeholder="Workout Name"
-                  style={[theme.text, FontStyles.h1, FontStyles.bold]}
-                  placeholderTextColor={placeholderTextColor}
-                >
-                  {this.name}
-                </TextInput>
-                <View
+      <KeyboardAvoidingView
+        style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+        behavior="padding"
+        enabled
+        keyboardVerticalOffset={100}
+      >
+        <ScrollView style={ScreenStyles.screenContainer}>
+          <View style={styles.container}>
+            <View style={styles.workoutInfo}>
+              <TextInput
+                underlineColorAndroid="transparent"
+                onChangeText={name => this.setState({ name })}
+                placeholder="Workout Name"
+                style={[theme.text, FontStyles.h1, FontStyles.bold]}
+              >
+                {this.state.name}
+              </TextInput>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start"
+                }}
+              >
+                <Text style={theme.text}>Category:</Text>
+                <Picker
+                  enabled={this.state.editable}
+                  selectedValue={this.state.category}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start"
+                    height: 30,
+                    minWidth: "30%",
+                    alignSelf: "flex-start"
                   }}
+                  itemStyle={{
+                    height: 34,
+                    ...FontStyles.default,
+                    ...theme.text
+                  }}
+                  onValueChange={(category, catIdx) =>
+                    this.setState({ category })
+                  }
                 >
-                  <Text style={theme.text}>Category:</Text>
-                  <Picker
-                    enabled={this.state.editable}
-                    selectedValue={this.state.category}
-                    style={{
-                      height: 30,
-                      minWidth: "30%",
-                      alignSelf: "flex-start"
-                    }}
-                    itemStyle={{
-                      height: 34,
-                      ...FontStyles.default,
-                      ...theme.text
-                    }}
-                    onValueChange={(category, catIdx) =>
-                      this.setState({ category })
-                    }
-                  >
-                    {this.state.workoutCategories.map((category, i) => {
-                      return (
-                        <Picker.Item
-                          key={i}
-                          label={category}
-                          value={category}
-                        />
-                      );
-                    })}
-                  </Picker>
-                </View>
-                <View style={styles.exercises}>
-                  {this.state.exercises.map((exercise, idx) => {
+                  {this.state.workoutCategories.map((category, i) => {
                     return (
-                      <ExerciseCard
-                        darkTheme={this.state.darkTheme}
-                        key={idx}
-                        id={idx}
-                        deletable={this.state.exercises.length > 1 ? true : false}
-                        exercise={exercise}
-                        predefinedExercises={this.state.predefinedExercises}
-                        style={styles.exersiceDetails}
-                        onNameChange={this.changeExerciseName}
-                        onDescChange={this.changeExerciseDesc}
-                        onSetsChange={this.changeExerciseSets}
-                        onDeletePress={() => this.deleteExercise(idx)}
-                      />
+                      <Picker.Item key={i} label={category} value={category} />
                     );
                   })}
-                </View>
-                <View
+                </Picker>
+              </View>
+              <View style={styles.exercises}>
+                {this.state.exercises.map((exercise, idx) => {
+                  return (
+                    <ExerciseCard
+                      darkTheme={this.state.darkTheme}
+                      key={idx}
+                      id={idx}
+                      exercise={exercise}
+                      deletable={this.state.exercises.length > 1 ? true : false}
+                      predefinedExercises={this.state.predefinedExercises}
+                      style={styles.exersiceDetails}
+                      onNameChange={this.changeExerciseName}
+                      onDescChange={this.changeExerciseDesc}
+                      onSetsChange={this.changeExerciseSets}
+                      onDeletePress={() => this.deleteExercise(idx)}
+                    />
+                  );
+                })}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-end"
+                }}
+              >
+                <Button
+                  title="Add Exercise"
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end"
+                    marginBottom: 15
                   }}
-                >
-                  <Button
-                    title="Add Exercise"
-                    style={{
-                      marginBottom: 15,
-                    }}
-                    color={theme.text.color}
-                    onPress={this.addExercise}
-                  />
-                </View>
+                  onPress={this.addExercise}
+                />
               </View>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -360,4 +335,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CreateWorkoutScreen;
+export default EditWorkout;
