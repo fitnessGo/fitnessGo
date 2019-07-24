@@ -5,9 +5,6 @@ class Timer {
         this.time = duration;
     }
     // Method
-    reset() {
-        this.time = duration;
-    }
     start(callback) {
         this.intervalTimer = setInterval(() => {
             if (this.time > 0) {

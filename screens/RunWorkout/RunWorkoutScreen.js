@@ -32,9 +32,10 @@ class RunWorkoutScreen extends Component {
             this.timerViewsRefs[0].changeSelectedStateTo(true);
             this.activeTimerIndex = 0
         }
-
         this.sound_countdown = new Sound('beep01.flac', Sound.MAIN_BUNDLE);
         this.sound_whistle = new Sound('whistle01.wav', Sound.MAIN_BUNDLE);
+        this.sound_timer_ring = new Sound('timer_ring.wav', Sound.MAIN_BUNDLE);
+        this.sound_complete = new Sound('complete_chime.mp3', Sound.MAIN_BUNDLE);
     }
     componentWillUnmount() {
         if (this.countdownIntervalTimer) {
@@ -94,9 +95,30 @@ class RunWorkoutScreen extends Component {
         this.countdownRunning = true // need to show or hide overlay
         this.startCountdownToStart(() => {
             //start a currently selected timer after the countdown was finished
+
+            let activeTimerViewRef = this.switchTimer(this.activeTimerIndex);
+            const activeTimer = this.timers[this.activeTimerIndex];
+
             this.timerRunning = true;
             this.countdownRunning = false
-            this.switchTimer(this.activeTimerIndex);
+            activeTimer.start(callback = () => {
+                activeTimerViewRef.setState({ time: activeTimer.time })
+                //play signal when time is 3,2,1 before the next timer
+                if (activeTimer.time <= 3 && activeTimer.time > 0) {
+                    this.sound_countdown.play();
+                }
+                if (activeTimer.time === 0) {
+                    if (activeTimer instanceof BreakTimer) {
+                        //when it is a break timer play whistle single to indicate the start of an exercise
+                        this.sound_whistle.play();
+                    } else {
+                        //otherwise indicate the start of the break
+                        this.sound_timer_ring.play();
+                    }
+                    activeTimerViewRef.changeActiveState();
+                    this.switchTimer(this.activeTimerIndex + 1);
+                }
+            })
         })
     }
     pause() {
@@ -124,38 +146,63 @@ class RunWorkoutScreen extends Component {
         if (!this.timerRunning) {
             //if the timer index switching to is valid
             if (index >= 0 && index < this.timers.length) {
+                //Change state of active timer
                 let activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
                 activeTimerViewRef.changeSelectedStateTo(false);
+                //chagne active timer to passed timer index
                 this.activeTimerIndex = index;
                 if (this.activeTimerIndex >= 0 && this.activeTimerIndex < this.timers.length) {
                     activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
                     activeTimerViewRef.changeSelectedStateTo(true);
+                    return activeTimerViewRef;
                 }
             }
         }
         //if timer was running
-        else if (this.activeTimerIndex >= 0 && this.activeTimerIndex < this.timers.length) {
-            //stop current timer
-            {
-                const activeTimer = this.timers[this.activeTimerIndex];
-                activeTimer.stop();
-                const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
-                activeTimerViewRef.changeActiveAndSelectedStateTo(false);
-            }
-            //go to next timer
+        // 1) stop current timer
+        {
+            const activeTimer = this.timers[this.activeTimerIndex];
+            activeTimer.stop();
+            activeTimer.reset();
+            const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
+            activeTimerViewRef.changeActiveAndSelectedStateTo(false);
+            activeTimerViewRef.setState({ time: activeTimer.time })
+        }
+        // 2) if it in not the last timer - go to the next timer
+        if (index >= 0 && index < this.timers.length) {
             this.activeTimerIndex = index;
-
             const activeTimer = this.timers[this.activeTimerIndex];
             const activeTimerViewRef = this.timerViewsRefs[this.activeTimerIndex];
             activeTimerViewRef.changeActiveAndSelectedStateTo(this.timerRunning);
             activeTimer.start(callback = () => {
                 activeTimerViewRef.setState({ time: activeTimer.time })
+                if (activeTimer.time <= 3 && activeTimer.time > 0) {
+                    this.sound_countdown.play();
+                }
                 if (activeTimer.time === 0) {
+                    if (index < this.timers.length-1) {
+                        
+                        if (activeTimer instanceof BreakTimer) {
+                            //when it is a break timer play whistle single to indicate the start of an exercise
+                            this.sound_whistle.play();
+                        } else {
+                            //otherwise indicate the start of the break
+                            this.sound_timer_ring.play();
+                        }
+                    }
+                    else {
+                        //if last timer make end of workout signal
+                        this.sound_complete.play();
+                    }
                     activeTimerViewRef.changeActiveState();
                     this.switchTimer(this.activeTimerIndex + 1);
                 }
             })
 
+        }
+        // 3) otherwise show message that the workout is completed
+        else {
+            this.lastTimerFinished();
         }
     }
 
@@ -186,6 +233,10 @@ class RunWorkoutScreen extends Component {
     //Workout completed
     lastTimerFinished() {
         //TODO: Add Sound & nice alert
+        this.timerRunning = false;
+        this.setState({ playButtonPressed: false });
+        this.timerViewsRefs[0].changeSelectedStateTo(true);
+        this.activeTimerIndex = 0
         alert("Workout completed")
     }
     render() {
