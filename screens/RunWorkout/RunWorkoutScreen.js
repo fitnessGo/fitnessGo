@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Animated, View, ScrollView, SafeAreaView, StyleSheet, Text } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Icon, Overlay } from 'react-native-elements';
 import { BreakTimer, SetTimer } from './Timer'
-import { ScreenStyles } from '../../styles/global';
+import { ScreenStyles, FontStyles } from '../../styles/global';
 import getStyleSheet from "../../styles/themestyles";
 import { TimerView } from './TimerView'
 import Sound from 'react-native-sound';
@@ -15,7 +15,8 @@ class RunWorkoutScreen extends Component {
         this.state = {
             darkTheme: window.darkTheme,
             countdownToStart: -1,
-            playButtonPressed: false
+            playButtonPressed: false,
+            completionOverlayVisible: false
         }
         this.countdownOpacity = new Animated.Value(0)
         this.workout = params.workout
@@ -234,15 +235,36 @@ class RunWorkoutScreen extends Component {
     lastTimerFinished() {
         //TODO: Add Sound & nice alert
         this.timerRunning = false;
-        this.setState({ playButtonPressed: false });
+        this.setState({ playButtonPressed: false, completionOverlayVisible: true });
         this.timerViewsRefs[0].changeSelectedStateTo(true);
-        this.activeTimerIndex = 0
-        alert("Workout completed")
+        this.activeTimerIndex = 0;
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
         // const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
         let playIconName = this.state.playButtonPressed ? "pause-circle-outline" : "play-circle-outline"
+        let workoutCompleted =
+            <Overlay
+                isVisible={this.state.completionOverlayVisible}
+                windowBackgroundColor="rgba(0, 0, 0, .4)"
+                height="auto"
+                overlayStyle={styles.workoutCompletedOverlayStyle}
+                onBackdropPress={() => this.setState({ completionOverlayVisible: false })}
+            >
+                <View style={{ alignItems: 'center' }} >
+                    <Text style={[FontStyles.h2, { marginTop: 5 }]}>Well done!</Text>
+                    <Text style={[FontStyles.default, { marginTop: 5 }]}>Workout completed</Text>
+                    <Button
+                        type="clear"
+                        title="OK "
+                        style={{ alignSelf: "flex-end", fontSize: 13 }}
+                        titleStyle={FontStyles.default}
+                        onPress={() => {
+                            this.setState({completionOverlayVisible: false})
+                        }}
+                    />
+                </View>
+            </Overlay>
         let countdown;
         if (this.state.countdownToStart >= 0) {
             countdown =
@@ -258,6 +280,7 @@ class RunWorkoutScreen extends Component {
                     </View>
                 </ScrollView>
                 {countdown}
+                {workoutCompleted}
                 <View style={styles.playMenuContainer}>
                     <Button
                         type="clear"
@@ -324,6 +347,15 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.1,
         elevation: 4
+    },
+    workoutCompletedOverlayStyle: {
+      width: "80%",
+      top: "-10%",
+      backgroundColor: '#ffffff',
+      borderRadius: 12,
+      padding: 15,
+      alignContent: 'center',
+      alignItems: 'center'
     }
 });
 
