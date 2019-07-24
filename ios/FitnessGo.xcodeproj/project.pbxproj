@@ -73,6 +73,8 @@
 		C860EB5B22B9389800BADCDC /* beep01.flac in Resources */ = {isa = PBXBuildFile; fileRef = C860EB5A22B9388400BADCDC /* beep01.flac */; };
 		C860EBB022B9C7EB00BADCDC /* whistle01.wav in Resources */ = {isa = PBXBuildFile; fileRef = C860EB8122B9C7EB00BADCDC /* whistle01.wav */; };
 		C8BDDAC3229B8690000F7120 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C8BDDAC2229B8690000F7120 /* GoogleService-Info.plist */; };
+		C8CA894722E8911A002EB6B7 /* timer_ring.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8CA891822E8911A002EB6B7 /* timer_ring.wav */; };
+		C8CA894922E89158002EB6B7 /* complete_chime.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C8CA894822E89158002EB6B7 /* complete_chime.mp3 */; };
 		D44586605C634CD590586468 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC74C2902034F67833E0F39 /* libRNGestureHandler.a */; };
 		D79FCF4193AC4626A6CDBC1E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC6C6016126E48FB85BBFC3B /* EvilIcons.ttf */; };
 		E5DC2789035F4B2A9ED83A9C /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D8FBCECAC7874CB9933C6B41 /* AntDesign.ttf */; };
@@ -496,6 +498,8 @@
 		C860EB5A22B9388400BADCDC /* beep01.flac */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep01.flac; sourceTree = "<group>"; };
 		C860EB8122B9C7EB00BADCDC /* whistle01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = whistle01.wav; sourceTree = "<group>"; };
 		C8BDDAC2229B8690000F7120 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C8CA891822E8911A002EB6B7 /* timer_ring.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = timer_ring.wav; sourceTree = "<group>"; };
+		C8CA894822E89158002EB6B7 /* complete_chime.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = complete_chime.mp3; sourceTree = "<group>"; };
 		C8CFE16FAAC14DB982A90460 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		C96EEE643ABA4A6E97329664 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		D8FBCECAC7874CB9933C6B41 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -844,6 +848,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				C8CA894822E89158002EB6B7 /* complete_chime.mp3 */,
+				C8CA891822E8911A002EB6B7 /* timer_ring.wav */,
 				C8BDDAC2229B8690000F7120 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* FitnessGo */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -1481,6 +1487,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				C8CA894722E8911A002EB6B7 /* timer_ring.wav in Resources */,
 				E5DC2789035F4B2A9ED83A9C /* AntDesign.ttf in Resources */,
 				6B71EB1FFED745ACBC4297C3 /* Entypo.ttf in Resources */,
 				C860EB5B22B9389800BADCDC /* beep01.flac in Resources */,
@@ -1500,6 +1507,7 @@
 				3CFA7220338F44539DD7FEDE /* Octicons.ttf in Resources */,
 				5B85608FF0CF4B7EB83F68C4 /* SimpleLineIcons.ttf in Resources */,
 				9F3652360116417698A9F4FA /* Zocial.ttf in Resources */,
+				C8CA894922E89158002EB6B7 /* complete_chime.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
