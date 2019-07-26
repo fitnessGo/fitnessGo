@@ -15,6 +15,8 @@ target 'FitnessGo' do
 
  # pod 'RNSound', :path => '../node_modules/react-native-sound'
 
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'FitnessGoTests' do
     inherit! :search_paths
     # Pods for testing
