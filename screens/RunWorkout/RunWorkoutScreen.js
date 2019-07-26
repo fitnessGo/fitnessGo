@@ -103,18 +103,23 @@ class RunWorkoutScreen extends Component {
             this.timerRunning = true;
             this.countdownRunning = false
             activeTimer.start(callback = () => {
-                activeTimerViewRef.setState({ time: activeTimer.time })
+                activeTimerViewRef.setState({ time: activeTimer.time });
                 //play signal when time is 3,2,1 before the next timer
                 if (activeTimer.time <= 3 && activeTimer.time > 0) {
                     this.sound_countdown.play();
                 }
-                if (activeTimer.time === 0) {
-                    if (activeTimer instanceof BreakTimer) {
-                        //when it is a break timer play whistle single to indicate the start of an exercise
-                        this.sound_whistle.play();
-                    } else {
-                        //otherwise indicate the start of the break
-                        this.sound_timer_ring.play();
+                else if (activeTimer.time === 0) {
+                    if (this.activeTimerIndex < this.timers.length - 1) {
+                        if (activeTimer instanceof BreakTimer) {
+                            //when it is a break timer play whistle single to indicate the start of an exercise
+                            this.sound_whistle.play();
+                        } else {
+                            //otherwise indicate the start of the break
+                            this.sound_timer_ring.play();
+                        }
+                    }
+                    else {
+                        this.sound_complete.play();
                     }
                     activeTimerViewRef.changeActiveState();
                     this.switchTimer(this.activeTimerIndex + 1);
@@ -181,8 +186,7 @@ class RunWorkoutScreen extends Component {
                     this.sound_countdown.play();
                 }
                 if (activeTimer.time === 0) {
-                    if (index < this.timers.length-1) {
-                        
+                    if (index < this.timers.length - 1) {
                         if (activeTimer instanceof BreakTimer) {
                             //when it is a break timer play whistle single to indicate the start of an exercise
                             this.sound_whistle.play();
@@ -260,7 +264,7 @@ class RunWorkoutScreen extends Component {
                         style={{ alignSelf: "flex-end", fontSize: 13 }}
                         titleStyle={FontStyles.default}
                         onPress={() => {
-                            this.setState({completionOverlayVisible: false})
+                            this.setState({ completionOverlayVisible: false })
                         }}
                     />
                 </View>
@@ -349,13 +353,13 @@ const styles = StyleSheet.create({
         elevation: 4
     },
     workoutCompletedOverlayStyle: {
-      width: "80%",
-      top: "-10%",
-      backgroundColor: '#ffffff',
-      borderRadius: 12,
-      padding: 15,
-      alignContent: 'center',
-      alignItems: 'center'
+        width: "80%",
+        top: "-10%",
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        padding: 15,
+        alignContent: 'center',
+        alignItems: 'center'
     }
 });
 
