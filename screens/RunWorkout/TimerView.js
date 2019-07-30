@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontStyles } from '../../styles/global';
 import { BreakTimer } from './Timer'
 import Card from '../../components/Card';
+import { ExerciseImages } from '../../components/ExerciseImages';
 
 export class TimerView extends Component {
     constructor(props) {
@@ -11,7 +12,6 @@ export class TimerView extends Component {
             active: false,
             selected: false,
             time: this.props.timer.time
-            // timer: this.props.timer
         }
     }
     componentDidMount() {
@@ -39,6 +39,17 @@ export class TimerView extends Component {
     }
     render() {
         let timer = this.props.timer
+
+        let image;
+        if (ExerciseImages[timer.exerciseName]) {
+            image =
+                <Image
+                    resizeMode={'contain'}
+                    style={ styles.imageStyle }
+                    source={ExerciseImages[timer.exerciseName]}
+                />
+        }
+
         let timerStyle = { width: this.state.selected ? "100%" : "95%" };
         if (timer instanceof BreakTimer) {
             timerStyle.backgroundColor = '#e2e2e2';
@@ -57,15 +68,24 @@ export class TimerView extends Component {
         }
         timerStyle.backgroundColor = '#fafafa';
         return (
-            <TouchableOpacity  onPress={this._onPress}>
+            <TouchableOpacity onPress={this._onPress}>
                 <Card style={[styles.container, this.props.style, timerStyle]}>
-                    <View style={styles.leftSide}>
-                        <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
-                        <Text style={{ ...styles.textLight, ...FontStyles.default }}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
+                    <View style={{ flexDirection: 'column', justifyContent: 'center', width: "100%" }}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', width: "100%"}}>
+                            <View style={styles.leftSide}>
+                                <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
+                                <Text style={{ ...styles.textLight, ...FontStyles.default }}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
+                            </View>
+                            <View style={styles.rightSide}>
+                                <Text style={{ ...styles.textLight, ...FontStyles.default }}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
+                            </View>
+                        </View>
+                        <View style={{ width: '100%',  alignItems: 'center'  }}>
+                            { this.state.selected && image}
+                        </View>
                     </View>
-                    <View style={styles.rightSide}>
-                        <Text style={{ ...styles.textLight, ...FontStyles.default }}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
-                    </View>
+
+
                 </Card>
             </TouchableOpacity>
         )
@@ -89,5 +109,8 @@ const styles = StyleSheet.create({
     },
     textLight: {
         color: '#000000'
+    },
+    imageStyle: {
+        height: 80
     }
 });
