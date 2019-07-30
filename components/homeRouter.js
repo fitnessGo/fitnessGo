@@ -92,16 +92,19 @@ const TabNavigator = createBottomTabNavigator({
   WorkoutStack: {
     screen: WorkoutStack,
     navigationOptions: {
-      tabBarLabel: "Home",
-      tabBarIcon: () => <Icon name="home" size={22} />
+       tabBarIcon: () => <Icon name="home" size={30} />
     }
   },
   Discover: {
     screen: DiscoverStack,
     navigationOptions: {
-      tabBarLabel: "Discover",
-      tabBarIcon: () => <Icon name="md-compass" type="ionicon" size={22} />
+       tabBarIcon: () => <Icon name="md-compass" type="ionicon" size={30} />
     }
+  }
+},
+{
+  tabBarOptions: {
+    showLabel: false
   }
 });
 
