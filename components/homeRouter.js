@@ -17,7 +17,6 @@ import RunWorkoutScreen from "../screens/RunWorkout/RunWorkoutScreen";
 import Discover from "../screens/Discover";
 import CreateWorkoutScreen from "../screens/CreateWorkout";
 import getStyleSheet from "../styles/themestyles";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
 //createStackNavigator is a function that takes a route configuration object and an options object and returns a React component.
 const WorkoutStack = createStackNavigator(
@@ -112,12 +111,8 @@ const TabNavigator = createBottomTabNavigator({
 },
 {
   tabBarOptions: {
-    resetOnBlur: true,
-    showLabel: false,
-    lazy: false,
     activeTintColor: '#000000',
     inactiveTintColor: '#999999',
-    // activeBackgroundColor: getStyleSheet(window.darkTheme).background.backgroundColor,
     style: {
       backgroundColor: getStyleSheet(window.darkTheme).background.backgroundColor
     },
