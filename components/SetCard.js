@@ -38,6 +38,9 @@ class SetCard extends React.Component {
       case "duration":
         await this.setState({ duration: newValue });
         break;
+      case "weight":
+        await this.setState({ weight: newValue });
+        break;
       default:
         break;
     }
@@ -133,6 +136,22 @@ class SetCard extends React.Component {
               {this.props.value.break}
             </TextInput>
             <Text style={(FontStyles.h3, theme.text)}> sec</Text>
+          </View>
+          <View style={setViewStyles.setCardRow}>
+            <Text
+              style={[theme.text, setViewStyles.setDetailName, FontStyles.h3]}
+            >
+              Weight:{" "}
+            </Text>
+            <TextInput
+              keyboardType="number-pad"
+              style={[setViewStyles.setDetailValue, FontStyles.h3, theme.text]}
+              placeholder="0"
+              onChangeText={newWeight => this.update("weight", newWeight)}
+            >
+              {this.props.value.weight}
+            </TextInput>
+            <Text style={(FontStyles.h3, theme.text)}> lbs</Text>
           </View>
         </Card>
       </View>
