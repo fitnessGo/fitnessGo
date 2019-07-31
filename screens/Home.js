@@ -7,10 +7,10 @@ import {
   Alert,
   SafeAreaView,
   RefreshControl,
-  TouchableOpacity, 
-  Dimensions, 
+  TouchableOpacity,
+  Dimensions,
   Image,
-  TextInput, 
+  TextInput,
   Clipboard
 } from "react-native";
 import { Button, Icon, Overlay } from "react-native-elements";
@@ -29,12 +29,19 @@ import { showMessage } from "react-native-flash-message";
 class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      title: 'My App',
+      headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+      headerStyle: {
+        backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+      },
       headerLeft: (
         <Button
           type="clear"
-          icon={<Icon name="settings" size={22} />}
+          icon={<Icon name="settings" size={22} color={global.darkTheme? '#cfcfcf' : '#101010'}/>}
           style={{ flexDirection: "row", alignSelf: "flex-end" }}
-          onPress={() => navigation.navigate("Settings")}
+          onPress={() => navigation.navigate("Settings", {
+            darkTheme: global.darkTheme
+          })}
         />
       )
     };
@@ -43,7 +50,7 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       dataReady: true,
       refreshing: false,
       workouts: [],
@@ -60,8 +67,11 @@ class HomeScreen extends React.Component {
     this.willFocusSubscription = this.props.navigation.addListener(
       "willFocus",
       () => {
-        if (this.state.darkTheme != window.darkTheme) {
-          this.setState({ darkTheme: window.darkTheme });
+        if (this.state.darkTheme != global.darkTheme) {
+          this.props.navigation.setParams({
+            darkTheme: global.darkTheme
+          });
+          this.setState({ darkTheme: global.darkTheme });
         }
       }
     );
@@ -99,7 +109,8 @@ class HomeScreen extends React.Component {
   _onCreateNewButtonClick(w) {
     this.props.navigation.push("CreateWorkout", {
       workouts: this.state.workouts,
-      update: this.updateWorkouts
+      update: this.updateWorkouts,
+      darkTheme: global.darkTheme
     });
   }
   _onWorkoutUpdate() {
@@ -109,11 +120,12 @@ class HomeScreen extends React.Component {
     this.selectedWorkout = view;
     this.props.navigation.navigate("WorkoutDetails", {
       workout: w,
-      finishedEditing: this._onWorkoutUpdate.bind(this)
+      finishedEditing: this._onWorkoutUpdate.bind(this),
+      darkTheme: global.darkTheme
     });
   }
   _onPlayButtonClick(w) {
-    this.props.navigation.navigate("RunWorkout", { workout: w });
+    this.props.navigation.navigate("RunWorkout", { workout: w, darkTheme: global.darkTheme });
   }
   updateWorkouts(workouts) {
     this.setState({ workouts });
@@ -167,7 +179,7 @@ class HomeScreen extends React.Component {
       DatabaseManager.GetSharedWorkout(code).then((workout) => {
         if (workout) {
           this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" })
-          this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
+          this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true, darkTheme: global.darkTheme });
         } else {
           //Not foiund in the database, maybe wrong code
           this.setState({ overlayErrorMessage: "Workout with this code not found" })
@@ -220,61 +232,61 @@ class HomeScreen extends React.Component {
             </View>
           </ScrollView>
           <View style={styles.scaleImageContainer}>
-          <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')} 
-             style={styles.containerImage}/>
-        </View>
-        <View style={styles.stopwatchImageContainer}>
-          <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
-            style={[styles.containerImage]} />
-        </View>
-        <View style={styles.weigthImageContainer}>
-          <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage}/>
-        </View>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')}
+              style={styles.containerImage} />
+          </View>
+          <View style={styles.stopwatchImageContainer}>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
+              style={[styles.containerImage]} />
+          </View>
+          <View style={styles.weigthImageContainer}>
+            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage} />
+          </View>
           {/* Add shared workout overlay */}
-        <Overlay
-          isVisible={this.state.getSharedWorkoutOverlayVisible}
-          windowBackgroundColor="rgba(0, 0, 0, .4)"
-          height="auto"
-          overlayStyle={styles.overlayStyle}
-          onBackdropPress={() => {
-            this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
-            this.code = undefined;
-          }}
-        >
-          <View style={{ alignItems: 'center' }} >
-            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
-            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+          <Overlay
+            isVisible={this.state.getSharedWorkoutOverlayVisible}
+            windowBackgroundColor="rgba(0, 0, 0, .4)"
+            height="auto"
+            overlayStyle={styles.overlayStyle}
+            onBackdropPress={() => {
+              this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+              this.code = undefined;
+            }}
+          >
+            <View style={{ alignItems: 'center' }} >
+              <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
+              <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
 
-            {
-              this.state.overlayErrorMessage !== "" &&
-              <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
-            }
+              {
+                this.state.overlayErrorMessage !== "" &&
+                <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
+              }
 
 
-            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
-              <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
-                <TextInput
-                  underlineColorAndroid="transparent"
-                  onChangeText={code => this.sharedWorkoutCode = code}
-                  placeholder="Code "
-                  style={[theme.text]}
-                  onSubmitEditing={() =>
-                    this.addSharedWorkout(this.sharedWorkoutCode)
-                  }
-                >
-                </TextInput>
-                <Button
-                  type="outline"
-                  title="enter "
-                  titleStyle={FontStyles.default}
-                  onPress={() => {
-                    this.addSharedWorkout(this.sharedWorkoutCode);
-                  }}
-                />
+              <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
+                <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    onChangeText={code => this.sharedWorkoutCode = code}
+                    placeholder="Code "
+                    style={[theme.text]}
+                    onSubmitEditing={() =>
+                      this.addSharedWorkout(this.sharedWorkoutCode)
+                    }
+                  >
+                  </TextInput>
+                  <Button
+                    type="outline"
+                    title="enter "
+                    titleStyle={FontStyles.default}
+                    onPress={() => {
+                      this.addSharedWorkout(this.sharedWorkoutCode);
+                    }}
+                  />
+                </View>
               </View>
             </View>
-          </View>
-        </Overlay>
+          </Overlay>
         </SafeAreaView>
       );
     }
@@ -455,33 +467,33 @@ const styles = StyleSheet.create({
     height: undefined,
     alignSelf: 'stretch'
   },
-  scaleImageContainer: { 
-    position: 'absolute', 
-    bottom: "20%", 
-    left: "-10%", 
-    width: "55%", 
-    aspectRatio: 1, 
-    justifyContent: 'center', 
+  scaleImageContainer: {
+    position: 'absolute',
+    bottom: "20%",
+    left: "-10%",
+    width: "55%",
+    aspectRatio: 1,
+    justifyContent: 'center',
     padding: 0,
     transform: [{ rotateY: '180deg' }]
   },
-  stopwatchImageContainer: { 
-    position: 'absolute', 
-    bottom: "45%", 
-    right: "-5%", 
-    width: "32%", 
-    aspectRatio: 1, 
-    justifyContent: 'center', 
+  stopwatchImageContainer: {
+    position: 'absolute',
+    bottom: "45%",
+    right: "-5%",
+    width: "32%",
+    aspectRatio: 1,
+    justifyContent: 'center',
     transform: [{ rotate: '-25deg' }]
   },
-  weigthImageContainer: { 
-    position: 'absolute', 
-    bottom: "-6%", 
-    right: "-12%", 
-    width: "50%", 
-    aspectRatio: 1, 
-    justifyContent: 'center', 
-    padding: 15 ,
+  weigthImageContainer: {
+    position: 'absolute',
+    bottom: "-6%",
+    right: "-12%",
+    width: "50%",
+    aspectRatio: 1,
+    justifyContent: 'center',
+    padding: 15,
     transform: [{ rotate: '-20deg' }]
   },
   overlayStyle: {

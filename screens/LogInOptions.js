@@ -14,7 +14,9 @@ class LogInScreen extends React.Component {
     handleFbLogin()
       .then(err => {
         if (!err) {
-          this.props.navigation.navigate("App");
+          this.props.navigation.navigate("App",{
+            darkTheme: global.darkTheme
+          });
         }
       })
       .catch(err => {
@@ -26,7 +28,9 @@ class LogInScreen extends React.Component {
     handleGoogleLogin()
       .then(err => {
         if (!err) {
-          this.props.navigation.navigate("App");
+          this.props.navigation.navigate("App", {
+            darkTheme: global.darkTheme
+          });
         }
       })
       .catch(err => {

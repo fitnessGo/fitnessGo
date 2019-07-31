@@ -24,7 +24,7 @@ class EditWorkout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       name: "",
       category: "",
       exercises: [

@@ -23,16 +23,21 @@ import moment from "moment";
 class CreateWorkoutScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
+    
     return {
-      headerRight: <Button onPress={params.save} title="Save" />,
-      headerLeft: <Button onPress={params.goHome} title="Close" />
+      headerTintColor: navigation.getParam("darkTheme") ? "#cfcfcf" : '#101010',
+      headerStyle: {
+        backgroundColor: getStyleSheet(navigation.getParam("darkTheme")).background.backgroundColor
+      },
+      headerRight: <Button onPress={params.save} title="Save" color={global.darkTheme? '#cfcfcf' : '#101010'}/>,
+      headerLeft: <Button onPress={params.goHome} title="Close" color={global.darkTheme? '#cfcfcf' : '#101010'}/>
     };
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       name: "",
       category: "",
       exercises: [
@@ -104,7 +109,9 @@ class CreateWorkoutScreen extends React.Component {
         [
           {
             text: "Yes",
-            onPress: () => this.props.navigation.navigate("UserLibrary")
+            onPress: () => this.props.navigation.navigate("UserLibrary", {
+              darkTheme: global.darkTheme
+            })
           },
           {
             text: "Cancel",

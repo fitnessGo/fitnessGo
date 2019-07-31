@@ -14,7 +14,9 @@ class CreateAccount extends Component {
         this.inputs[id].focus();
     }
     onSignInClick() {
-        this.props.navigation.navigate('App');
+        this.props.navigation.navigate('App', {
+            darkTheme: global.darkTheme
+          });
       }
     render() {
         return (

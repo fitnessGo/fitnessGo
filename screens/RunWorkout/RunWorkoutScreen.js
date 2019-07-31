@@ -13,7 +13,7 @@ class RunWorkoutScreen extends Component {
         const { params } = this.props.navigation.state;
 
         this.state = {
-            darkTheme: window.darkTheme,
+            darkTheme: global.darkTheme,
             countdownToStart: -1,
             playButtonPressed: false,
             completionOverlayVisible: false
@@ -27,6 +27,14 @@ class RunWorkoutScreen extends Component {
 
         this.activeTimerIndex = null
     }
+    static navigationOptions = ({  }) => {
+        return {
+            headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+            headerStyle: {
+                backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+            },
+        }
+    };
     componentDidMount() {
         //FIXME: length check can be removed when we make sure workouts have sets
         if (this.timerViewsRefs.length > 0) {
