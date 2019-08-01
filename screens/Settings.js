@@ -5,6 +5,7 @@ import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
 import firebase from 'react-native-firebase';
 import { ListItem, Icon } from 'react-native-elements';
+import DatabaseManager from "../components/DatabaseManager"
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -35,13 +36,14 @@ export default class SettingsScreen extends Component {
       [
         {
           text: "Delete", onPress: () => {
+            const user = firebase.auth().currentUser;
+            DatabaseManager.DeleteUserData(user.uid);
             firebase.auth().currentUser.delete().then(() => {
               handleLogout();
             }).then(() => {
               alert("Your account was deleted 😔");
               this.props.navigation.navigate("Auth");
             }).catch((err) => {
-              console.warn(err);
               alert("Couldn't delete the account. Check your internet connection.")
             });
           }, style: "destructive"
