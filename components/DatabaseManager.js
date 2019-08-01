@@ -103,4 +103,19 @@ export default class DatabaseManager {
             });
         });
     }
+
+    static DeleteUserData(uid) {
+        return new Promise((resolve, reject) => {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                firebase.database().ref("users/" + user.uid).remove().then(() => {
+                    resolve();
+                }).catch(error => {
+                    reject(error)
+                })
+            } else {
+                reject()
+            }
+        });
+    }
 }
