@@ -30,9 +30,10 @@ export class BreakTimer extends Timer {
     }
 }
 export class SetTimer extends Timer {
-    constructor(exerciseName, duration, repetitions) {
+    constructor(exerciseName, duration, repetitions, weight = 0) {
         super(duration)
         this.exerciseName = exerciseName;
         this.repetitions = repetitions;
+        this.weight = weight;
     }
 }

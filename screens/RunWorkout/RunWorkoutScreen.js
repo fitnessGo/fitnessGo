@@ -69,7 +69,7 @@ class RunWorkoutScreen extends Component {
             for (var j = 0; j < exercise.exerciseSets.length; j++) {
 
                 const s = exercise.exerciseSets[j]
-                let timer = new SetTimer(exercise.name, s.duration, s.repetitions);
+                let timer = new SetTimer(exercise.name, s.duration, s.repetitions, s.weight);
                 this.timers.push(timer)
                 this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index) => { this.onTimerSelect(index) }} style={{ marginBottom: 10 }}
                     onRef={(child) => { this.timerViewsRefs.push(child); }} />)
