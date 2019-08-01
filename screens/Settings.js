@@ -10,17 +10,23 @@ export default class SettingsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       dataReady: true
     };
     this.deleteAccount = this.deleteAccount.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
   }
-
-  static navigationOptions = {
-    title: "Settings"
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Settings",
+      headerTintColor: navigation.getParam("darkTheme") ? "#cfcfcf" : '#101010',
+      headerStyle: {
+        backgroundColor: getStyleSheet(navigation.getParam("darkTheme")).background.backgroundColor
+      }
+    };
   };
+
 
   deleteAccount() {
     Alert.alert(
@@ -51,15 +57,20 @@ export default class SettingsScreen extends Component {
   logout() {
     handleLogout().then(() => {
       firebase.auth().signOut();
-      this.props.navigation.navigate("Auth");
+      this.props.navigation.navigate("Auth", {
+        darkTheme: global.darkTheme
+      });
     })
       .catch(err => {
         alert("Couldn't log out. Try again later 🙁");
       });
   }
   toggleDarkTheme() {
-    window.darkTheme = !window.darkTheme;
-    this.setState({ darkTheme: window.darkTheme });
+    global.darkTheme = !global.darkTheme;
+    this.props.navigation.setParams({
+      darkTheme: global.darkTheme
+    });
+    this.setState({ darkTheme: global.darkTheme });
   }
 
   render() {
@@ -89,7 +100,7 @@ export default class SettingsScreen extends Component {
                   onValueChange={this.toggleDarkTheme}
                   value={this.state.darkTheme} 
                   style={{ transform: [{ scaleX:  .9  }, { scaleY:  .9  }] }}/> }
-            title='Dark theme'
+            title='Dark theme (beta)'
             containerStyle={theme.background}
             titleStyle={textStyle}
             onPress={this.toggleDarkTheme}
