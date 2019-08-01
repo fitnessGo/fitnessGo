@@ -5,6 +5,7 @@ import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
 import firebase from 'react-native-firebase';
 import { ListItem, Icon } from 'react-native-elements';
+import AboutScreen from './About';
 
 export default class SettingsScreen extends Component {
   constructor(props) {
@@ -105,6 +106,16 @@ export default class SettingsScreen extends Component {
             titleStyle={textStyle}
             onPress={this.toggleDarkTheme}
           />
+           <ListItem
+            leftIcon={{ name:"info", type:"material", color: iconStyle, size: 22, paddingLeft: '9%' }}
+            title='About'
+            containerStyle={theme.background}
+            titleStyle={textStyle}
+            onPress={() => {
+              this.props.navigation.navigate("AboutScreen");
+            }}
+          />
+          
         </View>
       </SafeAreaView>
     );
