@@ -12,12 +12,18 @@ import { showMessage } from "react-native-flash-message";
 class Discover extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+      headerStyle: {
+        backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+      },
       headerLeft: (
         <Button
           type="clear"
-          icon={<Icon name="settings" size={22} />}
+          icon={<Icon name="settings" size={22} color={global.darkTheme? '#cfcfcf' : '#101010'}/>}
           style={{ flexDirection: "row", alignSelf: "flex-end" }}
-          onPress={() => navigation.navigate("Settings")}
+          onPress={() => navigation.navigate("Settings", {
+            darkTheme: global.darkTheme
+          })}
         />
       )
     };
@@ -26,7 +32,7 @@ class Discover extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       refreshing: false,
       overlayVisible: false,
       sharedWorkoutCode: undefined
@@ -37,8 +43,11 @@ class Discover extends Component {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
-        if (this.state.darkTheme != window.darkTheme) {
-          this.setState({ darkTheme: window.darkTheme });
+        if (this.state.darkTheme != global.darkTheme) {
+          this.props.navigation.setParams({
+            darkTheme: global.darkTheme
+          });
+          this.setState({ darkTheme: global.darkTheme });
         }
         // Do not fetch when the tab opens for the first time. 
         // Only do it if the user went back to this tab from another tab. 
@@ -94,10 +103,10 @@ class Discover extends Component {
     });
   }
   openWorkoutDetails(workout) {
-    this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true });
+    this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true, darkTheme: global.darkTheme });
   }
   playWorkout(workout) {
-    this.props.navigation.navigate('RunWorkout', { workout: workout });
+    this.props.navigation.navigate('RunWorkout', { workout: workout, darkTheme: global.darkTheme });
   }
   _addWorkoutToUserLib(workout) {
     if (!workout.added) {

@@ -29,7 +29,7 @@ class WorkoutDetailsScreen extends React.Component {
     //TODO: this should show all the categories available in the database
     this.workoutCategories = ["Stretching", "Cardio"];
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       editing: false,
       workoutcategory: this.workout.category
     };
@@ -54,18 +54,22 @@ class WorkoutDetailsScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
-
     if (params.discoverWorkout) {
       return {
+        headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+        headerStyle: {
+          backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+        },
         headerLeft: (
           <Button
             type="clear"
             onPress={params.closeButtonPressed}
             title="Close"
+            titleStyle={{color: global.darkTheme? '#cfcfcf' : '#101010'}}
           />
         ),
         headerRight: (
-          <Button type="clear" onPress={params.addButtonPressed} title="Add" />
+          <Button type="clear" onPress={params.addButtonPressed} title="Add" titleStyle={{color: global.darkTheme? '#cfcfcf' : '#101010'}} />
         )
       };
     }
@@ -73,11 +77,16 @@ class WorkoutDetailsScreen extends React.Component {
     else {
       let buttonName = navigation.getParam("editing") ? "Save" : "Edit";
       return {
+        headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+        headerStyle: {
+          backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+        },
         headerLeft: (
           <Button
             type="clear"
             onPress={params.closeButtonPressed}
             title="Close"
+            titleStyle={{color: global.darkTheme? '#cfcfcf' : '#101010'}}
           />
         ),
         headerRight: (
@@ -85,6 +94,7 @@ class WorkoutDetailsScreen extends React.Component {
             type="clear"
             onPress={params.editButtonPressed}
             title={buttonName}
+            titleStyle={{color: global.darkTheme? '#cfcfcf' : '#101010'}}
           />
         )
       };

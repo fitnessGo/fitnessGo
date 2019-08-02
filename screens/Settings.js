@@ -5,22 +5,30 @@ import getStyleSheet from "../styles/themestyles";
 import { handleFbLogin, handleLogout } from "../lib/auth";
 import firebase from 'react-native-firebase';
 import { ListItem, Icon } from 'react-native-elements';
+import DatabaseManager from "../components/DatabaseManager"
+import AboutScreen from './About';
 
 export default class SettingsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      darkTheme: window.darkTheme,
+      darkTheme: global.darkTheme,
       dataReady: true
     };
     this.deleteAccount = this.deleteAccount.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleDarkTheme = this.toggleDarkTheme.bind(this);
   }
-
-  static navigationOptions = {
-    title: "Settings"
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Settings",
+      headerTintColor: navigation.getParam("darkTheme") ? "#cfcfcf" : '#101010',
+      headerStyle: {
+        backgroundColor: getStyleSheet(navigation.getParam("darkTheme")).background.backgroundColor
+      }
+    };
   };
+
 
   deleteAccount() {
     Alert.alert(
@@ -29,13 +37,14 @@ export default class SettingsScreen extends Component {
       [
         {
           text: "Delete", onPress: () => {
+            const user = firebase.auth().currentUser;
+            DatabaseManager.DeleteUserData(user.uid);
             firebase.auth().currentUser.delete().then(() => {
               handleLogout();
             }).then(() => {
               alert("Your account was deleted 😔");
               this.props.navigation.navigate("Auth");
             }).catch((err) => {
-              console.warn(err);
               alert("Couldn't delete the account. Check your internet connection.")
             });
           }, style: "destructive"
@@ -51,15 +60,20 @@ export default class SettingsScreen extends Component {
   logout() {
     handleLogout().then(() => {
       firebase.auth().signOut();
-      this.props.navigation.navigate("Auth");
+      this.props.navigation.navigate("Auth", {
+        darkTheme: global.darkTheme
+      });
     })
       .catch(err => {
         alert("Couldn't log out. Try again later 🙁");
       });
   }
   toggleDarkTheme() {
-    window.darkTheme = !window.darkTheme;
-    this.setState({ darkTheme: window.darkTheme });
+    global.darkTheme = !global.darkTheme;
+    this.props.navigation.setParams({
+      darkTheme: global.darkTheme
+    });
+    this.setState({ darkTheme: global.darkTheme });
   }
 
   render() {
@@ -89,11 +103,21 @@ export default class SettingsScreen extends Component {
                   onValueChange={this.toggleDarkTheme}
                   value={this.state.darkTheme} 
                   style={{ transform: [{ scaleX:  .9  }, { scaleY:  .9  }] }}/> }
-            title='Dark theme'
+            title='Dark theme (beta)'
             containerStyle={theme.background}
             titleStyle={textStyle}
             onPress={this.toggleDarkTheme}
           />
+           <ListItem
+            leftIcon={{ name:"info", type:"material", color: iconStyle, size: 22, paddingLeft: '9%' }}
+            title='About'
+            containerStyle={theme.background}
+            titleStyle={textStyle}
+            onPress={() => {
+              this.props.navigation.navigate("AboutScreen");
+            }}
+          />
+          
         </View>
       </SafeAreaView>
     );

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Animated, View, ScrollView, SafeAreaView, StyleSheet, Text } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Icon, Overlay } from 'react-native-elements';
 import { BreakTimer, SetTimer } from './Timer'
-import { ScreenStyles } from '../../styles/global';
+import { ScreenStyles, FontStyles } from '../../styles/global';
 import getStyleSheet from "../../styles/themestyles";
 import { TimerView } from './TimerView'
 import Sound from 'react-native-sound';
@@ -13,9 +13,10 @@ class RunWorkoutScreen extends Component {
         const { params } = this.props.navigation.state;
 
         this.state = {
-            darkTheme: window.darkTheme,
+            darkTheme: global.darkTheme,
             countdownToStart: -1,
-            playButtonPressed: false
+            playButtonPressed: false,
+            completionOverlayVisible: false
         }
         this.countdownOpacity = new Animated.Value(0)
         this.workout = params.workout
@@ -26,6 +27,14 @@ class RunWorkoutScreen extends Component {
 
         this.activeTimerIndex = null
     }
+    static navigationOptions = ({  }) => {
+        return {
+            headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+            headerStyle: {
+                backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+            },
+        }
+    };
     componentDidMount() {
         //FIXME: length check can be removed when we make sure workouts have sets
         if (this.timerViewsRefs.length > 0) {
@@ -60,7 +69,7 @@ class RunWorkoutScreen extends Component {
             for (var j = 0; j < exercise.exerciseSets.length; j++) {
 
                 const s = exercise.exerciseSets[j]
-                let timer = new SetTimer(exercise.name, s.duration, s.repetitions);
+                let timer = new SetTimer(exercise.name, s.duration, s.repetitions, s.weight);
                 this.timers.push(timer)
                 this.timerViews.push(<TimerView timer={timer} index={index} onPress={(index) => { this.onTimerSelect(index) }} style={{ marginBottom: 10 }}
                     onRef={(child) => { this.timerViewsRefs.push(child); }} />)
@@ -102,18 +111,23 @@ class RunWorkoutScreen extends Component {
             this.timerRunning = true;
             this.countdownRunning = false
             activeTimer.start(callback = () => {
-                activeTimerViewRef.setState({ time: activeTimer.time })
+                activeTimerViewRef.setState({ time: activeTimer.time });
                 //play signal when time is 3,2,1 before the next timer
                 if (activeTimer.time <= 3 && activeTimer.time > 0) {
                     this.sound_countdown.play();
                 }
-                if (activeTimer.time === 0) {
-                    if (activeTimer instanceof BreakTimer) {
-                        //when it is a break timer play whistle single to indicate the start of an exercise
-                        this.sound_whistle.play();
-                    } else {
-                        //otherwise indicate the start of the break
-                        this.sound_timer_ring.play();
+                else if (activeTimer.time === 0) {
+                    if (this.activeTimerIndex < this.timers.length - 1) {
+                        if (activeTimer instanceof BreakTimer) {
+                            //when it is a break timer play whistle single to indicate the start of an exercise
+                            this.sound_whistle.play();
+                        } else {
+                            //otherwise indicate the start of the break
+                            this.sound_timer_ring.play();
+                        }
+                    }
+                    else {
+                        this.sound_complete.play();
                     }
                     activeTimerViewRef.changeActiveState();
                     this.switchTimer(this.activeTimerIndex + 1);
@@ -180,8 +194,7 @@ class RunWorkoutScreen extends Component {
                     this.sound_countdown.play();
                 }
                 if (activeTimer.time === 0) {
-                    if (index < this.timers.length-1) {
-                        
+                    if (index < this.timers.length - 1) {
                         if (activeTimer instanceof BreakTimer) {
                             //when it is a break timer play whistle single to indicate the start of an exercise
                             this.sound_whistle.play();
@@ -234,15 +247,36 @@ class RunWorkoutScreen extends Component {
     lastTimerFinished() {
         //TODO: Add Sound & nice alert
         this.timerRunning = false;
-        this.setState({ playButtonPressed: false });
+        this.setState({ playButtonPressed: false, completionOverlayVisible: true });
         this.timerViewsRefs[0].changeSelectedStateTo(true);
-        this.activeTimerIndex = 0
-        alert("Workout completed")
+        this.activeTimerIndex = 0;
     }
     render() {
         const theme = getStyleSheet(this.state.darkTheme);
         // const workoutViewStyle = this.state.darkTheme ? styles.workoutViewDark : styles.workoutViewLight
         let playIconName = this.state.playButtonPressed ? "pause-circle-outline" : "play-circle-outline"
+        let workoutCompleted =
+            <Overlay
+                isVisible={this.state.completionOverlayVisible}
+                windowBackgroundColor="rgba(0, 0, 0, .4)"
+                height="auto"
+                overlayStyle={styles.workoutCompletedOverlayStyle}
+                onBackdropPress={() => this.setState({ completionOverlayVisible: false })}
+            >
+                <View style={{ alignItems: 'center' }} >
+                    <Text style={[FontStyles.h2, { marginTop: 5 }]}>Well done!</Text>
+                    <Text style={[FontStyles.default, { marginTop: 5 }]}>Workout completed</Text>
+                    <Button
+                        type="clear"
+                        title="OK "
+                        style={{ alignSelf: "flex-end", fontSize: 13 }}
+                        titleStyle={FontStyles.default}
+                        onPress={() => {
+                            this.setState({ completionOverlayVisible: false })
+                        }}
+                    />
+                </View>
+            </Overlay>
         let countdown;
         if (this.state.countdownToStart >= 0) {
             countdown =
@@ -258,6 +292,7 @@ class RunWorkoutScreen extends Component {
                     </View>
                 </ScrollView>
                 {countdown}
+                {workoutCompleted}
                 <View style={styles.playMenuContainer}>
                     <Button
                         type="clear"
@@ -324,6 +359,15 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.1,
         elevation: 4
+    },
+    workoutCompletedOverlayStyle: {
+        width: "80%",
+        top: "-10%",
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        padding: 15,
+        alignContent: 'center',
+        alignItems: 'center'
     }
 });
 

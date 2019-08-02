@@ -1,20 +1,21 @@
 import React from "react";
-import { View, StyleSheet, Text, TextInput, Picker } from "react-native";
+import { View, StyleSheet, Text, TextInput, Picker, Image } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import Card from "../components/Card";
 import { FontStyles } from "../styles/global";
 import SetDetailsView from "../screens/SetDetailsView";
 import SetCard from "../components/SetCard";
+import { ExerciseImages } from "../components/ExerciseImages";
 import getStyleSheet from "../styles/themestyles";
 
 class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       id: this.props.exercise.id,
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       exerciseSets: [this.props.exercise.exerciseSets[0]],
       custom: false
     };
@@ -81,7 +82,7 @@ class ExerciseCard extends React.Component {
       this.setState({ exerciseSets: this.props.exercise.exerciseSets });
     }
     if (this.props.predefinedExercises != prevProps.predefinedExercises) {
-      if(this.state.name === '' && this.props.exercise.name === ""){
+      if (this.state.name === "" && this.props.exercise.name === "") {
         this.changeName(this.props.predefinedExercises[0].name);
         this.changeDesc(this.props.predefinedExercises[0].description);
       }
@@ -94,17 +95,21 @@ class ExerciseCard extends React.Component {
 
     if (
       this.props.exercise.name !== prevProps.exercise.name &&
-      this.props.exercise.name !== "Custom" && predefinedNames.length>1
+      this.props.exercise.name !== "Custom" &&
+      predefinedNames.length > 1
     ) {
       if (predefinedNames.includes(this.props.exercise.name)) {
         this.setState({ custom: false, name: this.props.exercise.name });
       } else {
         this.setState({ custom: true, name: "Custom" });
       }
-      
     }
 
-    if(this.props.exercise.name !== this.state.name && this.state.name !== "Custom" && predefinedNames.length>1){
+    if (
+      this.props.exercise.name !== this.state.name &&
+      this.state.name !== "Custom" &&
+      predefinedNames.length > 1
+    ) {
       if (predefinedNames.includes(this.props.exercise.name)) {
         this.setState({ custom: false, name: this.props.exercise.name });
       } else {
@@ -119,6 +124,16 @@ class ExerciseCard extends React.Component {
       : exerciseViewStyles.exersiseViewLight;
     const iconColor = this.props.darkTheme ? "#FFFFFF" : "#D1D1D6";
     const theme = getStyleSheet(this.props.darkTheme);
+    let image;
+    if (ExerciseImages[this.state.name]) {
+      image = (
+        <Image
+          resizeMode={"contain"}
+          style={styles.imageStyle}
+          source={ExerciseImages[this.state.name]}
+        />
+      );
+    }
     return (
       <View style={this.props.style}>
         <Card style={exerciseViewStyle}>
@@ -206,6 +221,9 @@ class ExerciseCard extends React.Component {
           >
             {this.props.exercise.description}
           </TextInput>
+          <View style={{ width: "100%", alignItems: "center" }}>
+            {image && image}
+          </View>
           <View style={{ marginTop: 10 }}>
             {this.props.exercise.exerciseSets.map((es, index) => {
               return (
@@ -250,6 +268,13 @@ const exerciseViewStyles = StyleSheet.create({
   exersiseViewTextLight: {
     color: "#000000",
     fontSize: 16
+  }
+});
+
+const styles = StyleSheet.create({
+  imageStyle: {
+    height: 80,
+    resizeMode: "contain"
   }
 });
 

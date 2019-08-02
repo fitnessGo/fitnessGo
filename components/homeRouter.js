@@ -16,7 +16,8 @@ import WorkoutDetails from "../screens/WorkoutDetails";
 import RunWorkoutScreen from "../screens/RunWorkout/RunWorkoutScreen";
 import Discover from "../screens/Discover";
 import CreateWorkoutScreen from "../screens/CreateWorkout";
-
+import AboutScreen from "../screens/About";
+import getStyleSheet from "../styles/themestyles";
 //More about navigation https://reactnavigation.org/docs/en/auth-flow.html
 //createStackNavigator is a function that takes a route configuration object and an options object and returns a React component.
 const WorkoutStack = createStackNavigator(
@@ -28,6 +29,7 @@ const WorkoutStack = createStackNavigator(
       }
     },
     Settings: SettingsScreen,
+    AboutScreen: AboutScreen,
     WorkoutDetails: {
       screen: WorkoutDetails,
       navigationOptions: {
@@ -73,7 +75,9 @@ const DiscoverStack = createStackNavigator(
       navigationOptions: {
         title: "Play workout"
       }
-    }
+    },
+    Settings: SettingsScreen,
+    AboutScreen: AboutScreen,
   },
   {
     mode: "modal",
@@ -92,16 +96,30 @@ const TabNavigator = createBottomTabNavigator({
   WorkoutStack: {
     screen: WorkoutStack,
     navigationOptions: {
-      tabBarLabel: "Home",
-      tabBarIcon: () => <Icon name="home" size={22} />
+       tabBarIcon: ({ tintColor }) => {
+        const iconName = "home"
+        return <Icon name={iconName} size={30} color={tintColor} />;
+       } 
     }
   },
   Discover: {
     screen: DiscoverStack,
     navigationOptions: {
-      tabBarLabel: "Discover",
-      tabBarIcon: () => <Icon name="md-compass" type="ionicon" size={22} />
+       tabBarIcon: ({ tintColor }) => {
+        const iconName = "md-compass"
+        return <Icon name={iconName} type="ionicon" size={30} color={tintColor} />;
+       } 
     }
+  },
+},
+{
+  tabBarOptions: {
+    showLabel: false,
+    activeTintColor: '#000000',
+    inactiveTintColor: '#999999',
+    style: {
+      backgroundColor: getStyleSheet(window.darkTheme).background.backgroundColor
+    },
   }
 });
 
