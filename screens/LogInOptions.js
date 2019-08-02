@@ -4,7 +4,8 @@ import { Card, Text, Button, Image, Icon } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
 import Logo from '../logo.png';
-import NetInfo from "@react-native-community/netinfo";
+// NetInfo from "@react-native-community/netinfo";
+import { NetInfo } from "react-native";
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
@@ -15,20 +16,12 @@ class LogInScreen extends React.Component {
     handleFbLogin()
       .then(err => {
         if (!err) {
-          this.props.navigation.navigate("App",{
+          this.props.navigation.navigate("App", {
             darkTheme: global.darkTheme
           });
         }
       })
       .catch(err => {
-        NetInfo.fetch().then(state => {
-          if (!state.isConnected) {
-            alert("Please check your internet connection and try again later.");
-          }
-          else {
-            alert("Couldn't authenticate your Facebook account 🙁");
-          }
-        });
       });
   }
 
