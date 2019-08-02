@@ -1,6 +1,7 @@
 import React from 'react';
 export const ExerciseImages = {
     "Barbell Curl": require('FitnessGo/assets/images/exercises/BarbellCurl.png'),
+    "Barbell Squat": require('FitnessGo/assets/images/exercises/BarbellSquat.png'),
     "Bench Press": require('FitnessGo/assets/images/exercises/BenchPress.png'),
     "Chin up": require('FitnessGo/assets/images/exercises/ChinUp.png'),
     "Dip/Leg Raise Combo": require('FitnessGo/assets/images/exercises/DipLegRaiseCombo.png'),
