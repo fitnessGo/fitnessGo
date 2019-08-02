@@ -75,6 +75,7 @@ export class TimerView extends Component {
                             <View style={styles.leftSide}>
                                 <Text style={{ ...styles.textLight, ...FontStyles.default }}>Exercise:  <Text style={{ ...FontStyles.bold, ...styles.textLight }}>{timer.exerciseName}</Text></Text>
                                 <Text style={{ ...styles.textLight, ...FontStyles.default }}>Repetitions: <Text style={{ ...FontStyles.bold }}>{timer.repetitions}</Text></Text>
+                                {timer.weight != 0 && <Text style={{ ...styles.textLight, ...FontStyles.default }}>Weight: <Text style={{ ...FontStyles.bold }}>{timer.weight}</Text> lbs</Text>}
                             </View>
                             <View style={styles.rightSide}>
                                 <Text style={{ ...styles.textLight, ...FontStyles.default }}><Text style={{ ...FontStyles.h1, ...FontStyles.bold }}>{this.state.time}</Text>sec</Text>
