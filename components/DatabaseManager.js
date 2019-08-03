@@ -46,13 +46,13 @@ export default class DatabaseManager {
         })
     };
     //Save passed workout to the user library
-    static AddWorkoutToUserLibrary(workout) {
+    static AddWorkoutToUserLibrary(w) {
         return new Promise((resolve, reject) => {
             const user = firebase.auth().currentUser;
             if (user) {
                 const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
                 var newWorkoutRef = userDataRef.push();
-                workout.id = newWorkoutRef.key;
+                const workout = {...w, id: newWorkoutRef.key}
                 newWorkoutRef.set(workout).then(data => {
                     resolve();
                 }).catch(error => {

@@ -85,6 +85,7 @@ class Discover extends Component {
             wrks.push(workout)
           });
           this.workouts = wrks
+          console.warn(JSON.stringify(this.workouts.map(w => {return w.id})))
           onCompletion();
         });
       }
@@ -93,12 +94,12 @@ class Discover extends Component {
 
   refreshUserWorkouts(onCompletion) {
     DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
-      this.workouts.forEach(workout => {
-        //check if the discover workout was added to the user library
-        if (references) {
-          workout.added = references.includes(workout.id);
-        }
-      });
+      if (references && references.length > 0) {
+        this.workouts.forEach(workout => {
+          //check if the discover workout was added to the user library
+            workout.added = references.includes(workout.id);
+          });
+      }
       onCompletion();
     });
   }
