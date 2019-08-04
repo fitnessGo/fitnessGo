@@ -233,7 +233,7 @@ class CreateWorkoutScreen extends React.Component {
             id: newWorkoutRef.key,
             name: this.state.name,
             category: this.state.category,
-            createdBy: user.email,
+            createdBy: user.email !== null ? user.email : user.providerData[0].email,
             timeCreated: timestamp,
             exercises: this.state.exercises
           })
