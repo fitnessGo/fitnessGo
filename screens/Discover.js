@@ -85,7 +85,6 @@ class Discover extends Component {
             wrks.push(workout)
           });
           this.workouts = wrks
-          console.warn(JSON.stringify(this.workouts.map(w => {return w.id})))
           onCompletion();
         });
       }
