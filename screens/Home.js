@@ -26,6 +26,12 @@ import { ScreenStyles, FontStyles } from "../styles/global";
 import firebase from "react-native-firebase";
 import DatabaseManager from "../components/DatabaseManager";
 import { showMessage } from "react-native-flash-message";
+
+const SortOptions = {
+  Default: 1,
+  Newest: 2 ,
+  Oldest: 3
+}
 class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -59,6 +65,7 @@ class HomeScreen extends React.Component {
       sharedWorkoutCode: undefined,
       overlayErrorMessage: ""
     };
+    this.sortBy = SortOptions.Default;
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
     this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
     this.updateWorkouts = this.updateWorkouts.bind(this);
@@ -101,6 +108,19 @@ class HomeScreen extends React.Component {
     } else {
       Alert.alert("Couldn't fetch your workouts 😔 Try again later.");
       onCompletion(null);
+    }
+  }
+  sortWorkouts() {
+    switch(this.sortBy) {
+      case SortOptions.Newest:
+        this.state.workouts.sort( (a, b) => { return b.timeCreated - a.timeCreated; });
+        break;
+      case SortOptions.Oldest :
+        this.state.workouts.sort( (a, b) => { return a.timeCreated - b.timeCreated; });
+        break;
+        default: 
+        this.state.workouts.sort( (a, b) => { return a.id > b.id; });
+        break;
     }
   }
   componentWillUnmount() {
@@ -195,6 +215,11 @@ class HomeScreen extends React.Component {
   //Open view and prompt a workoud code from user 
   addSharedWorkoutButtonPressed() {
     this.setState({ getSharedWorkoutOverlayVisible: true })
+  }
+  onSortBySwitch(option) {
+    this.sortBy = option
+    this.sortWorkouts();
+    this.setState({ refreshing: false });
   }
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
@@ -293,6 +318,16 @@ class HomeScreen extends React.Component {
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
+         <View style={styles.sortByMenu}>
+          <Menu>
+            <MenuTrigger text="Sort by"/>
+            <MenuOptions>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Default)} text='Default'/>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Newest)} text='Newest fitst'/>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Oldest)} text='Oldest fitst'/>
+            </MenuOptions>
+          </Menu>
+        </View>
         <ScrollView
           style={ScreenStyles.screenContainer}
           showsVerticalScrollIndicator={false}
@@ -504,6 +539,12 @@ const styles = StyleSheet.create({
     padding: 15,
     alignContent: 'center',
     alignItems: 'center'
+  },
+  sortByMenu: {
+    alignItems: "flex-end",
+    backgroundColor: "rgba(255,255,0,0.0)",
+    paddingHorizontal: 10,
+    paddingVertical: 5
   }
 });
 
