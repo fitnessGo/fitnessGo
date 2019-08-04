@@ -19,29 +19,134 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger, renderers
+  MenuTrigger,
+  renderers
 } from "react-native-popup-menu";
 import getStyleSheet from "../styles/themestyles";
 import { ScreenStyles, FontStyles } from "../styles/global";
 import firebase from "react-native-firebase";
 import DatabaseManager from "../components/DatabaseManager";
 import { showMessage } from "react-native-flash-message";
+import AppIntroSlider from "react-native-app-intro-slider";
+
+const tutorialSlides = [
+  {
+    key: "slide1",
+    title: "Welcome to FitnessGo!",
+    text:
+      "This app allows you to create timers for your workouts, discover workouts from other people, and share your own workouts with your friends.",
+    image: require("../assets/images/main/Stopwatch.png")
+  },
+  {
+    key: "slide2",
+    title: "Create workouts",
+    text: "Press plus button to create a workout",
+    image: require("../assets/images/tutorial/1.png")
+  },
+  {
+    key: "slide3",
+    title: "Add your exercises",
+    text:
+      'Type in workout name, select a workout category, and add exercise by selecting an exercise name and typing number of repetitions, duration and break. When done, simply press "Save" button on top right corner.',
+    image: require("../assets/images/tutorial/2.png")
+  },
+  {
+    key: "slide4",
+    title: "User library",
+    text:
+      "You'll see a newly created on your Home screen. All your workouts will be displayed here.",
+    image: require("../assets/images/tutorial/3.png")
+  },
+  {
+    key: "slide5",
+    title: "Workout details",
+    text:
+      'You can see workout details by simply clicking on the workout on Home screen. If you want to edit your workout, press "Edit" button on top right corner.',
+    image: require("../assets/images/tutorial/4.png")
+  },
+  {
+    key: "slide6",
+    title: "Edit workout",
+    text:
+      "Edit your workout in a similar way you created it! You can change workout name, category, exercises and sets by simply editing the text fields.",
+    image: require("../assets/images/tutorial/5.png")
+  },
+  {
+    key: "slide7",
+    title: "Play workout",
+    text:
+      'Play workout by pressing "Play" button on bottom right corner of the workout card on Home screen',
+    image: require("../assets/images/tutorial/6.png")
+  },
+  {
+    key: "slide8",
+    title: "Play workout",
+    text:
+      "You can play, pause, and change exercise timers by using play controls on the bottom of the screen.",
+    image: require("../assets/images/tutorial/7.png")
+  },
+  {
+    key: "slide9",
+    title: "Discover workouts",
+    text:
+      'Discover workouts from famous athletes and local gyms on the "Discover" tab',
+    image: require("../assets/images/tutorial/8.png")
+  },
+  {
+    key: "slide10",
+    title: "Discover workouts",
+    text:
+      "Long press a workout card to see possible actions. You can add workout to your library, share it with a friend, or see details.",
+    image: require("../assets/images/tutorial/9.png")
+  },
+  {
+    key: "slide11",
+    title: "Share workouts",
+    text:
+      "Select share from a pop-up after long press if you want to share a workout with your friends. You'll see the code that you'll need to send to your friends, so they can access it.",
+    image: require("../assets/images/tutorial/10.png")
+  },
+  {
+    key: "slide12",
+    title: "Add shared workouts",
+    text:
+      'If you want to see a workout your friend shared with you, long press a "Plus" button on bottom right corner. You\'ll see a pop-up with "Add shared workout" option. Click it.',
+    image: require("../assets/images/tutorial/11.png")
+  },
+  {
+    key: "slide13",
+    title: "Add shared workouts",
+    text:
+      "You'll be prompted to enter a code you received from your friend. If the code is correct, the workout details would be shown.",
+    image: require("../assets/images/tutorial/12.png")
+  }
+];
+
 class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'My App',
-      headerTintColor: global.darkTheme ? "#cfcfcf" : '#101010',
+      title: "My App",
+      headerTintColor: global.darkTheme ? "#cfcfcf" : "#101010",
       headerStyle: {
-        backgroundColor: getStyleSheet(global.darkTheme).background.backgroundColor
+        backgroundColor: getStyleSheet(global.darkTheme).background
+          .backgroundColor
       },
       headerLeft: (
         <Button
           type="clear"
-          icon={<Icon name="settings" size={22} color={global.darkTheme? '#cfcfcf' : '#101010'}/>}
+          icon={
+            <Icon
+              name="settings"
+              size={22}
+              color={global.darkTheme ? "#cfcfcf" : "#101010"}
+            />
+          }
           style={{ flexDirection: "row", alignSelf: "flex-end" }}
-          onPress={() => navigation.navigate("Settings", {
-            darkTheme: global.darkTheme
-          })}
+          onPress={() =>
+            navigation.navigate("Settings", {
+              darkTheme: global.darkTheme
+            })
+          }
         />
       )
     };
@@ -57,7 +162,8 @@ class HomeScreen extends React.Component {
       getSharedWorkoutOverlayVisible: false,
       shareWorkoutOverlayVisible: false,
       sharedWorkoutCode: undefined,
-      overlayErrorMessage: ""
+      overlayErrorMessage: "",
+      showTutorial: false
     };
     this._onWorkoutSelect = this._onWorkoutSelect.bind(this);
     this._onCreateNewButtonClick = this._onCreateNewButtonClick.bind(this);
@@ -82,6 +188,18 @@ class HomeScreen extends React.Component {
     this.fetchUserWorkouts(workouts => {
       this.setState({ workouts: workouts });
     });
+
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const firstTimeRef = firebase
+        .database()
+        .ref("users/" + user.uid + "/firstTime")
+        .on("value", firstTime => {
+          if (firstTime === true || firstTime.val() === null) {
+            this.setState({ showTutorial: true });
+          }
+        });
+    }
   }
 
   fetchUserWorkouts(onCompletion) {
@@ -103,6 +221,7 @@ class HomeScreen extends React.Component {
       onCompletion(null);
     }
   }
+
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
@@ -125,7 +244,10 @@ class HomeScreen extends React.Component {
     });
   }
   _onPlayButtonClick(w) {
-    this.props.navigation.navigate("RunWorkout", { workout: w, darkTheme: global.darkTheme });
+    this.props.navigation.navigate("RunWorkout", {
+      workout: w,
+      darkTheme: global.darkTheme
+    });
   }
   updateWorkouts(workouts) {
     this.setState({ workouts });
@@ -135,6 +257,38 @@ class HomeScreen extends React.Component {
     this.fetchUserWorkouts(workouts => {
       this.setState({ refreshing: false, workouts: workouts });
     });
+  };
+
+  _renderItem = ({ item }) => {
+    return (
+      <View style={tutorialStyles.slide}>
+        <Text style={tutorialStyles.title}>{item.title}</Text>
+        <Image style={tutorialStyles.image} source={item.image} />
+        <Text style={tutorialStyles.text}>{item.text}</Text>
+      </View>
+    );
+  };
+
+  _renderNextButton = () => {
+    return <Text style={tutorialStyles.button}>Next</Text>;
+  };
+  _renderDoneButton = () => {
+    return <Text style={tutorialStyles.button}>Done</Text>;
+  };
+  _renderSkipButton = () => {
+    return <Text style={tutorialStyles.button}>Skip</Text>;
+  };
+
+  _onDone = () => {
+    this.setState({ showTutorial: false });
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase
+        .database()
+        .ref("users/" + user.uid + "/firstTime")
+        .set(false);
+    } else {
+    }
   };
 
   deleteWorkout(workout) {
@@ -162,46 +316,73 @@ class HomeScreen extends React.Component {
     );
   }
   shareWorkout(workout) {
-    DatabaseManager.AddWorkoutToSharedDirectory(workout).then(id => {
-      this.setState({ sharedWorkoutCode: id, shareWorkoutOverlayVisible: true })
-    }).catch(error => {
-      showMessage({
-        message: "Could not share this workout",
-        description: error,
-        icon: "auto",
-        type: "danger"
+    DatabaseManager.AddWorkoutToSharedDirectory(workout)
+      .then(id => {
+        this.setState({
+          sharedWorkoutCode: id,
+          shareWorkoutOverlayVisible: true
+        });
       })
-    })
+      .catch(error => {
+        showMessage({
+          message: "Could not share this workout",
+          description: error,
+          icon: "auto",
+          type: "danger"
+        });
+      });
   }
   addSharedWorkout(code) {
     //check if code is not empty
     if (code && code.length) {
-      DatabaseManager.GetSharedWorkout(code).then((workout) => {
+      DatabaseManager.GetSharedWorkout(code).then(workout => {
         if (workout) {
-          this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" })
-          this.props.navigation.navigate('WorkoutDetails', { workout: workout, discoverWorkout: true, darkTheme: global.darkTheme });
+          this.setState({
+            getSharedWorkoutOverlayVisible: false,
+            overlayErrorMessage: ""
+          });
+          this.props.navigation.navigate("WorkoutDetails", {
+            workout: workout,
+            discoverWorkout: true,
+            darkTheme: global.darkTheme
+          });
         } else {
           //Not foiund in the database, maybe wrong code
-          this.setState({ overlayErrorMessage: "Workout with this code not found" })
+          this.setState({
+            overlayErrorMessage: "Workout with this code not found"
+          });
         }
       });
     }
     //Code not entered
     else {
-      this.setState({ overlayErrorMessage: "Code not entered" })
+      this.setState({ overlayErrorMessage: "Code not entered" });
     }
-    this.sharedWorkoutCode = undefined
+    this.sharedWorkoutCode = undefined;
   }
-  //Open view and prompt a workoud code from user 
+  //Open view and prompt a workoud code from user
   addSharedWorkoutButtonPressed() {
-    this.setState({ getSharedWorkoutOverlayVisible: true })
+    this.setState({ getSharedWorkoutOverlayVisible: true });
   }
   render() {
     const theme = getStyleSheet(this.state.darkTheme);
     const workoutViewStyle = this.state.darkTheme
       ? styles.workoutViewDark
       : styles.workoutViewLight;
-    if (!this.state.workouts || this.state.workouts.length == 0) {
+    if (this.state.showTutorial === true) {
+      return (
+        <AppIntroSlider
+          renderItem={this._renderItem}
+          slides={tutorialSlides}
+          onDone={this._onDone}
+          showSkipButton
+          onSkip={this._onDone}
+          renderDoneButton={this._renderDoneButton}
+          renderNextButton={this._renderNextButton}
+          renderSkipButton={this._renderSkipButton}
+        />
+      );
+    } else if (!this.state.workouts || this.state.workouts.length == 0) {
       return (
         <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
           <ScrollView
@@ -215,32 +396,57 @@ class HomeScreen extends React.Component {
             }
           >
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={[theme.text, { textAlign: 'center' }]}>
+              <Text style={[theme.text, { textAlign: "center" }]}>
                 Click + to create a new workout or find more in the Discover Tab
               </Text>
-              <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
-                <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
+              <Menu
+                renderer={renderers.Popover}
+                rendererProps={{ preferredPlacement: "top" }}
+              >
+                <MenuTrigger
+                  triggerOnLongPress={true}
+                  onAlternativeAction={() =>
+                    this._onCreateNewButtonClick(this.state.workouts)
+                  }
+                  customStyles={triggerMenuTouchable}
+                >
                   <View style={{ padding: "1%" }}>
-                    <Icon name="add-circle" size={44} color={theme.text.color} />
+                    <Icon
+                      name="add-circle"
+                      size={44}
+                      color={theme.text.color}
+                    />
                   </View>
                 </MenuTrigger>
                 <MenuOptions customStyles={popUpStyles}>
-                  <MenuOption text="Add shared workout" onSelect={() =>
-                    this.addSharedWorkoutButtonPressed()} />
+                  <MenuOption
+                    text="Add shared workout"
+                    onSelect={() => this.addSharedWorkoutButtonPressed()}
+                  />
                 </MenuOptions>
               </Menu>
             </View>
           </ScrollView>
           <View style={styles.scaleImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/ScalesBottleMat.png')}
-              style={styles.containerImage} />
+            <Image
+              resizeMode={"contain"}
+              source={require("../assets/images/main/ScalesBottleMat.png")}
+              style={styles.containerImage}
+            />
           </View>
           <View style={styles.stopwatchImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Stopwatch.png')}
-              style={[styles.containerImage]} />
+            <Image
+              resizeMode={"contain"}
+              source={require("../assets/images/main/Stopwatch.png")}
+              style={[styles.containerImage]}
+            />
           </View>
           <View style={styles.weigthImageContainer}>
-            <Image resizeMode={'contain'} source={require('../assets/images/main/Weights.png')} style={styles.containerImage} />
+            <Image
+              resizeMode={"contain"}
+              source={require("../assets/images/main/Weights.png")}
+              style={styles.containerImage}
+            />
           </View>
           {/* Add shared workout overlay */}
           <Overlay
@@ -249,32 +455,61 @@ class HomeScreen extends React.Component {
             height="auto"
             overlayStyle={styles.overlayStyle}
             onBackdropPress={() => {
-              this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+              this.setState({
+                getSharedWorkoutOverlayVisible: false,
+                overlayErrorMessage: ""
+              });
               this.code = undefined;
             }}
           >
-            <View style={{ alignItems: 'center' }} >
-              <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
-              <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+            <View style={{ alignItems: "center" }}>
+              <Text style={[FontStyles.h1, { marginTop: 5 }]}>
+                Open shared workout
+              </Text>
+              <Text
+                style={[
+                  FontStyles.default,
+                  { marginTop: 5, textAlign: "center" }
+                ]}
+              >
+                Please enter the code:{" "}
+              </Text>
 
-              {
-                this.state.overlayErrorMessage !== "" &&
-                <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
-              }
+              {this.state.overlayErrorMessage !== "" && (
+                <Text
+                  style={[
+                    FontStyles.warn,
+                    { marginTop: 5, textAlign: "center" }
+                  ]}
+                >
+                  {this.state.overlayErrorMessage}
+                </Text>
+              )}
 
-
-              <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
-                <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+              <View
+                style={{
+                  marginTop: 15,
+                  flexDirection: "row",
+                  width: "80%",
+                  alignSelf: "center",
+                  alignItems: "center"
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around"
+                  }}
+                >
                   <TextInput
                     underlineColorAndroid="transparent"
-                    onChangeText={code => this.sharedWorkoutCode = code}
+                    onChangeText={code => (this.sharedWorkoutCode = code)}
                     placeholder="Code "
                     style={[theme.text]}
                     onSubmitEditing={() =>
                       this.addSharedWorkout(this.sharedWorkoutCode)
                     }
-                  >
-                  </TextInput>
+                  />
                   <Button
                     type="outline"
                     title="enter "
@@ -310,9 +545,7 @@ class HomeScreen extends React.Component {
                   <MenuTrigger
                     triggerOnLongPress={true}
                     customStyles={triggerMenuTouchable}
-                    onAlternativeAction={view =>
-                      this._onWorkoutSelect(w, view)
-                    }
+                    onAlternativeAction={view => this._onWorkoutSelect(w, view)}
                   >
                     <WorkoutCard
                       style={workoutViewStyle}
@@ -345,18 +578,28 @@ class HomeScreen extends React.Component {
           </View>
         </ScrollView>
         <View style={{ alignItems: "flex-end" }}>
-          <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
-            <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
+          <Menu
+            renderer={renderers.Popover}
+            rendererProps={{ preferredPlacement: "top" }}
+          >
+            <MenuTrigger
+              triggerOnLongPress={true}
+              onAlternativeAction={() =>
+                this._onCreateNewButtonClick(this.state.workouts)
+              }
+              customStyles={triggerMenuTouchable}
+            >
               <View style={{ padding: "1%" }}>
                 <Icon name="add-circle" size={44} color={theme.text.color} />
               </View>
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
-              <MenuOption text="Add shared workout" onSelect={() =>
-                this.addSharedWorkoutButtonPressed()} />
+              <MenuOption
+                text="Add shared workout"
+                onSelect={() => this.addSharedWorkoutButtonPressed()}
+              />
             </MenuOptions>
           </Menu>
-
         </View>
         {/* Share workout overlay */}
         <Overlay
@@ -364,19 +607,54 @@ class HomeScreen extends React.Component {
           windowBackgroundColor="rgba(0, 0, 0, .4)"
           height="auto"
           overlayStyle={styles.overlayStyle}
-          onBackdropPress={() => this.setState({ shareWorkoutOverlayVisible: false })}
+          onBackdropPress={() =>
+            this.setState({ shareWorkoutOverlayVisible: false })
+          }
         >
-          <View style={{ alignItems: 'center' }} >
+          <View style={{ alignItems: "center" }}>
             <Text style={[FontStyles.h1, { marginTop: 5 }]}>Almost done!</Text>
-            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>The code to access this workout is ready to be sent</Text>
-            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }}>
-              <Text selectable={true} style={{ textAlign: 'center', backgroundColor: '#f2f2f2', textAlign: 'center', padding: 5, borderRadius: 5, borderWidth: 1, borderColor: '#e0e0e0' }}>{this.state.sharedWorkoutCode}</Text>
+            <Text
+              style={[
+                FontStyles.default,
+                { marginTop: 5, textAlign: "center" }
+              ]}
+            >
+              The code to access this workout is ready to be sent
+            </Text>
+            <View
+              style={{
+                marginTop: 15,
+                flexDirection: "row",
+                width: "80%",
+                alignSelf: "center",
+                alignItems: "center"
+              }}
+            >
+              <Text
+                selectable={true}
+                style={{
+                  textAlign: "center",
+                  backgroundColor: "#f2f2f2",
+                  textAlign: "center",
+                  padding: 5,
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#e0e0e0"
+                }}
+              >
+                {this.state.sharedWorkoutCode}
+              </Text>
               <Button
                 type="clear"
                 title="copy "
                 iconRight
                 icon={
-                  <Icon type="material-community" name="content-copy" size={16} color={theme.text.color} />
+                  <Icon
+                    type="material-community"
+                    name="content-copy"
+                    size={16}
+                    color={theme.text.color}
+                  />
                 }
                 style={{ alignSelf: "flex-end", fontSize: 13 }}
                 titleStyle={FontStyles.default}
@@ -386,7 +664,7 @@ class HomeScreen extends React.Component {
                     message: "Code copied",
                     icon: "auto",
                     type: "success"
-                  })
+                  });
                 }}
               />
             </View>
@@ -399,32 +677,55 @@ class HomeScreen extends React.Component {
           height="auto"
           overlayStyle={styles.overlayStyle}
           onBackdropPress={() => {
-            this.setState({ getSharedWorkoutOverlayVisible: false, overlayErrorMessage: "" });
+            this.setState({
+              getSharedWorkoutOverlayVisible: false,
+              overlayErrorMessage: ""
+            });
             this.code = undefined;
           }}
         >
-          <View style={{ alignItems: 'center' }} >
-            <Text style={[FontStyles.h1, { marginTop: 5 }]}>Open shared workout</Text>
-            <Text style={[FontStyles.default, { marginTop: 5, textAlign: 'center' }]}>Please enter the code: </Text>
+          <View style={{ alignItems: "center" }}>
+            <Text style={[FontStyles.h1, { marginTop: 5 }]}>
+              Open shared workout
+            </Text>
+            <Text
+              style={[
+                FontStyles.default,
+                { marginTop: 5, textAlign: "center" }
+              ]}
+            >
+              Please enter the code:{" "}
+            </Text>
 
-            {
-              this.state.overlayErrorMessage !== "" &&
-              <Text style={[FontStyles.warn, { marginTop: 5, textAlign: 'center' }]}>{this.state.overlayErrorMessage}</Text>
-            }
+            {this.state.overlayErrorMessage !== "" && (
+              <Text
+                style={[FontStyles.warn, { marginTop: 5, textAlign: "center" }]}
+              >
+                {this.state.overlayErrorMessage}
+              </Text>
+            )}
 
-
-            <View style={{ marginTop: 15, flexDirection: "row", width: "80%", alignSelf: 'center', alignItems: 'center' }} >
-              <View style={{ flexDirection: "row", justifyContent: 'space-around' }}>
+            <View
+              style={{
+                marginTop: 15,
+                flexDirection: "row",
+                width: "80%",
+                alignSelf: "center",
+                alignItems: "center"
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-around" }}
+              >
                 <TextInput
                   underlineColorAndroid="transparent"
-                  onChangeText={code => this.sharedWorkoutCode = code}
+                  onChangeText={code => (this.sharedWorkoutCode = code)}
                   placeholder="Code "
                   style={[theme.text]}
                   onSubmitEditing={() =>
                     this.addSharedWorkout(this.sharedWorkoutCode)
                   }
-                >
-                </TextInput>
+                />
                 <Button
                   type="outline"
                   title="enter "
@@ -441,7 +742,7 @@ class HomeScreen extends React.Component {
     );
   }
 }
-const win = Dimensions.get('window');
+const win = Dimensions.get("window");
 const styles = StyleSheet.create({
   workoutViewContainer: {
     width: "90%",
@@ -465,45 +766,45 @@ const styles = StyleSheet.create({
     flex: 1,
     width: undefined,
     height: undefined,
-    alignSelf: 'stretch'
+    alignSelf: "stretch"
   },
   scaleImageContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: "20%",
     left: "-10%",
     width: "55%",
     aspectRatio: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 0,
-    transform: [{ rotateY: '180deg' }]
+    transform: [{ rotateY: "180deg" }]
   },
   stopwatchImageContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: "45%",
     right: "-5%",
     width: "32%",
     aspectRatio: 1,
-    justifyContent: 'center',
-    transform: [{ rotate: '-25deg' }]
+    justifyContent: "center",
+    transform: [{ rotate: "-25deg" }]
   },
   weigthImageContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: "-6%",
     right: "-12%",
     width: "50%",
     aspectRatio: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 15,
-    transform: [{ rotate: '-20deg' }]
+    transform: [{ rotate: "-20deg" }]
   },
   overlayStyle: {
     width: "80%",
     top: "-10%",
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 15,
-    alignContent: 'center',
-    alignItems: 'center'
+    alignContent: "center",
+    alignItems: "center"
   }
 });
 
@@ -513,6 +814,38 @@ const popUpStyles = {
     width: 160
   }
 };
+
+const tutorialStyles = StyleSheet.create({
+  image: {
+    width: 200,
+    height: 350,
+    resizeMode: "contain"
+  },
+  text: {
+    color: "#000",
+    textAlign: "center",
+    paddingHorizontal: 16,
+    marginBottom: 100
+  },
+  title: {
+    fontSize: 22,
+    color: "#000",
+    backgroundColor: "transparent",
+    textAlign: "center",
+    marginBottom: 0
+  },
+  slide: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "#fff"
+  },
+  button: {
+    fontSize: 18,
+    color: "#007AFF",
+    marginTop: 40
+  }
+});
 
 const triggerMenuTouchable = { TriggerTouchableComponent: TouchableOpacity };
 
