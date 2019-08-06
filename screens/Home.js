@@ -34,7 +34,7 @@ const tutorialSlides = [
     key: "slide1",
     title: "Welcome to FitnessGo!",
     text:
-      "This app allows you to create timers for your workouts, discover workouts from other people, and share your own workouts with your friends.",
+      "FitnessGo allows you to create custom workouts, discover workouts from other people, and share your workouts with your friends.",
     image: require("../assets/images/main/Stopwatch.png")
   },
   {
@@ -47,77 +47,77 @@ const tutorialSlides = [
     key: "slide3",
     title: "Add your exercises",
     text:
-      'Type in workout name, select a workout category, and add exercise by selecting an exercise name and typing number of repetitions, duration and break. When done, simply press "Save" button on top right corner.',
+      'Type in a workout name, select a workout category, and add an exercise by selecting an exercise name. Create sets by entering a duration, break, and number of repetitions. When done, simply press "Save" button on top right corner.',
     image: require("../assets/images/tutorial/2.png")
   },
   {
     key: "slide4",
     title: "User library",
     text:
-      "You'll see a newly created on your Home screen. All your workouts will be displayed here.",
+      "You'll see your newly created workout on the \"Home\" screen as well as all of your previously added workouts.",
     image: require("../assets/images/tutorial/3.png")
   },
   {
     key: "slide5",
     title: "Workout details",
     text:
-      'You can see workout details by simply clicking on the workout on Home screen. If you want to edit your workout, press "Edit" button on top right corner.',
+      'You can see workout details by simply clicking on the workout on the \"Home\" screen. If you want to edit your workout, press the "Edit" button on top right corner.',
     image: require("../assets/images/tutorial/4.png")
   },
   {
     key: "slide6",
     title: "Edit workout",
     text:
-      "Edit your workout in a similar way you created it! You can change workout name, category, exercises and sets by simply editing the text fields.",
+      "Edit your workout to change the workout name, category, exercises and sets by simply editing the text fields.",
     image: require("../assets/images/tutorial/5.png")
   },
   {
     key: "slide7",
     title: "Play workout",
     text:
-      'Play workout by pressing "Play" button on bottom right corner of the workout card on Home screen',
+      'Start a workout by pressing the "Play" button in the bottom right corner of the workout card on the "Home" screen',
     image: require("../assets/images/tutorial/6.png")
   },
   {
     key: "slide8",
     title: "Play workout",
     text:
-      "You can play, pause, and change exercise timers by using play controls on the bottom of the screen.",
+      "You can play, pause, and switch between exercise timers by using the play controls on the bottom of the screen.",
     image: require("../assets/images/tutorial/7.png")
   },
   {
     key: "slide9",
     title: "Discover workouts",
     text:
-      'Discover workouts from famous athletes and local gyms on the "Discover" tab',
+      'Discover workouts from famous athletes and local gyms on the "Discover" tab.',
     image: require("../assets/images/tutorial/8.png")
   },
   {
     key: "slide10",
     title: "Discover workouts",
     text:
-      "Long press a workout card to see possible actions. You can add workout to your library, share it with a friend, or see details.",
+      'Long press a workout card to see additional actions such as "Add to Library", "Share", and "Details".',
     image: require("../assets/images/tutorial/9.png")
   },
   {
     key: "slide11",
     title: "Share workouts",
     text:
-      "Select share from a pop-up after long press if you want to share a workout with your friends. You'll see the code that you'll need to send to your friends, so they can access it.",
+      'Click "Share" to get a code you can send to easily share your workout.',
     image: require("../assets/images/tutorial/10.png")
   },
   {
     key: "slide12",
     title: "Add shared workouts",
     text:
-      'If you want to see a workout your friend shared with you, long press a "Plus" button on bottom right corner. You\'ll see a pop-up with "Add shared workout" option. Click it.',
+      'In order to see a workout somebody shared with you press and hold the "Plus" button in the bottom corner and select "Add shared workout".',
     image: require("../assets/images/tutorial/11.png")
   },
   {
     key: "slide13",
     title: "Add shared workouts",
     text:
-      "You'll be prompted to enter a code you received from your friend. If the code is correct, the workout details would be shown.",
+      "Enter a workout code you received to open a shared workout.",
     image: require("../assets/images/tutorial/12.png")
   }
 ];
