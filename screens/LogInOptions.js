@@ -35,8 +35,8 @@ class LogInScreen extends React.Component {
         }
       })
       .catch(err => {
-        NetInfo.fetch().then(state => {
-          if (!state.isConnected) {
+        NetInfo.isConnected.fetch().then(isConnected => {
+          if (!isConnected) {
             alert("Please check your internet connection and try again later.");
           }
           else {
