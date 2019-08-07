@@ -214,7 +214,8 @@ class ExerciseCard extends React.Component {
             </TextInput>
           )}
           <TextInput
-            style={theme.text}
+            multiline 
+            style={[theme.text, {maxHeight: 60}]}
             placeholder="Description"
             onChangeText={this.changeDesc}
             underlineColorAndroid="transparent"
@@ -243,13 +244,20 @@ class ExerciseCard extends React.Component {
               );
             })}
           </View>
-          <Button
-            type="clear"
-            title="Add set"
-            titleStyle={theme.text}
-            style={{ flexDirection: "row", alignSelf: "flex-end" }}
-            onPress={this.addSet}
-          />
+          <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end"
+          }}>
+            <Button
+              type="clear"
+              title="Add set"
+              titleStyle={theme.text}
+              style={{ flexDirection: "row", alignSelf: "flex-end" }}
+              onPress={this.addSet}
+            />
+          </View>
+
         </Card>
       </View>
     );

@@ -549,6 +549,7 @@ class HomeScreen extends React.Component {
         </SafeAreaView>
       );
     }
+    const email = firebase.auth().currentUser.email ? firebase.auth().currentUser.email : firebase.auth().currentUser.providerData[0].email ;
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
@@ -590,6 +591,7 @@ class HomeScreen extends React.Component {
                       onPlayButtonClick={workout =>
                         this._onPlayButtonClick(workout)
                       }
+                      displayCreator={email!=w.createdBy}
                     />
                   </MenuTrigger>
                   <MenuOptions customStyles={popUpStyles}>
@@ -772,7 +774,7 @@ const styles = StyleSheet.create({
     left: "5%"
   },
   workoutViewLight: {
-    backgroundColor: "#1960d3",
+    backgroundColor: "#2172ff",
     color: "#ffffff",
     fontSize: 24,
     padding: 10,

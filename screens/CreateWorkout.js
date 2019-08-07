@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   Alert,
-  Button,
   ScrollView,
   View,
   StyleSheet,
@@ -19,6 +18,7 @@ import ExerciseCard from "../components/ExerciseCard";
 import { KeyboardAvoidingView } from "react-native";
 import firebase from "react-native-firebase";
 import moment from "moment";
+import { Button } from "react-native-elements";
 
 class CreateWorkoutScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -29,8 +29,8 @@ class CreateWorkoutScreen extends React.Component {
       headerStyle: {
         backgroundColor: getStyleSheet(navigation.getParam("darkTheme")).background.backgroundColor
       },
-      headerRight: <Button onPress={params.save} title="Save" color={global.darkTheme? '#cfcfcf' : '#101010'}/>,
-      headerLeft: <Button onPress={params.goHome} title="Close" color={global.darkTheme? '#cfcfcf' : '#101010'}/>
+      headerRight: <Button onPress={params.save} title="Save"  type="clear" color={global.darkTheme? '#cfcfcf' : '#101010'}/>,
+      headerLeft: <Button onPress={params.goHome} title="Close"  type="clear" color={global.darkTheme? '#cfcfcf' : '#101010'}/>
     };
   };
 
@@ -286,9 +286,9 @@ class CreateWorkoutScreen extends React.Component {
                     enabled={this.state.editable}
                     selectedValue={this.state.category}
                     style={{
-                      height: 30,
-                      minWidth: "30%",
-                      alignSelf: "flex-start"
+                      height: 35,
+                      minWidth: "50%",
+                      alignSelf: "flex-start",
                     }}
                     itemStyle={{
                       height: 34,
@@ -338,6 +338,8 @@ class CreateWorkoutScreen extends React.Component {
                 >
                   <Button
                     title="Add Exercise"
+                    type="clear"
+                    titleStyle={theme.text}
                     style={{
                       marginBottom: 15,
                     }}
