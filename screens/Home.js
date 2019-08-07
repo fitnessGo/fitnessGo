@@ -550,7 +550,6 @@ class HomeScreen extends React.Component {
       );
     }
     const email = firebase.auth().currentUser.email ? firebase.auth().currentUser.email : firebase.auth().currentUser.providerData[0].email ;
-    console.warn("email: " + email);
     return (
       // var workoutViews = new Array();
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
