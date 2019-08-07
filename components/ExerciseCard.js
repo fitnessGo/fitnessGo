@@ -214,7 +214,8 @@ class ExerciseCard extends React.Component {
             </TextInput>
           )}
           <TextInput
-            style={theme.text}
+            multiline 
+            style={[theme.text, {maxHeight: 60}]}
             placeholder="Description"
             onChangeText={this.changeDesc}
             underlineColorAndroid="transparent"
