@@ -4,6 +4,8 @@ import { Card, Text, Button, Image, Icon } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
 import Logo from '../logo.png';
+// NetInfo from "@react-native-community/netinfo";
+import { NetInfo } from "react-native";
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
@@ -14,13 +16,12 @@ class LogInScreen extends React.Component {
     handleFbLogin()
       .then(err => {
         if (!err) {
-          this.props.navigation.navigate("App",{
+          this.props.navigation.navigate("App", {
             darkTheme: global.darkTheme
           });
         }
       })
       .catch(err => {
-        alert("Couldn't authenticate your Facebook account 🙁");
       });
   }
 
@@ -34,7 +35,15 @@ class LogInScreen extends React.Component {
         }
       })
       .catch(err => {
-        alert("Couldn't authenticate your Google account 🙁");
+        NetInfo.isConnected.fetch().then(isConnected => {
+          if (!isConnected) {
+            alert("Please check your internet connection and try again later.");
+          }
+          else {
+            alert("Couldn't authenticate your Google account 🙁");
+          }
+        });
+
       });
   }
 
@@ -49,8 +58,8 @@ class LogInScreen extends React.Component {
 
   render() {
     return (
-      <View style={{backgroundColor: "#3c1a5b", height: "100%"}}>
-        <View style={{alignItems: "center"}}>
+      <View style={{ backgroundColor: "#3c1a5b", height: "100%" }}>
+        <View style={{ alignItems: "center" }}>
           <Image
             style={styles.image}
             source={Logo}
@@ -60,8 +69,8 @@ class LogInScreen extends React.Component {
         <View style={styles.container}>
           <Button
             buttonStyle={[styles.button, { backgroundColor: "#3C5A99" }]}
-            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20}} />}
-            
+            icon={<Icon name="logo-facebook" type="ionicon" size={35} color="white" containerStyle={{ marginLeft: -90, marginRight: 20 }} />}
+
             title="Log in with Facebook"
             onPress={() => this.onLogInWithFaceBookClick()}
           />
