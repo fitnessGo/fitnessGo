@@ -3,6 +3,7 @@ import Card from "./Card";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Icon } from 'react-native-elements';
 import { FontStyles } from '../styles/global';
+import moment from "moment";
 
 class WorkoutCard extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class WorkoutCard extends Component {
       }
       return <View />;
     }
-
+    let createdOn = moment(workout.timeCreated).format('LL');
     return (
         <Card style={[styles.viewStyle, this.props.style]}>
           <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
@@ -63,6 +64,7 @@ class WorkoutCard extends Component {
             <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
             <Text style={textStyle}>Exercises include:  <Text style={FontStyles.bold}>{exampleExercises}</Text></Text>
             <Text style={textStyle}>Duration: <Text style={FontStyles.bold}>{min}m:{sec}s</Text></Text>
+            <Text style={textStyle}>Date created: {createdOn}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', }}>
             <WorkoutAddedBadge />

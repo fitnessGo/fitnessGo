@@ -46,13 +46,15 @@ export default class DatabaseManager {
         })
     };
     //Save passed workout to the user library
-    static AddWorkoutToUserLibrary(w) {
+    static AddWorkoutToUserLibrary(workout) {
         return new Promise((resolve, reject) => {
             const user = firebase.auth().currentUser;
             if (user) {
                 const userDataRef = firebase.database().ref("users/" + user.uid + "/workouts/");
                 var newWorkoutRef = userDataRef.push();
-                const workout = {...w, id: newWorkoutRef.key}
+                workout.refId = workout.id; // refId reference to Discover workout
+                workout.id = newWorkoutRef.key;
+                delete workout.added; //only needed it on Discover screen
                 newWorkoutRef.set(workout).then(data => {
                     resolve();
                 }).catch(error => {

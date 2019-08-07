@@ -9,6 +9,13 @@ import moment from 'moment';
 import DatabaseManager from '../components/DatabaseManager';
 import { showMessage } from "react-native-flash-message";
 
+
+const SortOptions = {
+  Default: 1,
+  Newest: 2 ,
+  Oldest: 3
+}
+
 class Discover extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -19,7 +26,7 @@ class Discover extends Component {
       headerLeft: (
         <Button
           type="clear"
-          icon={<Icon name="settings" size={22} color={global.darkTheme? '#cfcfcf' : '#101010'}/>}
+          icon={<Icon name="settings" size={22} color={global.darkTheme ? '#cfcfcf' : '#101010'} />}
           style={{ flexDirection: "row", alignSelf: "flex-end" }}
           onPress={() => navigation.navigate("Settings", {
             darkTheme: global.darkTheme
@@ -38,7 +45,7 @@ class Discover extends Component {
       sharedWorkoutCode: undefined
     }
     this.workouts = []
-
+    this.sortBy = SortOptions.Default;
     //when returned to this screen check if props have changed 
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
@@ -61,7 +68,7 @@ class Discover extends Component {
       }
     );
   }
-  componentDidMount() { 
+  componentDidMount() {
     this.fetchWorkoutsFromDatabase(() => {
       this.setState({ dataReceived: true })
     });
@@ -73,7 +80,7 @@ class Discover extends Component {
 
   fetchWorkoutsFromDatabase(onCompletion) {
     var wrks = []
-    DatabaseManager.GetAllWorkoutRefsOnce().then( (workoutRefs) => {
+    DatabaseManager.GetAllWorkoutRefsOnce().then((workoutRefs) => {
       if (workoutRefs && workoutRefs.length > 0) {
         DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
           workoutRefs.forEach(workoutRef => {
@@ -85,19 +92,33 @@ class Discover extends Component {
             wrks.push(workout)
           });
           this.workouts = wrks
+          this.sortWorkouts();
           onCompletion();
         });
       }
     });
   }
 
+  sortWorkouts() {
+    switch(this.sortBy) {
+      case SortOptions.Newest:
+        this.workouts.sort( (a, b) => { return b.timeCreated - a.timeCreated; });
+        break;
+      case SortOptions.Oldest :
+        this.workouts.sort( (a, b) => { return a.timeCreated - b.timeCreated; });
+        break;
+        default: 
+        this.workouts.sort( (a, b) => { return a.id > b.id; });
+        break;
+    }
+  }
   refreshUserWorkouts(onCompletion) {
     DatabaseManager.GetCurrentUserSavedDiscoverWorkouts().then(references => {
       if (references && references.length > 0) {
         this.workouts.forEach(workout => {
           //check if the discover workout was added to the user library
-            workout.added = references.includes(workout.id);
-          });
+          workout.added = references.includes(workout.id);
+        });
       }
       onCompletion();
     });
@@ -110,11 +131,7 @@ class Discover extends Component {
   }
   _addWorkoutToUserLib(workout) {
     if (!workout.added) {
-      //update props
-      workout.timeCreated = Number(moment().format('x'));
-      delete workout.added; //only needed it on this screen
-      workout.refId = workout.id; //reference to Discover workout
-      DatabaseManager.AddWorkoutToUserLibrary(workout).then( () => {
+      DatabaseManager.AddWorkoutToUserLibrary({...workout}).then(() => {
         showMessage({
           message: "Workout was added to your library",
           icon: "auto",
@@ -158,6 +175,11 @@ class Discover extends Component {
       this.setState({ refreshing: false });
     });
   }
+  onSortBySwitch(option) {
+    this.sortBy = option
+    this.sortWorkouts();
+    this.setState({ refreshing: false });
+  }
   render() {
     var discoverWorkoutViews;
     if (this.workouts.length > 0) {
@@ -187,6 +209,16 @@ class Discover extends Component {
     const theme = getStyleSheet(this.state.darkTheme);
     return (
       <SafeAreaView style={[ScreenStyles.screenContainer, theme.background]}>
+        <View style={styles.sortByMenu}>
+          <Menu>
+            <MenuTrigger text="Sort by"/>
+            <MenuOptions>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Default)} text='Default'/>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Newest)} text='Newest fitst'/>
+              <MenuOption onSelect={() => this.onSortBySwitch(SortOptions.Oldest)} text='Oldest fitst'/>
+            </MenuOptions>
+          </Menu>
+        </View>
         <ScrollView style={[ScreenStyles.screenContainer, styles.container]} showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
         >
@@ -265,6 +297,12 @@ const styles = StyleSheet.create({
     padding: 15,
     alignContent: 'center',
     alignItems: 'center'
+  },
+  sortByMenu: {
+    alignItems: "flex-end",
+    backgroundColor: "rgba(255,255,0,0.0)",
+    paddingHorizontal: 10,
+    paddingVertical: 5
   }
 });
 
