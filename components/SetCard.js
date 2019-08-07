@@ -198,7 +198,8 @@ const setViewStyles = StyleSheet.create({
     width: "35%"
   },
   setDetailValue: {
-    width: "10%"
+    width: "10%",
+    paddingVertical: 0
   }
 });
 
