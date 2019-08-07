@@ -56,9 +56,11 @@ class WorkoutCard extends Component {
     return (
         <Card style={[styles.viewStyle, this.props.style]}>
           <Text style={[textStyle, FontStyles.h1]}>{workout.name}</Text>
+          {this.props.displayCreator && 
           <View style={styles.badge}>
             <Text style={styles.badgeText}>By <Text style={FontStyles.bold}>{workout.createdBy}</Text></Text>
           </View>
+          }
           <View style={styles.info}>
             <Text style={textStyle}>Category: <Text style={FontStyles.bold}>{workout.category}</Text></Text>
             <Text style={textStyle}>Total exercises: <Text style={FontStyles.bold}>{workout.exercises.length}</Text></Text>
