@@ -40,7 +40,7 @@ class LogInScreen extends React.Component {
             alert("Please check your internet connection and try again later.");
           }
           else {
-            alert("Couldn't authenticate your Facebook account 🙁");
+            alert("Couldn't authenticate your Google account 🙁");
           }
         });
 
