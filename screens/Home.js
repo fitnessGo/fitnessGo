@@ -611,27 +611,16 @@ class HomeScreen extends React.Component {
             })}
           </View>
         </ScrollView>
-        <View style={{ alignItems: "flex-end" }}>
-          <Menu
-            renderer={renderers.Popover}
-            rendererProps={{ preferredPlacement: "top" }}
-          >
-            <MenuTrigger
-              triggerOnLongPress={true}
-              onAlternativeAction={() =>
-                this._onCreateNewButtonClick(this.state.workouts)
-              }
-              customStyles={triggerMenuTouchable}
-            >
+        <View style={{ alignItems: "flex-end", backgroundColor:"#ffffff", position: "absolute", bottom: 0, right: 0, width: 40, borderRadius: 500}}>
+          <Menu renderer={renderers.Popover} rendererProps={{ preferredPlacement: 'top' }}>
+            <MenuTrigger triggerOnLongPress={true} onAlternativeAction={() => this._onCreateNewButtonClick(this.state.workouts)} customStyles={triggerMenuTouchable}>
               <View style={{ padding: "1%" }}>
-                <Icon name="add-circle" size={44} color={theme.text.color} />
+                <Icon name="add-circle" size={40} color={theme.text.color}/>
               </View>
             </MenuTrigger>
             <MenuOptions customStyles={popUpStyles}>
-              <MenuOption
-                text="Add shared workout"
-                onSelect={() => this.addSharedWorkoutButtonPressed()}
-              />
+              <MenuOption text="Add shared workout" onSelect={() =>
+                this.addSharedWorkoutButtonPressed()} />
             </MenuOptions>
           </Menu>
         </View>
