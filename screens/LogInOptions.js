@@ -4,8 +4,6 @@ import { Card, Text, Button, Image, Icon } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { handleFbLogin, handleGoogleLogin } from "../lib/auth";
 import Logo from '../logo.png';
-// NetInfo from "@react-native-community/netinfo";
-import { NetInfo } from "react-native";
 
 class LogInScreen extends React.Component {
   static navigationOptions = {
@@ -35,15 +33,7 @@ class LogInScreen extends React.Component {
         }
       })
       .catch(err => {
-        NetInfo.isConnected.fetch().then(isConnected => {
-          if (!isConnected) {
-            alert("Please check your internet connection and try again later.");
-          }
-          else {
-            alert("Couldn't authenticate your Google account 🙁");
-          }
-        });
-
+        alert("Couldn't authenticate your Google account 🙁");
       });
   }
 
